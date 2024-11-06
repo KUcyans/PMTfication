@@ -1,0 +1,8 @@
+Total number of events in SRTInIcePulses: 234823
+Reading 10000 events from SRTInIcePulses...
+Total number of events in truth: 234823
+Reading 10000 events from truth...
+Generating plots:   0%|          | 0/16 [00:00<?, ?it/s]Generating plots:   6%|▋         | 1/16 [02:12<33:04, 132.27s/it]Generating plots:  12%|█▎        | 2/16 [03:51<26:16, 112.58s/it]Generating plots:  19%|█▉        | 3/16 [05:04<20:28, 94.52s/it] Generating plots:  25%|██▌       | 4/16 [05:07<11:41, 58.48s/it]Generating plots:  31%|███▏      | 5/16 [07:53<17:50, 97.28s/it]Generating plots:  38%|███▊      | 6/16 [08:18<12:07, 72.75s/it]Generating plots:  44%|████▍     | 7/16 [08:20<07:27, 49.75s/it]Generating plots:  50%|█████     | 8/16 [08:22<04:36, 34.57s/it]Generating plots:  56%|█████▋    | 9/16 [08:25<02:52, 24.59s/it]Generating plots:  62%|██████▎   | 10/16 [08:25<01:42, 17.04s/it]Generating plots:  75%|███████▌  | 12/16 [08:25<00:36,  9.09s/it]Generating plots:  88%|████████▊ | 14/16 [08:26<00:10,  5.47s/it]Generating plots: 100%|██████████| 16/16 [08:26<00:00,  3.50s/it]Generating plots: 100%|██████████| 16/16 [08:26<00:00, 31.64s/it]
+unique DOMs: 5074
+All plots have been saved in plots_StatView_Corsika_5_1.pdf
+Time taken to complete: 1122.43 seconds

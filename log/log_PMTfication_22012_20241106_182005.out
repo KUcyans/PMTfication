@@ -1,0 +1,5 @@
+nohup: ignoring input
+2024-11-06 18:20:06 - INFO - PMTfication starts...
+2024-11-06 18:20:06 - INFO - The number of files in the subdirectory: 27
+2024-11-06 18:20:06 - INFO - Found 27 database files in subdirectory 22012.
+Processing 22012:   0%|          | 0/27 [00:00<?, ?it/s]2024-11-06 18:20:06 - INFO - Starting processing for database file: merged_part_14.db

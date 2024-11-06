@@ -1,0 +1,15 @@
+nohup: ignoring input
+2024-11-06 18:03:24 - INFO - PMTfication starts...
+2024-11-06 18:03:24 - INFO - Processing subdirectory: 99999
+2024-11-06 18:03:24 - INFO - the number of files in the subdirectory: 2
+2024-11-06 18:03:24 - INFO - Found 2 database files in subdirectory 99999.
+Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2024-11-06 18:03:24 - INFO - Starting processing for database file: merged_part_98.db
+Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 299, in <module>
+    pmtfier.pmtfy_subdir(source_root = source_root,
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 266, in pmtfy_subdir
+    self.pmtfy_db(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 222, in pmtfy_db
+    self._add_columns_if_missing(con_source, source_table)
+AttributeError: 'PMTfier' object has no attribute '_add_columns_if_missing'
