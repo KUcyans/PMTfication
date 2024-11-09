@@ -1,4 +1,3 @@
-import pandas as pd
 import pyarrow as pa
 import numpy as np
 from collections import defaultdict
@@ -43,13 +42,8 @@ class PMTSummariser:
         cur_source.execute(query)
         rows = cur_source.fetchall()
 
-        events_doms_pulses = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
+        events_doms_pulses = self._build_events_doms_pulses(rows)
         processed_data = []
-        for row in rows:
-            event_no = row[self.event_no_idx]
-            string = row[self.dom_string_idx]
-            dom_number = row[self.dom_number_idx]
-            events_doms_pulses[event_no][string][dom_number].append(row)
 
         for event_no, strings_doms_pulses in events_doms_pulses.items():
             for doms_pulses in strings_doms_pulses.values():
@@ -90,18 +84,85 @@ class PMTSummariser:
         ])
 
         # Convert processed_data into PyArrow arrays
-        columns_data = list(zip(*processed_data))  # Transpose to match columnar structure
-        arrays = [pa.array(col, type=schema.field(i).type) for i, col in enumerate(columns_data)]
+        # columns_data = list(zip(*processed_data))  # Transpose to match columnar structure
+        # arrays = [pa.array(col, type=schema.field(i).type) for i, col in enumerate(columns_data)]
+        # pa_processed = pa.Table.from_arrays(arrays, schema=schema)
+        # return pa_processed
         
-        pa_processed = pa.Table.from_arrays(arrays, schema=schema)
-        return pa_processed
+        arrays = {
+            "dom_x": [],
+            "dom_y": [],
+            "dom_z": [],
+            "dom_x_rel": [],
+            "dom_y_rel": [],
+            "dom_z_rel": [],
+            "pmt_area": [],
+            "rde": [],
+            "saturation_status": [],
+            "q1": [],
+            "q2": [],
+            "q3": [],
+            "Q25": [],
+            "Q75": [],
+            "Qtotal": [],
+            "hlc1": [],
+            "hlc2": [],
+            "hlc3": [],
+            "t1": [],
+            "t2": [],
+            "t3": [],
+            "T10": [],
+            "T50": [],
+            "sigmaT": []
+        }
+                
+        for dom_data in processed_data:
+            arrays["dom_x"].append(dom_data[0])
+            arrays["dom_y"].append(dom_data[1])
+            arrays["dom_z"].append(dom_data[2])
+            arrays["dom_x_rel"].append(dom_data[3])
+            arrays["dom_y_rel"].append(dom_data[4])
+            arrays["dom_z_rel"].append(dom_data[5])
+            arrays["pmt_area"].append(dom_data[6])
+            arrays["rde"].append(dom_data[7])
+            arrays["saturation_status"].append(dom_data[8])
+            arrays["q1"].append(dom_data[9])
+            arrays["q2"].append(dom_data[10])
+            arrays["q3"].append(dom_data[11])
+            arrays["Q25"].append(dom_data[12])
+            arrays["Q75"].append(dom_data[13])
+            arrays["Qtotal"].append(dom_data[14])
+            arrays["hlc1"].append(dom_data[15])
+            arrays["hlc2"].append(dom_data[16])
+            arrays["hlc3"].append(dom_data[17])
+            arrays["t1"].append(dom_data[18])
+            arrays["t2"].append(dom_data[19])
+            arrays["t3"].append(dom_data[20])
+            arrays["T10"].append(dom_data[21])
+            arrays["T50"].append(dom_data[22])
+            arrays["sigmaT"].append(dom_data[23])
+        # instead of using zip(*processed_data), we can directly append the values
+        # for dom_data in processed_data:
+        #     for i, key in enumerate(arrays.keys()):
+        #         arrays[key].append(dom_data[i])
+        pa_arrays = {key: pa.array(value) for key, value in arrays.items()}
+        return pa.Table.from_pydict(pa_arrays)
     
+    def _build_events_doms_pulses(self, rows: List[List[float]]) -> defaultdict:
+        events_doms_pulses = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
+        for row in rows:
+            event_no = row[self.event_no_idx]
+            string = row[self.dom_string_idx]
+            dom_number = row[self.dom_number_idx]
+            events_doms_pulses[event_no][string][dom_number].append(row)
+        return events_doms_pulses
+
     def _process_DOM(self, 
                     pulses: List[List[float]], 
                     avg_dom_position: List[float]) -> List[float]:
         # Get DOM features
-        dom_string = self._get_DOM_string(pulses)
-        dom_number = self._get_DOM_number(pulses)
+        # dom_string = self._get_DOM_string(pulses)
+        # dom_number = self._get_DOM_number(pulses)
         dom_x, dom_y, dom_z = self._get_DOM_position(pulses)
         dom_x_rel, dom_y_rel, dom_z_rel = self._get_relative_DOM_position(dom_x, dom_y, dom_z, avg_dom_position)
         pmt_area = self._get_pmt_area(pulses)
@@ -134,20 +195,25 @@ class PMTSummariser:
     
     def _get_max_Q_total(self,
                         all_pulses_event: List[List[List[float]]]) -> float:
-                Qsums = [sum([pulse[self.dom_charge_idx] for pulse in pulses]) for pulses in all_pulses_event]
-                return max(Qsums)
+                charges = np.array([[pulse[self.dom_charge_idx] for pulse in pulses] for pulses in all_pulses_event])
+                Qsums = np.sum(charges, axis=1)
+                return np.max(Qsums)
             
     def _get_Q_weighted_average_DOM_position(self, 
                                         all_pulses_event: List[List[List[float]]], 
                                         maxQtotal: float) -> List[float]:
-        dom_x = [pulse[self.dom_x_idx] for pulses_dom in all_pulses_event for pulse in pulses_dom]
-        dom_y = [pulse[self.dom_y_idx] for pulses_dom in all_pulses_event for pulse in pulses_dom]
-        dom_z = [pulse[self.dom_z_idx] for pulses_dom in all_pulses_event for pulse in pulses_dom]
-        charge_sums = [pulse[self.dom_charge_idx] for pulses_dom in all_pulses_event for pulse in pulses_dom]
+        dom_positions = np.array([
+            [pulse[self.dom_x_idx], pulse[self.dom_y_idx], pulse[self.dom_z_idx]]
+            for pulses_dom in all_pulses_event for pulse in pulses_dom
+        ])
+        charges = np.array([
+            pulse[self.dom_charge_idx] for pulses_dom in all_pulses_event for pulse in pulses_dom
+        ])
 
-        weighted_x = np.mean([x * charge / maxQtotal for x, charge in zip(dom_x, charge_sums)])
-        weighted_y = np.mean([y * charge / maxQtotal for y, charge in zip(dom_y, charge_sums)])
-        weighted_z = np.mean([z * charge / maxQtotal for z, charge in zip(dom_z, charge_sums)])
+        # Calculate weighted averages
+        weights = charges / maxQtotal
+        weighted_positions = np.average(dom_positions, axis=0, weights=weights)
+        weighted_x, weighted_y, weighted_z = weighted_positions
 
         return [weighted_x, weighted_y, weighted_z]
         
@@ -215,8 +281,8 @@ class PMTSummariser:
                                 pulses_dom: List[List[float]], 
                                 saturationStatus: int) -> List[float]:
         n = 3
-        _fillSaturated = -1
-        _fillIncomplete = -1
+        _fillSaturated = -1 # used when the DOM is saturated
+        _fillIncomplete = -1 # Used there 
         if saturationStatus == 1:
             pulse_times = [_fillSaturated] * n
         elif len(pulses_dom) < n:
@@ -240,18 +306,26 @@ class PMTSummariser:
         elif len(pulses_dom) < 2:
             times = [_fillIncomplete] * 2
         else:
-            Qtotal = sum([pulse[self.dom_charge_idx] for pulse in pulses_dom])
-            t_0 = pulses_dom[0][self.dom_time_idx]
-            Qcum = 0
-            T_first, T_second = -1, -1 # if these are not -1, then they are assigned
-            for pulse in pulses_dom:
-                Qcum += pulse[self.dom_charge_idx]
-                if Qcum > percentile1 / 100 * Qtotal and T_first == -1:
-                    T_first = pulse[self.dom_time_idx] - t_0
-                if Qcum > percentile2 / 100 * Qtotal:
-                    T_second = pulse[self.dom_time_idx] - t_0
-                    break
-            times = [T_first, T_second]
+            charges = np.array([pulse[self.dom_charge_idx] for pulse in pulses_dom])
+            times = np.array([pulse[self.dom_time_idx] for pulse in pulses_dom])
+            Qtotal = np.sum(charges)
+            cumulated_charge = np.cumsum(charges)
+            t_0 = times[0]
+            T_1 = times[np.argmax(cumulated_charge > percentile1 / 100 * Qtotal)] - t_0
+            T_2 = times[np.argmax(cumulated_charge > percentile2 / 100 * Qtotal)] - t_0
+            
+            # Qtotal = sum([pulse[self.dom_charge_idx] for pulse in pulses_dom])
+            # t_0 = pulses_dom[0][self.dom_time_idx]
+            # Qcum = 0
+            # T_first, T_second = -1, -1 # if these are not -1, then they are assigned
+            # for pulse in pulses_dom:
+            #     Qcum += pulse[self.dom_charge_idx]
+            #     if Qcum > percentile1 / 100 * Qtotal and T_first == -1:
+            #         T_first = pulse[self.dom_time_idx] - t_0
+            #     if Qcum > percentile2 / 100 * Qtotal:
+            #         T_second = pulse[self.dom_time_idx] - t_0
+            #         break
+            times = [T_1, T_2]
         return times
     
     def _get_time_standard_deviation(self,
@@ -297,9 +371,14 @@ class PMTSummariser:
         elif len(pulses) < 1:
             Qs = [_fillIncomplete] * 3
         else:
-            Qtotal = sum([pulse[self.dom_charge_idx] for pulse in pulses])
             t_0 = pulses[0][self.dom_time_idx]
-            Qinterval1 = sum([pulse[self.dom_charge_idx] for pulse in pulses if pulse[self.dom_time_idx] - t_0 < interval1])
-            Qinterval2 = sum([pulse[self.dom_charge_idx] for pulse in pulses if pulse[self.dom_time_idx] - t_0 < interval2])
+            times = np.array([pulse[self.dom_time_idx] for pulse in pulses])
+            charges = np.array([pulse[self.dom_charge_idx] for pulse in pulses])
+
+            # Calculate cumulative charge within intervals
+            time_offsets = times - t_0
+            Qinterval1 = np.sum(charges[time_offsets < interval1])
+            Qinterval2 = np.sum(charges[time_offsets < interval2])
+            Qtotal = np.sum(charges)
             Qs = [Qinterval1, Qinterval2, Qtotal]
         return Qs

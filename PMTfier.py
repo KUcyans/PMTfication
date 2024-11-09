@@ -2,10 +2,8 @@ import sqlite3 as sql
 import pandas as pd
 import sys
 import os
-import matplotlib.pyplot as plt
 import numpy as np
 
-from collections import defaultdict
 from typing import List
 
 import pyarrow as pa
@@ -13,7 +11,6 @@ import pyarrow.parquet as pq
 
 from tqdm import tqdm
 import argparse
-import time
 import logging
 
 from PMT_summariser import PMTSummariser
@@ -49,11 +46,11 @@ class PMTfier:
     def _get_truth_pa(self,
                     con_source: sql.Connection,
                     source_table: str,
+                    truth_table_name: str,
                     event_no_subset: List[int],
                     subdirectory_no: int,
                     db_file_no: int,
                     shard_index: int) -> pd.DataFrame:
-        truth_table_name = self._get_truth_table_name_db(con_source)
 
         # Generate receipt data
         receipt_data = {
@@ -61,7 +58,7 @@ class PMTfier:
             'subdirectory_no': [subdirectory_no] * len(event_no_subset),
             'db_file_no': [db_file_no] * len(event_no_subset),
             'shard_index': [shard_index] * len(event_no_subset),
-            'file_no': [shard_index] * len(event_no_subset)  # file number is the shard index in target
+            'file_no': [shard_index] * len(event_no_subset)
         }
         df_receipt = pd.DataFrame(receipt_data)
 
@@ -76,9 +73,7 @@ class PMTfier:
             GROUP BY t.event_no
         """
         df_combined = pd.read_sql_query(query, con_source)
-
-        df_combined['offset'] = df_combined['N_doms'].cumsum().shift(fill_value=0)
-
+        df_combined['offset'] = np.cumsum(df_combined['N_doms'], dtype=np.int64)
         df_combined = pd.merge(df_receipt, df_combined, on='event_no', how='inner')
 
         column_order = [
@@ -115,6 +110,7 @@ class PMTfier:
     def pmtfy_shard(self, 
                     con_source: sql.Connection,
                     source_table: str,
+                    truth_table_name: str,
                     dest_root: str,
                     source_subdirectory: str,
                     db_file_no: int,
@@ -165,6 +161,7 @@ class PMTfier:
         truth_df = self._get_truth_pa(
             con_source,
             source_table=source_table,
+            truth_table_name = truth_table_name,
             event_no_subset=event_no_subset,
             subdirectory_no=int(source_subdirectory),
             db_file_no=db_file_no,
@@ -176,6 +173,7 @@ class PMTfier:
     def _divide_and_conquer_db(self, 
                             con_source: sql.Connection, 
                             source_table: str, 
+                            truth_table_name: str,
                             dest_root: str, 
                             source_subdirectory: str, 
                             db_file_no: int, 
@@ -196,6 +194,7 @@ class PMTfier:
             shard_df = self.pmtfy_shard(
                 con_source=con_source,
                 source_table=source_table,
+                truth_table_name=truth_table_name,
                 dest_root=dest_root,
                 source_subdirectory=source_subdirectory,
                 db_file_no=db_file_no,
@@ -217,15 +216,15 @@ class PMTfier:
                 dest_root: str,
                 source_table: str,
                 N_events_per_shard: int = 2000) -> None:
+        db_file_no = self._get_db_file_no(source_file)
         con_source = sql.connect(source_file)
-
-        # Calculate total event count once
+        truth_table_name = self._get_truth_table_name_db(con_source)
         N_events_total = self._get_table_event_count(con_source, source_table)
 
-        db_file_no = self._get_db_file_no(source_file)
         consolidated_df = self._divide_and_conquer_db(
             con_source=con_source,
             source_table=source_table,
+            truth_table_name=truth_table_name,
             dest_root=dest_root,
             source_subdirectory=source_subdirectory,
             db_file_no=db_file_no,
@@ -240,7 +239,6 @@ class PMTfier:
         pq.write_table(consolidated_pa, consolidated_file)
 
         con_source.close()
-
         
     def pmtfy_subdir(self, 
                     source_root: str, 

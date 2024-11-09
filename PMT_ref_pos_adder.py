@@ -1,6 +1,8 @@
 import numpy as np
 import sqlite3 as sql
 from typing import List
+import pandas as pd
+import logging
 
 class ReferencePositionAdder:
     def __init__(self, 
@@ -38,6 +40,23 @@ class ReferencePositionAdder:
         if 'dom_number' not in existing_columns:
             cur_source.execute(f"ALTER TABLE {self.source_table} ADD COLUMN dom_number INTEGER")
         self.con_source.commit()
+        self._create_indexes()
+        
+    def _create_indexes(self) -> None:
+        cur_source = self.con_source.cursor()
+        indexes = [
+            ("idx_event_no", "event_no"),
+            ("idx_dom_position", "dom_x, dom_y, dom_z"),
+            ("idx_string_dom_number", "string, dom_number")
+        ]
+        for idx_name, columns in indexes:
+            try:
+                logging.info(f"Creating index {idx_name} on {columns}.")
+                cur_source.execute(f"CREATE INDEX IF NOT EXISTS {idx_name} ON {self.source_table} ({columns})")
+            except sql.Error as e:
+                logging.error(f"Failed to create index {idx_name}: {e}")
+        self.con_source.commit()
+
     
     def _update_string_dom_number(self) -> None:
         """
@@ -59,22 +78,33 @@ class ReferencePositionAdder:
         relevant_data = self._filter_relevant_reference_data(bounds)
 
         # Fetch rows to update
-        rows_to_update = self._fetch_rows_to_update()
+        rows_to_update_df = self._fetch_rows_to_update()
+        rows_to_update = rows_to_update_df.to_records(index=False).tolist()
 
-        # Batch update rows
-        updates = []
-        for row in rows_to_update:
-            row_id, dom_x, dom_y, dom_z = row
-            matches_xy = relevant_data[
-                (np.abs(relevant_data[:, 2] - dom_x) <= self.tolerance_xy) &
-                (np.abs(relevant_data[:, 3] - dom_y) <= self.tolerance_xy)
-            ]
-            if len(matches_xy) > 0:
-                match_z = matches_xy[np.abs(matches_xy[:, 4] - dom_z) <= self.tolerance_z]
-                if len(match_z) > 0:
-                    string_val = int(match_z[0, 0])
-                    dom_number_val = int(match_z[0, 1])
-                    updates.append((string_val, dom_number_val, row_id))
+        # Extract columns for rows to update
+        row_ids, dom_xs, dom_ys, dom_zs = np.array(rows_to_update).T
+
+        # Vectorised matching for XY tolerances
+        xy_matches = (
+            (np.abs(relevant_data[:, 2][:, None] - dom_xs) <= self.tolerance_xy) &
+            (np.abs(relevant_data[:, 3][:, None] - dom_ys) <= self.tolerance_xy)
+        )
+
+        # Filter relevant_data for matches
+        matching_relevant_data = relevant_data[np.any(xy_matches, axis=1)]
+
+        # Vectorised matching for Z tolerance
+        z_matches = np.abs(matching_relevant_data[:, 4][:, None] - dom_zs) <= self.tolerance_z
+
+        # Get matching rows
+        matched_rows = np.where(z_matches)
+
+        # Extract string and dom_number for matches
+        matched_strings = matching_relevant_data[matched_rows[0], 0]
+        matched_dom_numbers = matching_relevant_data[matched_rows[0], 1]
+
+        # Combine row_id with matches for batch update
+        updates = list(zip(matched_strings, matched_dom_numbers, row_ids[matched_rows[1]]))
 
         # Execute batch updates
         cur_source.executemany(
@@ -88,17 +118,17 @@ class ReferencePositionAdder:
         Filter reference data based on bounding box and tolerances.
         """
         min_dom_x, max_dom_x, min_dom_y, max_dom_y = bounds
+        tol_xy = self.tolerance_xy
         return self.reference_data[
-            (self.reference_data[:, 2] >= min_dom_x - self.tolerance_xy) &
-            (self.reference_data[:, 2] <= max_dom_x + self.tolerance_xy) &
-            (self.reference_data[:, 3] >= min_dom_y - self.tolerance_xy) &
-            (self.reference_data[:, 3] <= max_dom_y + self.tolerance_xy)
+            np.logical_and.reduce((
+                self.reference_data[:, 2] >= min_dom_x - tol_xy,
+                self.reference_data[:, 2] <= max_dom_x + tol_xy,
+                self.reference_data[:, 3] >= min_dom_y - tol_xy,
+                self.reference_data[:, 3] <= max_dom_y + tol_xy
+            ))
         ]
 
-    def _fetch_rows_to_update(self) -> List[tuple]:
-        """
-        Fetch rows where string or dom_number is missing for specific events.
-        """
+    def _fetch_rows_to_update(self) -> pd.DataFrame:
         event_filter = ','.join(map(str, self.event_no_subset))
         query = f"""
             SELECT rowid, dom_x, dom_y, dom_z 
@@ -106,6 +136,7 @@ class ReferencePositionAdder:
             WHERE event_no IN ({event_filter}) 
             AND (string IS NULL OR dom_number IS NULL)
         """
-        cur_source = self.con_source.cursor()
-        cur_source.execute(query)
-        return cur_source.fetchall()
+        # Fetch rows directly into a Pandas DataFrame
+        rows_to_update_df = pd.read_sql_query(query, self.con_source)
+
+        return rows_to_update_df
