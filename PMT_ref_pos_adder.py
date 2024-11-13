@@ -14,6 +14,9 @@ class ReferencePositionAdder:
         self.con_source = con_source
         self.source_table = source_table
         self.event_no_subset = event_no_subset
+        # HACK: 
+        # should be replaced by a general reference dom position 
+        # a GEO file may be able to be used
         self.reference_data = self._load_reference_data('/groups/icecube/cyan/factory/DOMification/dom_ref_pos/unique_string_dom_completed.csv')
         self.tolerance_xy = tolerance_xy
         self.tolerance_z = tolerance_z
@@ -51,12 +54,10 @@ class ReferencePositionAdder:
         ]
         for idx_name, columns in indexes:
             try:
-                logging.info(f"Creating index {idx_name} on {columns}.")
                 cur_source.execute(f"CREATE INDEX IF NOT EXISTS {idx_name} ON {self.source_table} ({columns})")
             except sql.Error as e:
                 logging.error(f"Failed to create index {idx_name}: {e}")
         self.con_source.commit()
-
     
     def _update_string_dom_number(self) -> None:
         """
@@ -74,14 +75,13 @@ class ReferencePositionAdder:
         cur_source.execute(query)
         bounds = cur_source.fetchone()
 
-        # Filter relevant reference data
         relevant_data = self._filter_relevant_reference_data(bounds)
-
-        # Fetch rows to update
         rows_to_update_df = self._fetch_rows_to_update()
+        
+        if rows_to_update_df.empty:
+            return
+        
         rows_to_update = rows_to_update_df.to_records(index=False).tolist()
-
-        # Extract columns for rows to update
         row_ids, dom_xs, dom_ys, dom_zs = np.array(rows_to_update).T
 
         # Vectorised matching for XY tolerances
@@ -99,14 +99,12 @@ class ReferencePositionAdder:
         # Get matching rows
         matched_rows = np.where(z_matches)
 
-        # Extract string and dom_number for matches
         matched_strings = matching_relevant_data[matched_rows[0], 0]
         matched_dom_numbers = matching_relevant_data[matched_rows[0], 1]
 
-        # Combine row_id with matches for batch update
         updates = list(zip(matched_strings, matched_dom_numbers, row_ids[matched_rows[1]]))
 
-        # Execute batch updates
+        # batch updates executed
         cur_source.executemany(
             f"UPDATE {self.source_table} SET string = ?, dom_number = ? WHERE rowid = ?", updates
         )
@@ -128,15 +126,20 @@ class ReferencePositionAdder:
             ))
         ]
 
+    # HACK confirm exception handling 
     def _fetch_rows_to_update(self) -> pd.DataFrame:
+        if not self.event_no_subset:
+            return pd.DataFrame()
+
         event_filter = ','.join(map(str, self.event_no_subset))
         query = f"""
             SELECT rowid, dom_x, dom_y, dom_z 
             FROM {self.source_table}
             WHERE event_no IN ({event_filter}) 
-            AND (string IS NULL OR dom_number IS NULL)
+            AND (string IS NULL OR dom_number IS NULL) 
         """
-        # Fetch rows directly into a Pandas DataFrame
-        rows_to_update_df = pd.read_sql_query(query, self.con_source)
-
-        return rows_to_update_df
+        try:
+            rows_to_update_df = pd.read_sql_query(query, self.con_source)
+            return rows_to_update_df
+        except Exception:
+            return pd.DataFrame()

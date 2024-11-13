@@ -73,7 +73,7 @@ class PMTfier:
             GROUP BY t.event_no
         """
         df_combined = pd.read_sql_query(query, con_source)
-        df_combined['offset'] = np.cumsum(df_combined['N_doms'], dtype=np.int64)
+        df_combined['offset'] = np.cumsum(df_combined['N_doms'])
         df_combined = pd.merge(df_receipt, df_combined, on='event_no', how='inner')
 
         column_order = [
@@ -155,7 +155,6 @@ class PMTfier:
         os.makedirs(dest_dir, exist_ok=True)
 
         pmtfied_file = os.path.join(dest_dir, f"PMTfied_{shard_index}.parquet")        
-        print(f"Saving shard {shard_index} to {pmtfied_file}")
         pq.write_table(pa_pmtfied, pmtfied_file)
         
         truth_df = self._get_truth_pa(

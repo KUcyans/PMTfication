@@ -1,10 +1,14 @@
 import pyarrow as pa
 import numpy as np
 from collections import defaultdict
-from typing import List
+from typing import List, Dict
 import sqlite3 as sql
 
 class PMTSummariser:
+    # static variables  
+    _SCHEMA = None
+    _DEFAULT_ARRAYS = None
+
     def __init__(self, con_source: sql.Connection, source_table: str, event_no_subset: List[int]) -> None:
         self.con_source = con_source
         self.source_table = source_table
@@ -28,6 +32,12 @@ class PMTSummariser:
         self.pmt_area_idx = columns.index('pmt_area')
         self.rde_idx = columns.index('rde')
         self.saturation_status_idx = columns.index('is_saturated_dom')
+
+        # Initialise static members if not already set
+        if PMTSummariser._SCHEMA is None:
+            PMTSummariser._SCHEMA = self._build_schema()
+        if PMTSummariser._DEFAULT_ARRAYS is None:
+            PMTSummariser._DEFAULT_ARRAYS = self._build_empty_arrays()
     
     def __call__(self) -> pa.Table:
         return self._get_PMTfied_pa()
@@ -48,112 +58,29 @@ class PMTSummariser:
         for event_no, strings_doms_pulses in events_doms_pulses.items():
             for doms_pulses in strings_doms_pulses.values():
                 all_pulses_event = list(doms_pulses.values())
+
                 maxQtotal = self._get_max_Q_total(all_pulses_event)
                 avg_dom_position = self._get_Q_weighted_average_DOM_position(all_pulses_event, maxQtotal)
                 for pulses in doms_pulses.values():
                     dom_data = self._process_DOM(pulses, avg_dom_position)
                     processed_data.append(dom_data)
 
-        # Define PyArrow schema
-        schema = pa.schema([
-            # Define column names and their data types
-            ('dom_x', pa.float32()),
-            ('dom_y', pa.float32()),
-            ('dom_z', pa.float32()),
-            ('dom_x_rel', pa.float32()),
-            ('dom_y_rel', pa.float32()),
-            ('dom_z_rel', pa.float32()),
-            ('pmt_area', pa.float32()),
-            ('rde', pa.float32()),
-            ('saturation_status', pa.int32()),
-            ('q1', pa.float32()),
-            ('q2', pa.float32()),
-            ('q3', pa.float32()),
-            ('Q25', pa.float32()),
-            ('Q75', pa.float32()),
-            ('Qtotal', pa.float32()),
-            ('hlc1', pa.int32()),
-            ('hlc2', pa.int32()),
-            ('hlc3', pa.int32()),
-            ('t1', pa.float32()),
-            ('t2', pa.float32()),
-            ('t3', pa.float32()),
-            ('T10', pa.float32()),
-            ('T50', pa.float32()),
-            ('sigmaT', pa.float32())
-        ])
-
-        # Convert processed_data into PyArrow arrays
-        # columns_data = list(zip(*processed_data))  # Transpose to match columnar structure
-        # arrays = [pa.array(col, type=schema.field(i).type) for i, col in enumerate(columns_data)]
-        # pa_processed = pa.Table.from_arrays(arrays, schema=schema)
-        # return pa_processed
-        
-        arrays = {
-            "dom_x": [],
-            "dom_y": [],
-            "dom_z": [],
-            "dom_x_rel": [],
-            "dom_y_rel": [],
-            "dom_z_rel": [],
-            "pmt_area": [],
-            "rde": [],
-            "saturation_status": [],
-            "q1": [],
-            "q2": [],
-            "q3": [],
-            "Q25": [],
-            "Q75": [],
-            "Qtotal": [],
-            "hlc1": [],
-            "hlc2": [],
-            "hlc3": [],
-            "t1": [],
-            "t2": [],
-            "t3": [],
-            "T10": [],
-            "T50": [],
-            "sigmaT": []
-        }
-                
+        # Use the static empty arrays
+        arrays = {key: value[:] for key, value in PMTSummariser._DEFAULT_ARRAYS.items()}  # Deep copy to avoid overwriting
         for dom_data in processed_data:
-            arrays["dom_x"].append(dom_data[0])
-            arrays["dom_y"].append(dom_data[1])
-            arrays["dom_z"].append(dom_data[2])
-            arrays["dom_x_rel"].append(dom_data[3])
-            arrays["dom_y_rel"].append(dom_data[4])
-            arrays["dom_z_rel"].append(dom_data[5])
-            arrays["pmt_area"].append(dom_data[6])
-            arrays["rde"].append(dom_data[7])
-            arrays["saturation_status"].append(dom_data[8])
-            arrays["q1"].append(dom_data[9])
-            arrays["q2"].append(dom_data[10])
-            arrays["q3"].append(dom_data[11])
-            arrays["Q25"].append(dom_data[12])
-            arrays["Q75"].append(dom_data[13])
-            arrays["Qtotal"].append(dom_data[14])
-            arrays["hlc1"].append(dom_data[15])
-            arrays["hlc2"].append(dom_data[16])
-            arrays["hlc3"].append(dom_data[17])
-            arrays["t1"].append(dom_data[18])
-            arrays["t2"].append(dom_data[19])
-            arrays["t3"].append(dom_data[20])
-            arrays["T10"].append(dom_data[21])
-            arrays["T50"].append(dom_data[22])
-            arrays["sigmaT"].append(dom_data[23])
-        # instead of using zip(*processed_data), we can directly append the values
-        # for dom_data in processed_data:
-        #     for i, key in enumerate(arrays.keys()):
-        #         arrays[key].append(dom_data[i])
+            for idx, field_name in enumerate(PMTSummariser._SCHEMA.names):
+                arrays[field_name].append(dom_data[idx])
+
         pa_arrays = {key: pa.array(value) for key, value in arrays.items()}
-        return pa.Table.from_pydict(pa_arrays)
+        return pa.Table.from_pydict(pa_arrays, schema=PMTSummariser._SCHEMA)
     
-    def _build_events_doms_pulses(self, rows: List[List[float]]) -> defaultdict:
+    def _build_events_doms_pulses(self, rows: List[tuple]) -> defaultdict[int, defaultdict[int, defaultdict[int, List[tuple]]]]:
         events_doms_pulses = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
         for row in rows:
             event_no = row[self.event_no_idx]
             string = row[self.dom_string_idx]
             dom_number = row[self.dom_number_idx]
+            # Append the raw row directly without conversion
             events_doms_pulses[event_no][string][dom_number].append(row)
         return events_doms_pulses
 
@@ -195,9 +122,8 @@ class PMTSummariser:
     
     def _get_max_Q_total(self,
                         all_pulses_event: List[List[List[float]]]) -> float:
-                charges = np.array([[pulse[self.dom_charge_idx] for pulse in pulses] for pulses in all_pulses_event])
-                Qsums = np.sum(charges, axis=1)
-                return np.max(Qsums)
+        Qsums = [np.sum([np.array(pulse[self.dom_charge_idx]) for pulse in pulses]) for pulses in all_pulses_event]
+        return max(Qsums)
             
     def _get_Q_weighted_average_DOM_position(self, 
                                         all_pulses_event: List[List[List[float]]], 
@@ -313,18 +239,6 @@ class PMTSummariser:
             t_0 = times[0]
             T_1 = times[np.argmax(cumulated_charge > percentile1 / 100 * Qtotal)] - t_0
             T_2 = times[np.argmax(cumulated_charge > percentile2 / 100 * Qtotal)] - t_0
-            
-            # Qtotal = sum([pulse[self.dom_charge_idx] for pulse in pulses_dom])
-            # t_0 = pulses_dom[0][self.dom_time_idx]
-            # Qcum = 0
-            # T_first, T_second = -1, -1 # if these are not -1, then they are assigned
-            # for pulse in pulses_dom:
-            #     Qcum += pulse[self.dom_charge_idx]
-            #     if Qcum > percentile1 / 100 * Qtotal and T_first == -1:
-            #         T_first = pulse[self.dom_time_idx] - t_0
-            #     if Qcum > percentile2 / 100 * Qtotal:
-            #         T_second = pulse[self.dom_time_idx] - t_0
-            #         break
             times = [T_1, T_2]
         return times
     
@@ -382,3 +296,40 @@ class PMTSummariser:
             Qtotal = np.sum(charges)
             Qs = [Qinterval1, Qinterval2, Qtotal]
         return Qs
+    
+    @staticmethod
+    def _build_schema() -> pa.Schema:
+        """Build and return the PyArrow schema."""
+        return pa.schema([
+            ('dom_x', pa.float32()),
+            ('dom_y', pa.float32()),
+            ('dom_z', pa.float32()),
+            ('dom_x_rel', pa.float32()),
+            ('dom_y_rel', pa.float32()),
+            ('dom_z_rel', pa.float32()),
+            ('pmt_area', pa.float32()),
+            ('rde', pa.float32()),
+            ('saturation_status', pa.int32()),
+            ('q1', pa.float32()),
+            ('q2', pa.float32()),
+            ('q3', pa.float32()),
+            ('Q25', pa.float32()),
+            ('Q75', pa.float32()),
+            ('Qtotal', pa.float32()),
+            ('hlc1', pa.int32()),
+            ('hlc2', pa.int32()),
+            ('hlc3', pa.int32()),
+            ('t1', pa.float32()),
+            ('t2', pa.float32()),
+            ('t3', pa.float32()),
+            ('T10', pa.float32()),
+            ('T50', pa.float32()),
+            ('sigmaT', pa.float32())
+        ])
+
+    @classmethod
+    def _build_empty_arrays(cls) -> Dict[str, List[float]]:
+        """Build and return the default arrays structure."""
+        if cls._SCHEMA is None:
+            raise ValueError("Schema must be defined before building empty arrays.")
+        return {field.name: [] for field in cls._SCHEMA}
