@@ -13,6 +13,8 @@ from tqdm import tqdm
 import argparse
 import logging
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 from PMT_summariser import PMTSummariser
 from PMT_ref_pos_adder import ReferencePositionAdder
 
@@ -132,8 +134,9 @@ class PMTfier:
         if not event_no_subset:
             return pd.DataFrame()  # Return an empty DataFrame if no events in this shard
         
-        ## NOTE: ReferencePositionAdder adds string and dom_number based on the reference data
-        ## The reference is hardcoded in PMT_ref_pos_adder.py
+        # NOTE 
+        # ReferencePositionAdder adds string and dom_number based on the reference data
+        # HACK The reference is hardcoded in PMT_ref_pos_adder.py
         ref_pos_adder = ReferencePositionAdder(
             con_source=con_source,
             source_table=source_table,
@@ -143,7 +146,8 @@ class PMTfier:
         )
         ref_pos_adder()
         
-        ##NOTE: PMTSummariser is the core class to be called for PMTfication
+        # NOTE
+        # PMTSummariser is the core class to be called for PMTfication
         summariser  = PMTSummariser(
             con_source=con_source,
             source_table=source_table,
@@ -169,7 +173,7 @@ class PMTfier:
 
         return truth_df
         
-    def _divide_and_conquer_db(self, 
+    def _divide_and_conquer_part(self, 
                             con_source: sql.Connection, 
                             source_table: str, 
                             truth_table_name: str,
@@ -209,7 +213,7 @@ class PMTfier:
         consolidated_df = pd.concat(all_shards_df, ignore_index=True)
         return consolidated_df
         
-    def pmtfy_db(self,
+    def pmtfy_part(self,
                 source_subdirectory: str,
                 source_file: str,
                 dest_root: str,
@@ -220,7 +224,7 @@ class PMTfier:
         truth_table_name = self._get_truth_table_name_db(con_source)
         N_events_total = self._get_table_event_count(con_source, source_table)
 
-        consolidated_df = self._divide_and_conquer_db(
+        consolidated_df = self._divide_and_conquer_part(
             con_source=con_source,
             source_table=source_table,
             truth_table_name=truth_table_name,
@@ -258,7 +262,7 @@ class PMTfier:
                 source_file = os.path.join(subdirectory_path, filename)
                 logging.info(f"Starting processing for database file: {filename}")
                 # Process each database file within the subdirectory
-                self.pmtfy_db(
+                self.pmtfy_part(
                     source_subdirectory=subdirectory_name,
                     source_file=source_file,
                     dest_root=dest_root,
@@ -266,7 +270,41 @@ class PMTfier:
                     N_events_per_shard=N_events_per_shard,
                 )
                 logging.info(f"Finished processing for database file: {filename}")
-
+    
+    def pmtfy_subdir_parallel(self, 
+                        source_root: str, 
+                        dest_root: str, 
+                        subdirectory_name: str, 
+                        source_table: str, 
+                        N_events_per_shard: int = 2000, 
+                        max_workers: int = 15) -> None:
+        """
+        Processes each database file in a specific subdirectory using parallel workers and saves results in a mirrored directory structure.
+        """
+        subdirectory_path = os.path.join(source_root, subdirectory_name)
+        if os.path.isdir(subdirectory_path) and subdirectory_name.isdigit():
+            files = [f for f in os.listdir(subdirectory_path) if f.endswith('.db')]
+            logging.info(f"Found {len(files)} database files in subdirectory {subdirectory_name}.")
+            
+            def process_file(filename):
+                source_file = os.path.join(subdirectory_path, filename)
+                logging.info(f"Processing database file: {filename}")
+                self.pmtfy_part(
+                    source_subdirectory=subdirectory_name,
+                    source_file=source_file,
+                    dest_root=dest_root,
+                    source_table=source_table,
+                    N_events_per_shard=N_events_per_shard,
+                )
+                logging.info(f"Finished processing for database file: {filename}")
+            
+            with ThreadPoolExecutor(max_workers=max_workers) as executor:
+                futures = {executor.submit(process_file, filename): filename for filename in files}
+                for future in tqdm(as_completed(futures), desc=f"Processing {subdirectory_name}", total=len(files)):
+                    try:
+                        future.result()
+                    except Exception as e:
+                        logging.error(f"Error processing file {futures[future]}: {e}")
 def main():
     logging.basicConfig(
         level=logging.INFO,
@@ -298,12 +336,20 @@ def main():
     # PMTfication logic
     N_events_per_shard = args.N_events_per_shard
     pmtfier = PMTfier(source_table_name, dest_root, N_events_per_shard)
-    pmtfier.pmtfy_subdir(
+    # pmtfier.pmtfy_subdir(
+    #     source_root=source_root,
+    #     dest_root=dest_root,
+    #     subdirectory_name=args.subdirectory_in_number,
+    #     source_table=source_table_name,
+    #     N_events_per_shard=N_events_per_shard
+    # )
+    pmtfier.pmtfy_subdir_parallel(
         source_root=source_root,
         dest_root=dest_root,
         subdirectory_name=args.subdirectory_in_number,
         source_table=source_table_name,
-        N_events_per_shard=N_events_per_shard
+        N_events_per_shard=N_events_per_shard,
+        max_workers=15
     )
     logging.info("PMTfication completed.")
 

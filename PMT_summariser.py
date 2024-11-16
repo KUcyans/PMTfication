@@ -5,6 +5,13 @@ from typing import List, Dict
 import sqlite3 as sql
 
 class PMTSummariser:
+    """
+NOTE data structure
+events_doms_pulses  : {event_no: {string: {dom_number: [pulse, ...], ...}, ...}, ...}
+strings_doms_pulses :            {string: {dom_number: [pulse, ...], ...}, ...}
+doms_pulses         :                     {dom_number: [pulse, ...], ...}
+pulses              :                                  [pulse, ...]
+    """
     # static variables  
     _SCHEMA = None
     _DEFAULT_ARRAYS = None
@@ -63,7 +70,7 @@ class PMTSummariser:
                 avg_dom_position = self._get_Q_weighted_average_DOM_position(all_pulses_event, maxQtotal)
                 for pulses in doms_pulses.values():
                     dom_data = self._process_DOM(pulses, avg_dom_position)
-                    processed_data.append(dom_data)
+                    processed_data.append([event_no] + dom_data)
 
         # Use the static empty arrays
         arrays = {key: value[:] for key, value in PMTSummariser._DEFAULT_ARRAYS.items()}  # Deep copy to avoid overwriting
@@ -301,6 +308,7 @@ class PMTSummariser:
     def _build_schema() -> pa.Schema:
         """Build and return the PyArrow schema."""
         return pa.schema([
+            ('event_no', pa.int32()),
             ('dom_x', pa.float32()),
             ('dom_y', pa.float32()),
             ('dom_z', pa.float32()),
