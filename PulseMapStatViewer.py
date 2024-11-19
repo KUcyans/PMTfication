@@ -98,7 +98,7 @@ class PulseMapStatViewer:
             NDOMs_per_event.append(len(DOM_grouped))
         
         NDOMs_per_event = np.array(NDOMs_per_event)
-        Nbins, binwidth, bins, counts, bin_centers = getHistoParam(NDOMs_per_event, Nbins=33)
+        Nbins, binwidth, bins, counts, bin_centers = getHistoParam(NDOMs_per_event, binwidth=75)
         fig, ax = plt.subplots(figsize=(11, 7))
         ax.hist(NDOMs_per_event, bins=bins, color=getColour(0), histtype='step', linewidth=2)
         ax.set_xlabel('# of DOM/event')
@@ -118,7 +118,7 @@ class PulseMapStatViewer:
     def _plotNpulsesPerEvent(self, df_features, file):
         event_grouped = df_features.groupby('event_no')
         Npulses = np.array([len(event_df) for event_no, event_df in event_grouped])
-        Nbins, binwidth, bins, counts, bin_centers = getHistoParam(Npulses, Nbins=50)
+        Nbins, binwidth, bins, counts, bin_centers = getHistoParam(Npulses, binwidth = 3000)
         
         fig, ax = plt.subplots(figsize=(11, 7))
         ax.hist(Npulses, bins=bins, color=getColour(0), histtype='step', linewidth=2)
@@ -133,13 +133,14 @@ class PulseMapStatViewer:
             'min': np.min(Npulses),
             'binwidth': binwidth,
             'Nbins': Nbins}
-        add_text_to_ax(0.75, 0.95, nice_string_output(d), ax, fontsize=12)
+        add_text_to_ax(0.7, 0.95, nice_string_output(d), ax, fontsize=12)
         return fig, ax
     
     def _plotNpulsesPerDOM(self, df_features, file):
         Nevents = df_features['event_no'].nunique()
         Npulses_per_DOM_per_event_above_n_150 = defaultdict(int)
         Npulses_per_DOM_per_event_below_n_150 = defaultdict(int)
+        Npulses_per_DOM_per_event = defaultdict(int)
         
         df_per_DOM_per_event = df_features.groupby(['event_no', 'string', 'dom_number'])
         
@@ -149,19 +150,29 @@ class PulseMapStatViewer:
                 Npulses_per_DOM_per_event_below_n_150[(event_no, dom_string, dom_number)] = dom_df.shape[0]
             else:
                 Npulses_per_DOM_per_event_above_n_150[(event_no, dom_string, dom_number)] = dom_df.shape[0]
+            Npulses_per_DOM_per_event[(event_no, dom_string, dom_number)] = dom_df.shape[0]
         
         Npulses_above = np.array(list(Npulses_per_DOM_per_event_above_n_150.values()))
         Npulses_below = np.array(list(Npulses_per_DOM_per_event_below_n_150.values()))
+        Npulse_total = np.array(list(Npulses_per_DOM_per_event.values()))
         
-        Nbins, binwidth, bins, counts, bin_centers = getHistoParam(Npulses_above, Nbins=50)
+        # Nbins, binwidth, bins, counts, bin_centers = getHistoParam(Npulses_above, Nbins=50)
+        Nbins, binwidth, bins, counts, bin_centers = getHistoParam(Npulse_total, binwidth=10)
         fig, ax = plt.subplots(figsize=(11, 7))
-        ax.hist(Npulses_above, bins=bins, histtype='step', lw=2, color = getColour(0), label = 'Above -150m')
-        ax.hist(Npulses_below, bins=bins, histtype='step', lw=2, color = getColour(1), label = 'Below -150m', hatch='\\', linestyle='-')
-        ax.legend()
+        ax.hist(Npulse_total, bins=bins, histtype='step', lw=2, color = getColour(0))
+        # ax.legend()
         ax.set_xlabel('# of pulses per DOM over all event')
         ax.set_ylabel('#')
         ax.set_yscale('log')
         ax.set_title(f'# of pulses/DOM ({file})')
+        d = {'Nevents': Nevents,
+            'mean': np.mean(Npulse_total),
+            'std': np.std(Npulse_total),
+            'max': np.max(Npulse_total),
+            'min': np.min(Npulse_total),
+            'binwidth': binwidth,
+            'Nbins': Nbins}
+        add_text_to_ax(0.7, 0.95, nice_string_output(d), ax, fontsize=12)
         return fig, ax
     
     def _plotChargePerPulse(self, df_features, file):

@@ -1,0 +1,41 @@
+2024-11-19 13:44:34 - INFO - PMTfication starts...
+2024-11-19 13:44:34 - INFO - The number of files in the subdirectory: 12
+2024-11-19 13:44:34 - INFO - Using up to 15 workers.
+2024-11-19 13:44:34 - INFO - Found 12 database files in subdirectory 22015.
+2024-11-19 13:44:34 - INFO - Using 12 workers for parallel processing.
+Processing 22015:   0%|          | 0/12 [00:00<?, ?it/s]2024-11-19 13:52:23 - ERROR - Failed to create index idx_event_no: database or disk is full
+2024-11-19 13:52:23 - ERROR - Failed to create index idx_event_no: database or disk is full
+2024-11-19 13:52:23 - ERROR - Failed to create index idx_event_no: database or disk is full
+2024-11-19 13:52:23 - ERROR - Failed to create index idx_event_no: database or disk is full
+2024-11-19 13:52:36 - ERROR - Failed to create index idx_event_no: database or disk is full
+2024-11-19 13:52:36 - ERROR - Failed to create index idx_dom_position: database or disk is full
+2024-11-19 13:52:37 - ERROR - Failed to create index idx_event_no: database or disk is full
+2024-11-19 13:52:45 - ERROR - Failed to create index idx_dom_position: database or disk is full
+2024-11-19 13:52:45 - ERROR - Failed to create index idx_dom_position: database or disk is full
+2024-11-19 13:52:45 - ERROR - Failed to create index idx_event_no: database or disk is full
+2024-11-19 13:52:45 - ERROR - Failed to create index idx_event_no: database or disk is full
+2024-11-19 13:52:45 - ERROR - Failed to create index idx_event_no: database or disk is full
+2024-11-19 13:53:08 - ERROR - Failed to create index idx_string_dom_number: database or disk is full
+2024-11-19 13:53:08 - ERROR - Failed to create index idx_event_no: database or disk is full
+2024-11-19 13:53:08 - ERROR - Failed to create index idx_dom_position: database or disk is full
+2024-11-19 13:53:16 - ERROR - Failed to create index idx_dom_position: database or disk is full
+2024-11-19 13:53:16 - ERROR - Failed to create index idx_event_no: database or disk is full
+2024-11-19 13:53:16 - ERROR - Failed to create index idx_string_dom_number: database or disk is full
+2024-11-19 13:53:16 - ERROR - Failed to create index idx_dom_position: database or disk is full
+2024-11-19 13:53:32 - ERROR - Failed to create index idx_dom_position: database or disk is full
+2024-11-19 13:53:32 - ERROR - Failed to create index idx_string_dom_number: database or disk is full
+2024-11-19 13:53:36 - ERROR - Failed to create index idx_string_dom_number: database or disk is full
+2024-11-19 13:53:36 - ERROR - Failed to create index idx_string_dom_number: database or disk is full
+2024-11-19 13:53:36 - ERROR - Failed to create index idx_dom_position: database or disk is full
+2024-11-19 13:53:36 - ERROR - Failed to create index idx_string_dom_number: database or disk is full
+2024-11-19 13:53:37 - ERROR - Failed to create index idx_dom_position: database or disk is full
+2024-11-19 13:53:59 - ERROR - Failed to create index idx_string_dom_number: database or disk is full
+2024-11-19 13:53:59 - ERROR - Failed to create index idx_string_dom_number: database or disk is full
+2024-11-19 13:53:59 - ERROR - Failed to create index idx_dom_position: database or disk is full
+2024-11-19 13:53:59 - ERROR - Failed to create index idx_string_dom_number: database or disk is full
+2024-11-19 13:54:53 - ERROR - Failed to create index idx_event_no: database or disk is full
+2024-11-19 13:54:53 - ERROR - Failed to create index idx_string_dom_number: database or disk is full
+2024-11-19 13:54:53 - ERROR - Failed to create index idx_dom_position: database or disk is full
+2024-11-19 13:54:54 - ERROR - Failed to create index idx_dom_position: database or disk is full
+2024-11-19 13:56:10 - ERROR - Failed to create index idx_string_dom_number: database or disk is full
+2024-11-19 13:56:10 - ERROR - Failed to create index idx_string_dom_number: database or disk is full

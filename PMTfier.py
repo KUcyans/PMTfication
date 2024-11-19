@@ -3,6 +3,7 @@ import pandas as pd
 import sys
 import os
 import numpy as np
+from os import getenv
 
 from typing import List
 
@@ -14,7 +15,7 @@ import argparse
 
 import logging
 
-from concurrent.futures import ThreadPoolExecutor, as_completed, ProcessPoolExecutor
+from concurrent.futures import as_completed, ProcessPoolExecutor
 
 from multiprocessing import cpu_count
 
@@ -48,47 +49,25 @@ class PMTfier:
             raise ValueError("Neither 'truth' nor 'Truth' table exists in the source database.")
         return truth_table
     
-    def _generate_truth_for_part(self, con_source, source_table, truth_table_name, event_no_subsets, part_no):
-        """
-        Generate truth data for the entire part, then split it into shards.
-
-        Args:
-            con_source: SQLite connection to the database.
-            source_table: Name of the source table.
-            truth_table_name: Name of the truth table.
-            event_no_subsets: List of event_no lists for each shard.
-            part_no: Part number for the current database file.
-
-        Returns:
-            List of PyArrow Tables, one for each shard.
-        """
-        # Step 1: Query the entire truth table for the part
-        all_event_nos = [event_no for subset in event_no_subsets for event_no in subset]
-        event_filter = ','.join(map(str, all_event_nos))
-        query = f"""
-            SELECT t.event_no, t.energy, t.azimuth, t.zenith, t.pid,
-                COUNT(DISTINCT s.string || '-' || s.dom_number) AS N_doms
-            FROM {truth_table_name} t
-            JOIN {source_table} s ON t.event_no = s.event_no
-            WHERE t.event_no IN ({event_filter})
-            GROUP BY t.event_no
-        """
-        df_combined = pd.read_sql_query(query, con_source)
-
-        # Step 2: Enhance event numbers
-        df_combined['event_no'] = df_combined['event_no'].map(
-            lambda x: int(f"{part_no}{x}")
-        )
-        df_combined['offset'] = np.cumsum(df_combined['N_doms'])
-
-        # Step 3: Split into shards
-        shard_tables = []
-        for subset in event_no_subsets:
-            shard_table = df_combined[df_combined['event_no'].isin(subset)]
-            shard_tables.append(pa.Table.from_pandas(shard_table))
-
-        return shard_tables
-
+    def _get_subdir_tag(self, subdir: str) -> int:
+        strSnowstromOrCorsika = os.path.basename(os.path.normpath(self.dest_root))
+        if strSnowstromOrCorsika == 'Snowstorm':
+            # "22012" -> 12
+            return int(subdir[-2:])
+        elif strSnowstromOrCorsika == 'Corsika':
+            # "0002000-0002999" -> 20
+            # "0003000-0003999" -> 30
+            range_start = subdir.split('-')[0]  # "0002000"
+            range_end = subdir.split('-')[1]  # "0002999"
+            
+            # Extracting digits from the respective ranges
+            first_half_subdir_no = range_start[3:5]  # "20"
+            second_half_subdir_no = range_end[3:5]  # "29"
+            
+            # Combine the two parts into a single integer
+            combined_subdir_no = int(first_half_subdir_no + second_half_subdir_no)
+            return combined_subdir_no
+            
     def _get_part_no(self, file: str) -> int:
         """
         file (str): get the number of the file (e.g., "merged_part_1.db").
@@ -100,13 +79,13 @@ class PMTfier:
         
         return file_no
     
-    def _add_enhance_event_no(self, pa_table: pa.Table, part_no: int) -> pa.Table:
+    def _add_enhance_event_no(self, pa_table: pa.Table, subdir_tag: int, part_no: int) -> pa.Table:
         """
         event_no transformed to a unique identifier for the entire dataset.
         """
         if 'event_no' in pa_table.schema.names:
             original_event_no = pa_table['event_no']
-            enhanced_event_no = [int(f"{part_no}{event_no.as_py()}") for event_no in original_event_no]
+            enhanced_event_no = [int(f"{subdir_tag}{part_no}{event_no.as_py()}") for event_no in original_event_no]
 
             pa_table = pa_table.remove_column(pa_table.schema.get_field_index('event_no'))
             pa_table = pa_table.append_column('original_event_no', original_event_no)
@@ -123,7 +102,6 @@ class PMTfier:
                     con_source: sql.Connection,
                     source_table: str,
                     truth_table_name: str,
-                    dest_root: str,
                     source_subdirectory: str,
                     part_no: int,
                     shard_no: int,
@@ -133,6 +111,7 @@ class PMTfier:
         Processes a shard of events from the database, saves PMTfied data to a file, and returns the truth+receipt data.
         """
         # Query the subset of event_no for this shard
+        subdir_tag = self._get_subdir_tag(source_subdirectory)
         event_no_query = f"""
             SELECT DISTINCT event_no 
             FROM {source_table}
@@ -140,6 +119,8 @@ class PMTfier:
             LIMIT {limit} OFFSET {offset}
         """
         event_no_subset = pd.read_sql_query(event_no_query, con_source)['event_no'].tolist()
+        dest_dir = os.path.join(self.dest_root, source_subdirectory, str(part_no))
+        os.makedirs(dest_dir, exist_ok=True)
         
         # NOTE
         # PMTSummariser is the core class to be called for PMTfication
@@ -147,19 +128,16 @@ class PMTfier:
             con_source=con_source,
             source_table=source_table,
             event_no_subset=event_no_subset)
-        
         pa_pmtfied = summariser()
-        pa_pmtfied = self._add_enhance_event_no(pa_pmtfied, part_no)
-        
-        dest_dir = os.path.join(dest_root, source_subdirectory, str(part_no))
-        os.makedirs(dest_dir, exist_ok=True)
-
+        pa_pmtfied = self._add_enhance_event_no(pa_pmtfied, subdir_tag, part_no)
         pmtfied_file = os.path.join(dest_dir, f"PMTfied_{shard_no}.parquet")        
         pq.write_table(pa_pmtfied, pmtfied_file)
         
+        # NOTE
+        # PMT truth table for this shard is created by PMTTruthMaker and returned
         veritator = PMTTruthMaker(con_source, source_table, truth_table_name, event_no_subset)
         pa_truth_shard = veritator(part_no, shard_no, int(source_subdirectory))
-        pa_truth_shard = self._add_enhance_event_no(pa_truth_shard, part_no)
+        pa_truth_shard = self._add_enhance_event_no(pa_truth_shard, subdir_tag, part_no)
         
         return pa_truth_shard
         
@@ -167,7 +145,6 @@ class PMTfier:
                             con_source: sql.Connection, 
                             source_table: str, 
                             truth_table_name: str,
-                            dest_root: str, 
                             source_subdirectory: str, 
                             part_no: int, 
                             N_events_per_shard: int,
@@ -188,14 +165,12 @@ class PMTfier:
                 con_source=con_source,
                 source_table=source_table,
                 truth_table_name=truth_table_name,
-                dest_root=dest_root,
                 source_subdirectory=source_subdirectory,
                 part_no=part_no,
                 shard_no=shard_no + 1,
                 offset=offset,
                 limit=limit
             )
-            
             truth_shards.append(pa_truth_shard)
 
         consolidated_truth = pa.concat_tables(truth_shards)
@@ -204,7 +179,6 @@ class PMTfier:
     def pmtfy_part(self,
                 source_subdirectory: str,
                 source_file: str,
-                dest_root: str,
                 source_table: str,
                 N_events_per_shard: int = 2000) -> None:
         part_no = self._get_part_no(source_file)
@@ -212,57 +186,25 @@ class PMTfier:
         truth_table_name = self._get_truth_table_name_db(con_source)
         N_events_total = self._get_table_event_count(con_source, source_table)
         
-        
         consolidated_truth = self._divide_and_conquer_part(
             con_source=con_source,
             source_table=source_table,
             truth_table_name=truth_table_name,
-            dest_root=dest_root,
             source_subdirectory=source_subdirectory,
             part_no=part_no,
             N_events_per_shard=N_events_per_shard,
             N_events_total=N_events_total
         )
 
-        dest_subdirectory_path = os.path.join(dest_root, source_subdirectory)
+        dest_subdirectory_path = os.path.join(self.dest_root, source_subdirectory)
         os.makedirs(dest_subdirectory_path, exist_ok=True)
         consolidated_file = os.path.join(dest_subdirectory_path, f"truth_{part_no}.parquet")
         pq.write_table(consolidated_truth, consolidated_file)
 
         con_source.close()
     
-    ### DEPRECATED ###
-    def pmtfy_subdir(self, 
-                    source_root: str, 
-                    dest_root: str, 
-                    subdirectory_name: str, 
-                    source_table: str, 
-                    N_events_per_shard: int = 2000) -> None:
-        """
-        Processes each database file in a specific subdirectory and saves results in a mirrored directory structure.
-        """
-        subdirectory_path = os.path.join(source_root, subdirectory_name)
-        if os.path.isdir(subdirectory_path) and subdirectory_name.isdigit():
-            # List all files to process in the directory
-            files = [f for f in os.listdir(subdirectory_path) if f.endswith('.db')]
-            logging.info(f"Found {len(files)} database files in subdirectory {subdirectory_name}.")
-            
-            for filename in tqdm(files, desc=f"Processing {subdirectory_name}"):
-                source_file = os.path.join(subdirectory_path, filename)
-                logging.info(f"Starting processing for database file: {filename}")
-                # Process each database file within the subdirectory
-                self.pmtfy_part(
-                    source_subdirectory=subdirectory_name,
-                    source_file=source_file,
-                    dest_root=dest_root,
-                    source_table=source_table,
-                    N_events_per_shard=N_events_per_shard,
-                )
-                logging.info(f"Finished processing for database file: {filename}")
-    
     def pmtfy_subdir_parallel(self, 
                             source_root: str, 
-                            dest_root: str, 
                             subdirectory_name: str, 
                             source_table: str, 
                             N_events_per_shard: int = 2000, 
@@ -288,7 +230,6 @@ class PMTfier:
                     futures[executor.submit(self.pmtfy_part, 
                                             source_subdirectory=subdirectory_name,
                                             source_file=source_file,
-                                            dest_root=dest_root,
                                             source_table=source_table,
                                             N_events_per_shard=N_events_per_shard)] = filename
                 for future in tqdm(as_completed(futures), desc=f"Processing {subdirectory_name}", total=len(files)):
@@ -327,7 +268,7 @@ def main():
         logging.error(f"Directory not found: {e}")
         sys.exit(1)
     
-    max_workers = min(15, cpu_count())
+    max_workers = int(getenv('SLURM_CPUS_PER_TASK', '1'))  # Default to 1 if undefined
     logging.info(f"Using up to {max_workers} workers.")
     
     # PMTfication logic
@@ -335,7 +276,6 @@ def main():
     pmtfier = PMTfier(source_table_name, dest_root, N_events_per_shard)
     pmtfier.pmtfy_subdir_parallel(
         source_root=source_root,
-        dest_root=dest_root,
         subdirectory_name=args.subdirectory_in_number,
         source_table=source_table_name,
         N_events_per_shard=N_events_per_shard,

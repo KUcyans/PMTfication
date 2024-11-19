@@ -1,0 +1,11 @@
+nohup: ignoring input
+2024-11-19 13:17:04 - INFO - PMTfication starts...
+2024-11-19 13:17:04 - INFO - The number of files in the subdirectory: 2
+2024-11-19 13:17:04 - INFO - Using up to 15 workers.
+2024-11-19 13:17:04 - ERROR - An error occurred: pmtfy_subdir_parallel() got an unexpected keyword argument 'dest_root'
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 311, in <module>
+    main()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 298, in main
+    pmtfier.pmtfy_subdir_parallel(
+TypeError: pmtfy_subdir_parallel() got an unexpected keyword argument 'dest_root'
