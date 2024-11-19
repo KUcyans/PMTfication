@@ -1,23 +1,0 @@
-nohup: ignoring input
-2024-11-15 19:51:20 - INFO - PMTfication starts...
-2024-11-15 19:51:20 - INFO - The number of files in the subdirectory: 27
-2024-11-15 19:51:20 - INFO - Found 27 database files in subdirectory 22012.
-Processing 22012:   0%|          | 0/27 [00:00<?, ?it/s]2024-11-15 19:51:20 - INFO - Starting processing for database file: merged_part_14.db
-2024-11-15 21:46:05 - INFO - Finished processing for database file: merged_part_14.db
-Processing 22012:   4%|▎         | 1/27 [1:54:44<49:43:11, 6884.30s/it]2024-11-15 21:46:05 - INFO - Starting processing for database file: merged_part_15.db
-2024-11-15 23:38:53 - INFO - Finished processing for database file: merged_part_15.db
-Processing 22012:   7%|▋         | 2/27 [3:47:32<47:19:55, 6815.81s/it]2024-11-15 23:38:53 - INFO - Starting processing for database file: merged_part_17.db
-2024-11-16 01:35:32 - INFO - Finished processing for database file: merged_part_17.db
-Processing 22012:  11%|█         | 3/27 [5:44:11<45:59:48, 6899.51s/it]2024-11-16 01:35:32 - INFO - Starting processing for database file: merged_part_16.db
-2024-11-16 03:33:07 - INFO - Finished processing for database file: merged_part_16.db
-Processing 22012:  15%|█▍        | 4/27 [7:41:46<44:28:20, 6960.89s/it]2024-11-16 03:33:07 - INFO - Starting processing for database file: merged_part_12.db
-2024-11-16 05:28:32 - INFO - Finished processing for database file: merged_part_12.db
-Processing 22012:  19%|█▊        | 5/27 [9:37:12<42:27:41, 6948.24s/it]2024-11-16 05:28:32 - INFO - Starting processing for database file: merged_part_8.db
-2024-11-16 07:29:47 - INFO - Finished processing for database file: merged_part_8.db
-Processing 22012:  22%|██▏       | 6/27 [11:38:26<41:10:42, 7059.18s/it]2024-11-16 07:29:47 - INFO - Starting processing for database file: merged_part_9.db
-2024-11-16 09:27:19 - INFO - Finished processing for database file: merged_part_9.db
-Processing 22012:  26%|██▌       | 7/27 [13:35:59<39:12:19, 7056.97s/it]2024-11-16 09:27:19 - INFO - Starting processing for database file: merged_part_13.db
-2024-11-16 11:28:31 - INFO - Finished processing for database file: merged_part_13.db
-Processing 22012:  30%|██▉       | 8/27 [15:37:10<37:36:20, 7125.26s/it]2024-11-16 11:28:31 - INFO - Starting processing for database file: merged_part_11.db
-2024-11-16 13:25:38 - INFO - Finished processing for database file: merged_part_11.db
-Processing 22012:  33%|███▎      | 9/27 [17:34:18<35:28:25, 7094.73s/it]2024-11-16 13:25:39 - INFO - Starting processing for database file: merged_part_10.db

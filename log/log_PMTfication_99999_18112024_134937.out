@@ -1,0 +1,10 @@
+nohup: ignoring input
+2024-11-18 13:49:38 - INFO - PMTfication starts...
+2024-11-18 13:49:38 - INFO - The number of files in the subdirectory: 2
+2024-11-18 13:49:38 - INFO - Found 2 database files in subdirectory 99999.
+2024-11-18 13:49:38 - INFO - Processing database file: merged_part_98.db
+2024-11-18 13:49:38 - INFO - Processing database file: merged_part_99.db
+Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2024-11-18 13:49:38 - ERROR - Error processing file merged_part_98.db: name 'ReferencePositionAdder' is not defined
+2024-11-18 13:49:38 - ERROR - Error processing file merged_part_99.db: name 'ReferencePositionAdder' is not defined
+Processing 99999: 100%|██████████| 2/2 [00:00<00:00, 25.67it/s]
+2024-11-18 13:49:38 - INFO - PMTfication completed.

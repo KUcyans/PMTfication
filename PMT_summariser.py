@@ -4,6 +4,8 @@ from collections import defaultdict
 from typing import List, Dict
 import sqlite3 as sql
 
+from PMT_ref_pos_adder import ReferencePositionAdder
+
 class PMTSummariser:
     """
 NOTE data structure
@@ -12,7 +14,7 @@ strings_doms_pulses :            {string: {dom_number: [pulse, ...], ...}, ...}
 doms_pulses         :                     {dom_number: [pulse, ...], ...}
 pulses              :                                  [pulse, ...]
     """
-    # static variables  
+    # static variables 
     _SCHEMA = None
     _DEFAULT_ARRAYS = None
 
@@ -20,6 +22,18 @@ pulses              :                                  [pulse, ...]
         self.con_source = con_source
         self.source_table = source_table
         self.event_no_subset = event_no_subset
+        
+        # NOTE 
+        # ReferencePositionAdder adds string and dom_number based on the reference data
+        # HACK The reference is hardcoded in PMT_ref_pos_adder.py
+        ref_pos_adder = ReferencePositionAdder(
+            con_source=con_source,
+            source_table=source_table,
+            event_no_subset=event_no_subset,
+            tolerance_xy=10,
+            tolerance_z=2
+        )
+        ref_pos_adder()
 
         # Fetch column indices
         query = f"SELECT * FROM {self.source_table} LIMIT 1"

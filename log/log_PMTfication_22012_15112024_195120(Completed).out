@@ -1,0 +1,60 @@
+nohup: ignoring input
+2024-11-15 19:51:20 - INFO - PMTfication starts...
+2024-11-15 19:51:20 - INFO - The number of files in the subdirectory: 27
+2024-11-15 19:51:20 - INFO - Found 27 database files in subdirectory 22012.
+Processing 22012:   0%|          | 0/27 [00:00<?, ?it/s]2024-11-15 19:51:20 - INFO - Starting processing for database file: merged_part_14.db
+2024-11-15 21:46:05 - INFO - Finished processing for database file: merged_part_14.db
+Processing 22012:   4%|▎         | 1/27 [1:54:44<49:43:11, 6884.30s/it]2024-11-15 21:46:05 - INFO - Starting processing for database file: merged_part_15.db
+2024-11-15 23:38:53 - INFO - Finished processing for database file: merged_part_15.db
+Processing 22012:   7%|▋         | 2/27 [3:47:32<47:19:55, 6815.81s/it]2024-11-15 23:38:53 - INFO - Starting processing for database file: merged_part_17.db
+2024-11-16 01:35:32 - INFO - Finished processing for database file: merged_part_17.db
+Processing 22012:  11%|█         | 3/27 [5:44:11<45:59:48, 6899.51s/it]2024-11-16 01:35:32 - INFO - Starting processing for database file: merged_part_16.db
+2024-11-16 03:33:07 - INFO - Finished processing for database file: merged_part_16.db
+Processing 22012:  15%|█▍        | 4/27 [7:41:46<44:28:20, 6960.89s/it]2024-11-16 03:33:07 - INFO - Starting processing for database file: merged_part_12.db
+2024-11-16 05:28:32 - INFO - Finished processing for database file: merged_part_12.db
+Processing 22012:  19%|█▊        | 5/27 [9:37:12<42:27:41, 6948.24s/it]2024-11-16 05:28:32 - INFO - Starting processing for database file: merged_part_8.db
+2024-11-16 07:29:47 - INFO - Finished processing for database file: merged_part_8.db
+Processing 22012:  22%|██▏       | 6/27 [11:38:26<41:10:42, 7059.18s/it]2024-11-16 07:29:47 - INFO - Starting processing for database file: merged_part_9.db
+2024-11-16 09:27:19 - INFO - Finished processing for database file: merged_part_9.db
+Processing 22012:  26%|██▌       | 7/27 [13:35:59<39:12:19, 7056.97s/it]2024-11-16 09:27:19 - INFO - Starting processing for database file: merged_part_13.db
+2024-11-16 11:28:31 - INFO - Finished processing for database file: merged_part_13.db
+Processing 22012:  30%|██▉       | 8/27 [15:37:10<37:36:20, 7125.26s/it]2024-11-16 11:28:31 - INFO - Starting processing for database file: merged_part_11.db
+2024-11-16 13:25:38 - INFO - Finished processing for database file: merged_part_11.db
+Processing 22012:  33%|███▎      | 9/27 [17:34:18<35:28:25, 7094.73s/it]2024-11-16 13:25:39 - INFO - Starting processing for database file: merged_part_10.db
+2024-11-16 15:24:40 - INFO - Finished processing for database file: merged_part_10.db
+Processing 22012:  37%|███▋      | 10/27 [19:33:19<33:34:17, 7109.27s/it]2024-11-16 15:24:40 - INFO - Starting processing for database file: merged_part_3.db
+2024-11-16 17:17:24 - INFO - Finished processing for database file: merged_part_3.db
+Processing 22012:  41%|████      | 11/27 [21:26:03<31:07:36, 7003.52s/it]2024-11-16 17:17:24 - INFO - Starting processing for database file: merged_part_21.db
+2024-11-16 19:17:19 - INFO - Finished processing for database file: merged_part_21.db
+Processing 22012:  44%|████▍     | 12/27 [23:25:58<29:25:27, 7061.80s/it]2024-11-16 19:17:19 - INFO - Starting processing for database file: merged_part_19.db
+2024-11-16 21:13:50 - INFO - Finished processing for database file: merged_part_19.db
+Processing 22012:  48%|████▊     | 13/27 [25:22:30<27:22:46, 7040.46s/it]2024-11-16 21:13:51 - INFO - Starting processing for database file: merged_part_18.db
+2024-11-16 23:07:53 - INFO - Finished processing for database file: merged_part_18.db
+Processing 22012:  52%|█████▏    | 14/27 [27:16:33<25:12:30, 6980.80s/it]2024-11-16 23:07:53 - INFO - Starting processing for database file: merged_part_2.db
+2024-11-17 01:05:04 - INFO - Finished processing for database file: merged_part_2.db
+Processing 22012:  56%|█████▌    | 15/27 [29:13:43<23:19:08, 6995.71s/it]2024-11-17 01:05:04 - INFO - Starting processing for database file: merged_part_20.db
+2024-11-17 02:59:40 - INFO - Finished processing for database file: merged_part_20.db
+Processing 22012:  59%|█████▉    | 16/27 [31:08:19<21:15:57, 6959.79s/it]2024-11-17 02:59:40 - INFO - Starting processing for database file: merged_part_22.db
+2024-11-17 04:53:27 - INFO - Finished processing for database file: merged_part_22.db
+Processing 22012:  63%|██████▎   | 17/27 [33:02:06<19:13:17, 6919.80s/it]2024-11-17 04:53:27 - INFO - Starting processing for database file: merged_part_23.db
+2024-11-17 06:48:12 - INFO - Finished processing for database file: merged_part_23.db
+Processing 22012:  67%|██████▋   | 18/27 [34:56:51<17:16:23, 6909.28s/it]2024-11-17 06:48:12 - INFO - Starting processing for database file: merged_part_1.db
+2024-11-17 08:42:30 - INFO - Finished processing for database file: merged_part_1.db
+Processing 22012:  70%|███████   | 19/27 [36:51:09<15:19:11, 6893.93s/it]2024-11-17 08:42:30 - INFO - Starting processing for database file: merged_part_27.db
+2024-11-17 10:29:51 - INFO - Finished processing for database file: merged_part_27.db
+Processing 22012:  74%|███████▍  | 20/27 [38:38:30<13:08:25, 6757.99s/it]2024-11-17 10:29:51 - INFO - Starting processing for database file: merged_part_5.db
+2024-11-17 12:22:04 - INFO - Finished processing for database file: merged_part_5.db
+Processing 22012:  78%|███████▊  | 21/27 [40:30:43<11:15:03, 6750.52s/it]2024-11-17 12:22:04 - INFO - Starting processing for database file: merged_part_26.db
+2024-11-17 14:27:17 - INFO - Finished processing for database file: merged_part_26.db
+Processing 22012:  81%|████████▏ | 22/27 [42:35:56<9:41:36, 6979.32s/it] 2024-11-17 14:27:17 - INFO - Starting processing for database file: merged_part_4.db
+2024-11-17 16:21:32 - INFO - Finished processing for database file: merged_part_4.db
+Processing 22012:  85%|████████▌ | 23/27 [44:30:11<7:42:47, 6941.90s/it]2024-11-17 16:21:32 - INFO - Starting processing for database file: merged_part_6.db
+2024-11-17 18:15:12 - INFO - Finished processing for database file: merged_part_6.db
+Processing 22012:  89%|████████▉ | 24/27 [46:23:51<5:45:16, 6905.45s/it]2024-11-17 18:15:12 - INFO - Starting processing for database file: merged_part_24.db
+2024-11-17 20:10:26 - INFO - Finished processing for database file: merged_part_24.db
+Processing 22012:  93%|█████████▎| 25/27 [48:19:05<3:50:16, 6908.02s/it]2024-11-17 20:10:26 - INFO - Starting processing for database file: merged_part_7.db
+2024-11-17 22:04:05 - INFO - Finished processing for database file: merged_part_7.db
+Processing 22012:  96%|█████████▋| 26/27 [50:12:44<1:54:41, 6881.34s/it]2024-11-17 22:04:05 - INFO - Starting processing for database file: merged_part_25.db
+2024-11-17 23:58:13 - INFO - Finished processing for database file: merged_part_25.db
+Processing 22012: 100%|██████████| 27/27 [52:06:53<00:00, 6871.43s/it]  Processing 22012: 100%|██████████| 27/27 [52:06:53<00:00, 6948.63s/it]
+2024-11-17 23:58:13 - INFO - PMTfication completed.
