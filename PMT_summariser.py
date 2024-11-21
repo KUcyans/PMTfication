@@ -111,8 +111,9 @@ pulses              :                                  [pulse, ...]
         # Get DOM features
         # dom_string = self._get_DOM_string(pulses)
         # dom_number = self._get_DOM_number(pulses)
+        # charge = [pulse[self.dom_charge_idx] for pulse in pulses]
         dom_x, dom_y, dom_z = self._get_DOM_position(pulses)
-        dom_x_rel, dom_y_rel, dom_z_rel = self._get_relative_DOM_position(dom_x, dom_y, dom_z, avg_dom_position)
+        dom_x_rel, dom_y_rel, dom_z_rel = self._get_relative_DOM_position(pulses, dom_x, dom_y, dom_z, avg_dom_position)
         pmt_area = self._get_pmt_area(pulses)
         rde = self._get_rde(pulses)
         saturation_status = self._get_saturation_status(pulses)
@@ -166,8 +167,18 @@ pulses              :                                  [pulse, ...]
         
     def _get_relative_DOM_position(self,
                                 dom_x: float, dom_y: float, dom_z: float, 
-                                avg_dom_position: List[float]) -> List[float]:
-        return [dom_x - avg_dom_position[0], dom_y - avg_dom_position[1], dom_z - avg_dom_position[2]]
+                                avg_dom_position: List[float]
+                                ) -> List[float]:
+        # charges = np.array([pulse[self.dom_charge_idx] for pulse in pulses])
+        # weights = charges / np.sum(charges)
+        # rel_x = (dom_x - avg_dom_position[0]) * weights
+        # rel_y = (dom_y - avg_dom_position[1]) * weights
+        # rel_z = (dom_z - avg_dom_position[2]) * weights
+        
+        rel_x = dom_x - avg_dom_position[0]
+        rel_y = dom_y - avg_dom_position[1]
+        rel_z = dom_z - avg_dom_position[2]
+        return [rel_x, rel_y, rel_z]
     
     # NOTE pulses_dom: [pulse, ...]
     def _get_DOM_position(self,
@@ -267,8 +278,8 @@ pulses              :                                  [pulse, ...]
                                     pulse_times: List[float], 
                                     saturationStatus: int) -> float:
         # HACK consider changing the fill values
-        _fillSaturated = 0
-        _fillIncomplete = 0
+        _fillSaturated = -1
+        _fillIncomplete = -1
         if saturationStatus == 1:
             sigmaT = _fillSaturated
         elif len(pulse_times) < 2:
