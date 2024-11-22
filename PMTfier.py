@@ -31,6 +31,10 @@ class PMTfier:
         self.dest_root = dest_root
         self.N_events_per_shard = N_events_per_shard
         
+        self.signal_or_noise_name = os.path.basename(os.path.normpath(self.dest_root))
+        if self.signal_or_noise_name not in ['Snowstorm', 'Corsika']:
+            raise ValueError(f"Invalid destination root: {self.dest_root}.")
+        
     def _get_table_event_count(self, conn: sql.Connection, table: str) -> int:
         cursor = conn.cursor()
         cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_{table}_event_no ON {table}(event_no)")
@@ -67,11 +71,10 @@ class PMTfier:
         return truth_table
     
     def _get_subdir_tag(self, subdir: str) -> int:
-        strSnowstromOrCorsika = os.path.basename(os.path.normpath(self.dest_root))
-        if strSnowstromOrCorsika == 'Snowstorm':
+        if self.signal_or_noise_name == 'Snowstorm':
             # "22012" -> 12
             return int(subdir[-2:])
-        elif strSnowstromOrCorsika == 'Corsika':
+        elif self.signal_or_noise_name == 'Corsika':
             # "0002000-0002999" -> 20
             # "0003000-0003999" -> 30
             range_start = subdir.split('-')[0]  # "0002000"
@@ -98,13 +101,27 @@ class PMTfier:
     
     def _add_enhance_event_no(self, pa_table: pa.Table, subdir_tag: int, part_no: int) -> pa.Table:
         """
-        event_no transformed to a unique identifier for the entire dataset.
+        (1) (2)  (3)  (4)
+        1   12  0027 00012345 
+        
+        (1)snowstorm(1) or corsika(2)
+        (2)subdir_tag
+        (3)part_no
+        (4)original event_no
         """
+        if self.signal_or_noise_name == 'Snowstorm':
+            signal_or_noise_tag = "1"
+        elif self.signal_or_noise_name == 'Corsika':
+            signal_or_noise_tag = "2"
+        else:
+            signal_or_noise_tag = "0"
+            
         if 'event_no' in pa_table.schema.names:
             original_event_no = pa_table['event_no']
             enhanced_event_no = [
-                int(f"{subdir_tag:02}{part_no:04}{event_no.as_py():08}")
-                for event_no in original_event_no]
+                f"{signal_or_noise_tag}{subdir_tag:02}{part_no:04}{event_no.as_py():08}"
+                for event_no in original_event_no
+            ]
 
             pa_table = pa_table.remove_column(pa_table.schema.get_field_index('event_no'))
             pa_table = pa_table.append_column('original_event_no', original_event_no)
@@ -125,17 +142,6 @@ class PMTfier:
                     part_no: int,
                     shard_no: int,
                     event_batch: List[int]) -> pd.DataFrame:
-        """
-        Processes a shard of events from the database, saves PMTfied data to a file, and returns the truth+receipt data.
-        """
-        # Query the subset of event_no for this shard
-        # event_no_query = f"""
-        #     SELECT DISTINCT event_no 
-        #     FROM {source_table}
-        #     ORDER BY event_no ASC
-        #     LIMIT {limit} OFFSET {offset}
-        # """
-        # event_no_subset = pd.read_sql_query(event_no_query, con_source)['event_no'].tolist()
         subdir_tag = self._get_subdir_tag(source_subdirectory)
         dest_dir = os.path.join(self.dest_root, source_subdirectory, str(part_no))
         os.makedirs(dest_dir, exist_ok=True)
@@ -145,7 +151,8 @@ class PMTfier:
         summariser  = PMTSummariser(
             con_source=con_source,
             source_table=source_table,
-            event_no_subset=event_batch
+            event_no_subset=event_batch)
+        
         pa_pmtfied = summariser()
         pa_pmtfied = self._add_enhance_event_no(pa_pmtfied, subdir_tag, part_no)
         pmtfied_file = os.path.join(dest_dir, f"PMTfied_{shard_no}.parquet")        
@@ -153,7 +160,7 @@ class PMTfier:
         
         # NOTE
         # PMT truth table for this shard is created by PMTTruthMaker and returned
-        veritator = PMTTruthMaker(con_source, source_table, truth_table_name, event_no_subset)
+        veritator = PMTTruthMaker(con_source, source_table, truth_table_name, event_batch)
         pa_truth_shard = veritator(part_no, shard_no, int(source_subdirectory))
         pa_truth_shard = self._add_enhance_event_no(pa_truth_shard, subdir_tag, part_no)
         
@@ -172,13 +179,15 @@ class PMTfier:
         truth_shards = []
         
         for shard_no, event_batch in enumerate(self._get_event_no_batches(con_source, source_table, N_events_per_shard), start=1):
+            logging.info(f"Processing shard {shard_no} of part {part_no} in subdirectory {source_subdirectory}.")
             pa_truth_shard = self.pmtfy_shard(
                 con_source=con_source,
                 source_table=source_table,
                 truth_table_name=truth_table_name,
                 source_subdirectory=source_subdirectory,
                 part_no=part_no,
-                shard_no=shard_no + 1)
+                shard_no=shard_no,
+                event_batch=event_batch)
             truth_shards.append(pa_truth_shard)
 
         consolidated_truth = pa.concat_tables(truth_shards)
@@ -186,11 +195,11 @@ class PMTfier:
         
     def pmtfy_part(self,
                 source_subdirectory: str,
-                source_file: str,
+                source_part_file: str,
                 source_table: str,
                 N_events_per_shard: int = 2000) -> None:
-        part_no = self._get_part_no(source_file)
-        con_source = sql.connect(source_file)
+        part_no = self._get_part_no(source_part_file)
+        con_source = sql.connect(source_part_file)
         truth_table_name = self._get_truth_table_name_db(con_source)
         
         consolidated_truth = self._divide_and_conquer_part(

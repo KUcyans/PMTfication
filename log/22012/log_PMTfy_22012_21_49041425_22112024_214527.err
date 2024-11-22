@@ -1,0 +1,4 @@
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfy_by_part.py", line 48
+    source_table=source_table_name,
+    ^
+SyntaxError: invalid syntax

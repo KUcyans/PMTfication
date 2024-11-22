@@ -11,19 +11,19 @@ class PMTTruthMaker:
         self.truth_table_name = truth_table_name
         self.event_no_subset = event_no_subset
 
-    def __call__(self, part_no: int, shard_index: int, subdirectory_no: int) -> None:
-        return self._get_truth_pa_shard(part_no, shard_index, subdirectory_no)
+    def __call__(self, part_no: int, shard_no: int, subdirectory_no: int) -> None:
+        return self._get_truth_pa_shard(part_no, shard_no, subdirectory_no)
     
     def _get_truth_pa_shard(self, 
                 part_no: int, 
-                shard_index: int, 
+                shard_no: int, 
                 subdirectory_no: int) -> pa.Table:
 
         receipt_data = {
             'event_no': self.event_no_subset,
             'subdirectory_no': [subdirectory_no] * len(self.event_no_subset),
             'part_no': [part_no] * len(self.event_no_subset),
-            'shard_no': [shard_index] * len(self.event_no_subset)
+            'shard_no': [shard_no] * len(self.event_no_subset)
         }
         df_receipt = pd.DataFrame(receipt_data)
 

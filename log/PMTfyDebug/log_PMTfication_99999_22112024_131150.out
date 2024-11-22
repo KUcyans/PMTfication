@@ -1,0 +1,65 @@
+nohup: ignoring input
+2024-11-22 13:11:57 - INFO - PMTfication starts...
+2024-11-22 13:11:57 - INFO - The number of files in the subdirectory: 2
+2024-11-22 13:11:57 - INFO - Using up to 1 workers.
+2024-11-22 13:11:57 - INFO - Found 2 database files in subdirectory 99999.
+Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2024-11-22 13:11:57 - ERROR - Error processing file merged_part_98.db: '=' alignment not allowed in string format specifier
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 208, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 186, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 161, in pmtfy_shard
+    pa_pmtfied = self._add_enhance_event_no(pa_pmtfied, subdir_tag, part_no)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 115, in _add_enhance_event_no
+    enhanced_event_no = [
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 116, in <listcomp>
+    int(f"{signal_or_noise_tag:01}{subdir_tag:02}{part_no:04}{event_no.as_py():08}")
+ValueError: '=' alignment not allowed in string format specifier
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 256, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+ValueError: '=' alignment not allowed in string format specifier
+Processing 99999:  50%|█████     | 1/2 [00:00<00:00,  1.56it/s]2024-11-22 13:12:00 - ERROR - Error processing file merged_part_99.db: '=' alignment not allowed in string format specifier
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 208, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 186, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 161, in pmtfy_shard
+    pa_pmtfied = self._add_enhance_event_no(pa_pmtfied, subdir_tag, part_no)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 115, in _add_enhance_event_no
+    enhanced_event_no = [
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 116, in <listcomp>
+    int(f"{signal_or_noise_tag:01}{subdir_tag:02}{part_no:04}{event_no.as_py():08}")
+ValueError: '=' alignment not allowed in string format specifier
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 256, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+ValueError: '=' alignment not allowed in string format specifier
+Processing 99999: 100%|██████████| 2/2 [00:03<00:00,  1.85s/it]Processing 99999: 100%|██████████| 2/2 [00:03<00:00,  1.67s/it]
+2024-11-22 13:12:00 - INFO - PMTfication completed.
