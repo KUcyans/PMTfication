@@ -26,7 +26,7 @@ class PMTfier:
     def __init__(self, 
                 source_table: str, 
                 dest_root: str, 
-                N_events_per_shard: int):
+                N_events_per_shard: int) -> None:
         self.source_table = source_table
         self.dest_root = dest_root
         self.N_events_per_shard = N_events_per_shard
@@ -160,8 +160,8 @@ class PMTfier:
         
         # NOTE
         # PMT truth table for this shard is created by PMTTruthMaker and returned
-        veritator = PMTTruthMaker(con_source, source_table, truth_table_name, event_batch)
-        pa_truth_shard = veritator(part_no, shard_no, int(source_subdirectory))
+        truth_maker = PMTTruthMaker(con_source, source_table, truth_table_name, event_batch)
+        pa_truth_shard = truth_maker(part_no, shard_no, int(subdir_tag))
         pa_truth_shard = self._add_enhance_event_no(pa_truth_shard, subdir_tag, part_no)
         
         return pa_truth_shard
@@ -197,7 +197,7 @@ class PMTfier:
                 source_subdirectory: str,
                 source_part_file: str,
                 source_table: str,
-                N_events_per_shard: int = 2000) -> None:
+                N_events_per_shard: int) -> None:
         part_no = self._get_part_no(source_part_file)
         con_source = sql.connect(source_part_file)
         truth_table_name = self._get_truth_table_name_db(con_source)
@@ -229,25 +229,21 @@ class PMTfier:
         """
         subdirectory_path = os.path.join(source_root, subdirectory_name)
         if os.path.isdir(subdirectory_path) and subdirectory_name.isdigit():
-            files = [f for f in os.listdir(subdirectory_path) if f.endswith('.db') and os.path.isfile(os.path.join(subdirectory_path, f))]
-            logging.info(f"Found {len(files)} database files in subdirectory {subdirectory_name}.")
+            file_parts = [f for f in os.listdir(subdirectory_path) if f.endswith('.db') and os.path.isfile(os.path.join(subdirectory_path, f))]
+            logging.info(f"Found {len(file_parts)} database files in subdirectory {subdirectory_name}.")
             if max_workers is None:
-                max_workers = min(len(files), cpu_count() // 2)
-            # Adjust max_workers based on the number of files
-            # actual_workers = min(len(files), max_workers)
-            # logging.info(f"Using {actual_workers} workers for parallel processing.")
+                max_workers = min(len(file_parts), cpu_count() // 2)
             
-            # Process files in parallel
             with ProcessPoolExecutor(max_workers=max_workers) as executor:
                 futures = {
                 executor.submit(self.pmtfy_part, 
                                 source_subdirectory=subdirectory_name,
-                                source_file=os.path.join(subdirectory_path, filename),
+                                source_part_file=os.path.join(subdirectory_path, file_part),
                                 source_table=source_table,
-                                N_events_per_shard=N_events_per_shard): filename
-                for filename in files
+                                N_events_per_shard=N_events_per_shard): file_part
+                for file_part in file_parts
             }
-                for future in tqdm(as_completed(futures), desc=f"Processing {subdirectory_name}", total=len(files)):
+                for future in tqdm(as_completed(futures), desc=f"Processing {subdirectory_name}", total=len(file_parts)):
                     filename = futures[future]
                     try:
                         future.result()

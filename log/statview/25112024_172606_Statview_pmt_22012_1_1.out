@@ -1,0 +1,13 @@
+nohup: ignoring input
+2024-11-25 17:26:09 - INFO - Reading PMT file /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/22012/1/PMTfied_1.parquet
+Plotting figures:   0%|          | 0/8 [00:00<?, ?it/s]2024-11-25 17:26:10 - INFO - Plotting histogram for DOM x distribution
+Plotting figures:  12%|█▎        | 1/8 [00:00<00:03,  2.29it/s]2024-11-25 17:26:10 - INFO - Plotting histogram for DOM y distribution
+Plotting figures:  25%|██▌       | 2/8 [00:00<00:02,  2.49it/s]2024-11-25 17:26:10 - INFO - Plotting histogram for DOM z distribution
+Plotting figures:  38%|███▊      | 3/8 [00:01<00:02,  2.49it/s]2024-11-25 17:26:11 - INFO - Plotting histogram for First three charges distribution
+Plotting figures:  50%|█████     | 4/8 [00:02<00:02,  1.44it/s]2024-11-25 17:26:12 - INFO - Plotting histogram for Accumulated charge distribution
+Plotting figures:  62%|██████▎   | 5/8 [00:03<00:02,  1.15it/s]2024-11-25 17:26:13 - INFO - Plotting histogram for First three time distribution
+Plotting figures:  75%|███████▌  | 6/8 [00:05<00:02,  1.12s/it]2024-11-25 17:26:15 - INFO - Plotting histogram for T10 and T50 distribution
+Plotting figures:  88%|████████▊ | 7/8 [00:06<00:01,  1.05s/it]2024-11-25 17:26:16 - INFO - Plotting histogram for sigma_T distribution
+Plotting figures: 100%|██████████| 8/8 [00:06<00:00,  1.03it/s]Plotting figures: 100%|██████████| 8/8 [00:06<00:00,  1.17it/s]
+2024-11-25 17:26:17 - INFO - Finished
+Figures saved to StatViewer_pmt_22012_1_1_25112024.pdf

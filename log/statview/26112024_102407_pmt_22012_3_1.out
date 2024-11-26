@@ -1,0 +1,36 @@
+nohup: ignoring input
+2024-11-26 10:24:09 - INFO - Reading PMT file PMTfied_1.parquet
+2024-11-26 10:24:09 - INFO - Saving PDF to [26112024_102409]StatView_pmt_22012_3_1.pdf
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+Plotting figures:   0%|          | 0/8 [00:00<?, ?it/s]2024-11-26 10:24:10 - INFO - Plotting histogram for DOM x distribution
+Plotting figures:  12%|█▎        | 1/8 [00:00<00:02,  3.25it/s]2024-11-26 10:24:10 - INFO - Plotting histogram for DOM y distribution
+Plotting figures:  25%|██▌       | 2/8 [00:00<00:01,  3.55it/s]2024-11-26 10:24:11 - INFO - Plotting histogram for DOM z distribution
+Plotting figures:  38%|███▊      | 3/8 [00:00<00:01,  3.34it/s]2024-11-26 10:24:11 - INFO - Plotting histogram for First three charges distribution
+Plotting figures:  50%|█████     | 4/8 [00:01<00:01,  2.35it/s]2024-11-26 10:24:12 - INFO - Plotting histogram for Accumulated charge distribution
+Plotting figures:  62%|██████▎   | 5/8 [00:01<00:01,  2.32it/s]2024-11-26 10:24:12 - INFO - Plotting histogram for First three time distribution
+Plotting figures:  75%|███████▌  | 6/8 [00:02<00:00,  2.07it/s]2024-11-26 10:24:13 - INFO - Plotting histogram for T10 and T50 distribution
+Plotting figures:  88%|████████▊ | 7/8 [00:02<00:00,  2.21it/s]2024-11-26 10:24:13 - INFO - Plotting histogram for sigma_T distribution
+Plotting figures: 100%|██████████| 8/8 [00:03<00:00,  2.43it/s]Plotting figures: 100%|██████████| 8/8 [00:03<00:00,  2.46it/s]
+2024-11-26 10:24:13 - INFO - Figures saved to [26112024_102409]StatView_pmt_22012_3_1_raw.pdf
+Plotting figures:   0%|          | 0/8 [00:00<?, ?it/s]2024-11-26 10:24:13 - INFO - Plotting histogram for DOM x distribution
+Plotting figures:  12%|█▎        | 1/8 [00:00<00:01,  4.41it/s]2024-11-26 10:24:14 - INFO - Plotting histogram for DOM y distribution
+Plotting figures:  25%|██▌       | 2/8 [00:00<00:01,  4.48it/s]2024-11-26 10:24:14 - INFO - Plotting histogram for DOM z distribution
+Plotting figures:  38%|███▊      | 3/8 [00:00<00:01,  4.07it/s]2024-11-26 10:24:14 - INFO - Plotting histogram for First three charges distribution
+Plotting figures:  50%|█████     | 4/8 [00:01<00:01,  2.71it/s]2024-11-26 10:24:15 - INFO - Plotting histogram for Accumulated charge distribution
+Plotting figures:  62%|██████▎   | 5/8 [00:01<00:01,  2.39it/s]2024-11-26 10:24:15 - INFO - Plotting histogram for First three time distribution
+Plotting figures:  75%|███████▌  | 6/8 [00:02<00:00,  2.02it/s]2024-11-26 10:24:16 - INFO - Plotting histogram for T10 and T50 distribution
+Plotting figures:  88%|████████▊ | 7/8 [00:02<00:00,  2.26it/s]2024-11-26 10:24:16 - INFO - Plotting histogram for sigma_T distribution
+Plotting figures: 100%|██████████| 8/8 [00:03<00:00,  2.46it/s]Plotting figures: 100%|██████████| 8/8 [00:03<00:00,  2.59it/s]
+2024-11-26 10:24:17 - INFO - Figures saved to [26112024_102409]StatView_pmt_22012_3_1_processed.pdf
+2024-11-26 10:24:17 - INFO - Finished

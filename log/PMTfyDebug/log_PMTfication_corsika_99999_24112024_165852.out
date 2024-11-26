@@ -1,0 +1,11 @@
+nohup: ignoring input
+2024-11-24 16:58:52 - INFO - PMTfication by part starts...
+2024-11-24 16:58:52 - INFO - Processing file: merged_part_96.db
+2024-11-24 16:58:52 - INFO - Using up to 1 workers.
+2024-11-24 16:58:52 - INFO - Processing shard 1 of part 96 in subdirectory 9999999-9999999.
+2024-11-24 16:58:54 - INFO - Processing shard 2 of part 96 in subdirectory 9999999-9999999.
+2024-11-24 16:58:57 - INFO - Processing shard 3 of part 96 in subdirectory 9999999-9999999.
+2024-11-24 16:58:58 - INFO - PMTfication completed.
+Columns 'string' and 'dom_number' already exist.
+Columns 'string' and 'dom_number' already exist.
+Columns 'string' and 'dom_number' already exist.

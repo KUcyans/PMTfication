@@ -15,6 +15,7 @@ def main():
     )
     logging.info("PMTfication by part starts...")
     
+    #### change the final destination: source_root, dest_root
     source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/sqlite_pulses/Snowstorm/"
     dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/"
     source_table_name = 'SRTInIcePulses'

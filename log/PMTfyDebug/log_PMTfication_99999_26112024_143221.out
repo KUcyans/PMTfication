@@ -1,0 +1,8 @@
+nohup: ignoring input
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 22, in <module>
+    from PMT_summariser import PMTSummariser
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_summariser.py", line 107
+    for idx, field_name in enumerate(PMTSummariser._SCHEMA.names):
+                                                                  ^
+IndentationError: unindent does not match any outer indentation level

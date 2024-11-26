@@ -1,0 +1,5 @@
+nohup: ignoring input
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPMT.py", line 56
+    bin_width_raw = 
+                    ^
+SyntaxError: invalid syntax

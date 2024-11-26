@@ -1,0 +1,75 @@
+nohup: ignoring input
+2024-11-26 14:03:34 - INFO - PMTfication starts...
+2024-11-26 14:03:34 - INFO - The number of files in the subdirectory: 2
+2024-11-26 14:03:34 - INFO - Using up to 1 workers.
+2024-11-26 14:03:34 - INFO - Found 2 database files in subdirectory 99999.
+Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2024-11-26 14:03:34 - INFO - Processing shard 1 of part 98 in subdirectory 99999.
+2024-11-26 14:03:34 - ERROR - Error processing file merged_part_98.db: 'PMTSummariser' object has no attribute 'n_collect'
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 205, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 183, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 156, in pmtfy_shard
+    pa_pmtfied = summariser()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_summariser.py", line 77, in __call__
+    return self._get_PMTfied_pa()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_summariser.py", line 96, in _get_PMTfied_pa
+    dom_data = self._process_DOM(pulses, avg_dom_position)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_summariser.py", line 172, in _process_DOM
+    first_pulse_time = self._get_first_pulse_time(pulses, saturation_status)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_summariser.py", line 249, in _get_first_pulse_time
+    elif len(pulses_dom) < self.n_collect:
+AttributeError: 'PMTSummariser' object has no attribute 'n_collect'
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 249, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+AttributeError: 'PMTSummariser' object has no attribute 'n_collect'
+Processing 99999:  50%|█████     | 1/2 [00:00<00:00,  4.15it/s]2024-11-26 14:03:34 - INFO - Processing shard 1 of part 99 in subdirectory 99999.
+2024-11-26 14:03:36 - ERROR - Error processing file merged_part_99.db: 'PMTSummariser' object has no attribute 'n_collect'
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 205, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 183, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 156, in pmtfy_shard
+    pa_pmtfied = summariser()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_summariser.py", line 77, in __call__
+    return self._get_PMTfied_pa()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_summariser.py", line 96, in _get_PMTfied_pa
+    dom_data = self._process_DOM(pulses, avg_dom_position)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_summariser.py", line 172, in _process_DOM
+    first_pulse_time = self._get_first_pulse_time(pulses, saturation_status)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_summariser.py", line 249, in _get_first_pulse_time
+    elif len(pulses_dom) < self.n_collect:
+AttributeError: 'PMTSummariser' object has no attribute 'n_collect'
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 249, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+AttributeError: 'PMTSummariser' object has no attribute 'n_collect'
+Processing 99999: 100%|██████████| 2/2 [00:02<00:00,  1.23s/it]Processing 99999: 100%|██████████| 2/2 [00:02<00:00,  1.08s/it]
+2024-11-26 14:03:36 - INFO - PMTfication completed.

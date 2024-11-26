@@ -1,0 +1,87 @@
+nohup: ignoring input
+2024-11-26 14:21:41 - INFO - PMTfication starts...
+2024-11-26 14:21:41 - INFO - The number of files in the subdirectory: 2
+2024-11-26 14:21:41 - INFO - Using up to 1 workers.
+2024-11-26 14:21:41 - INFO - Found 2 database files in subdirectory 99999.
+Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2024-11-26 14:21:41 - INFO - Processing shard 1 of part 98 in subdirectory 99999.
+2024-11-26 14:21:42 - ERROR - Error processing file merged_part_98.db: Float value -0.0779615 was truncated converting to int32
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 205, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 183, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 156, in pmtfy_shard
+    pa_pmtfied = summariser()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_summariser.py", line 77, in __call__
+    return self._get_PMTfied_pa()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_summariser.py", line 106, in _get_PMTfied_pa
+    return pa.Table.from_pydict(pa_arrays, schema=PMTSummariser._SCHEMA)
+  File "pyarrow/table.pxi", line 1920, in pyarrow.lib._Tabular.from_pydict
+  File "pyarrow/table.pxi", line 6009, in pyarrow.lib._from_pydict
+  File "pyarrow/array.pxi", line 382, in pyarrow.lib.asarray
+  File "pyarrow/array.pxi", line 985, in pyarrow.lib.Array.cast
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/pyarrow/compute.py", line 404, in cast
+    return call_function("cast", [arr], options, memory_pool)
+  File "pyarrow/_compute.pyx", line 590, in pyarrow._compute.call_function
+  File "pyarrow/_compute.pyx", line 385, in pyarrow._compute.Function.call
+  File "pyarrow/error.pxi", line 154, in pyarrow.lib.pyarrow_internal_check_status
+  File "pyarrow/error.pxi", line 91, in pyarrow.lib.check_status
+pyarrow.lib.ArrowInvalid: Float value -0.0779615 was truncated converting to int32
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 249, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+pyarrow.lib.ArrowInvalid: Float value -0.0779615 was truncated converting to int32
+Processing 99999:  50%|█████     | 1/2 [00:00<00:00,  1.30it/s]2024-11-26 14:21:42 - INFO - Processing shard 1 of part 99 in subdirectory 99999.
+2024-11-26 14:21:45 - ERROR - Error processing file merged_part_99.db: Float value -0.74444 was truncated converting to int32
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 205, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 183, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 156, in pmtfy_shard
+    pa_pmtfied = summariser()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_summariser.py", line 77, in __call__
+    return self._get_PMTfied_pa()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_summariser.py", line 106, in _get_PMTfied_pa
+    return pa.Table.from_pydict(pa_arrays, schema=PMTSummariser._SCHEMA)
+  File "pyarrow/table.pxi", line 1920, in pyarrow.lib._Tabular.from_pydict
+  File "pyarrow/table.pxi", line 6009, in pyarrow.lib._from_pydict
+  File "pyarrow/array.pxi", line 382, in pyarrow.lib.asarray
+  File "pyarrow/array.pxi", line 985, in pyarrow.lib.Array.cast
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/pyarrow/compute.py", line 404, in cast
+    return call_function("cast", [arr], options, memory_pool)
+  File "pyarrow/_compute.pyx", line 590, in pyarrow._compute.call_function
+  File "pyarrow/_compute.pyx", line 385, in pyarrow._compute.Function.call
+  File "pyarrow/error.pxi", line 154, in pyarrow.lib.pyarrow_internal_check_status
+  File "pyarrow/error.pxi", line 91, in pyarrow.lib.check_status
+pyarrow.lib.ArrowInvalid: Float value -0.74444 was truncated converting to int32
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 249, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+pyarrow.lib.ArrowInvalid: Float value -0.74444 was truncated converting to int32
+Processing 99999: 100%|██████████| 2/2 [00:04<00:00,  2.35s/it]Processing 99999: 100%|██████████| 2/2 [00:04<00:00,  2.11s/it]
+2024-11-26 14:21:45 - INFO - PMTfication completed.

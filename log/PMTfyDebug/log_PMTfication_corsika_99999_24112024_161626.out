@@ -1,0 +1,18 @@
+nohup: ignoring input
+2024-11-24 16:16:31 - INFO - PMTfication by part starts...
+2024-11-24 16:16:31 - INFO - Processing file: merged_part_96.db
+2024-11-24 16:16:31 - INFO - Using up to 1 workers.
+2024-11-24 16:16:32 - INFO - Processing shard 1 of part 96 in subdirectory 9999999-9999999.
+2024-11-24 16:16:52 - ERROR - An error occurred: invalid literal for int() with base 10: '9999999-9999999'
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfy_by_part.py", line 56, in <module>
+    main()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfy_by_part.py", line 45, in main
+    pmtfier.pmtfy_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 205, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 183, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 164, in pmtfy_shard
+    pa_truth_shard = veritator(part_no, shard_no, int(source_subdirectory))
+ValueError: invalid literal for int() with base 10: '9999999-9999999'

@@ -1,0 +1,36 @@
+nohup: ignoring input
+2024-11-25 18:17:43 - INFO - Reading PMT file /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/22012/1/PMTfied_1.parquet
+2024-11-25 18:17:43 - INFO - Saving PDF to [25112024_181743]StatViewer_pmt_22012_1_1_25112024.pdf
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+Plotting figures:   0%|          | 0/8 [00:00<?, ?it/s]2024-11-25 18:17:44 - INFO - Plotting histogram for DOM x distribution
+Plotting figures:  12%|█▎        | 1/8 [00:00<00:02,  2.85it/s]2024-11-25 18:17:45 - INFO - Plotting histogram for DOM y distribution
+Plotting figures:  25%|██▌       | 2/8 [00:00<00:01,  3.22it/s]2024-11-25 18:17:45 - INFO - Plotting histogram for DOM z distribution
+Plotting figures:  38%|███▊      | 3/8 [00:00<00:01,  3.10it/s]2024-11-25 18:17:45 - INFO - Plotting histogram for First three charges distribution
+Plotting figures:  50%|█████     | 4/8 [00:01<00:02,  1.90it/s]2024-11-25 18:17:46 - INFO - Plotting histogram for Accumulated charge distribution
+Plotting figures:  62%|██████▎   | 5/8 [00:02<00:01,  1.60it/s]2024-11-25 18:17:47 - INFO - Plotting histogram for First three time distribution
+Plotting figures:  75%|███████▌  | 6/8 [00:03<00:01,  1.31it/s]2024-11-25 18:17:48 - INFO - Plotting histogram for T10 and T50 distribution
+Plotting figures:  88%|████████▊ | 7/8 [00:04<00:00,  1.38it/s]2024-11-25 18:17:49 - INFO - Plotting histogram for sigma_T distribution
+Plotting figures: 100%|██████████| 8/8 [00:04<00:00,  1.50it/s]Plotting figures: 100%|██████████| 8/8 [00:04<00:00,  1.66it/s]
+2024-11-25 18:17:49 - INFO - Figures saved to [25112024_181743]StatViewer_pmt_22012_1_1_25112024_raw.pdf
+Plotting figures:   0%|          | 0/8 [00:00<?, ?it/s]2024-11-25 18:17:49 - INFO - Plotting histogram for DOM x distribution
+Plotting figures:  12%|█▎        | 1/8 [00:00<00:01,  4.34it/s]2024-11-25 18:17:50 - INFO - Plotting histogram for DOM y distribution
+Plotting figures:  25%|██▌       | 2/8 [00:00<00:01,  3.54it/s]2024-11-25 18:17:50 - INFO - Plotting histogram for DOM z distribution
+Plotting figures:  38%|███▊      | 3/8 [00:00<00:01,  3.58it/s]2024-11-25 18:17:50 - INFO - Plotting histogram for First three charges distribution
+Plotting figures:  50%|█████     | 4/8 [00:01<00:01,  2.50it/s]2024-11-25 18:17:51 - INFO - Plotting histogram for Accumulated charge distribution
+Plotting figures:  62%|██████▎   | 5/8 [00:02<00:01,  2.08it/s]2024-11-25 18:17:51 - INFO - Plotting histogram for First three time distribution
+Plotting figures:  75%|███████▌  | 6/8 [00:02<00:01,  1.56it/s]2024-11-25 18:17:52 - INFO - Plotting histogram for T10 and T50 distribution
+Plotting figures:  88%|████████▊ | 7/8 [00:03<00:00,  1.54it/s]2024-11-25 18:17:53 - INFO - Plotting histogram for sigma_T distribution
+Plotting figures: 100%|██████████| 8/8 [00:04<00:00,  1.65it/s]Plotting figures: 100%|██████████| 8/8 [00:04<00:00,  1.92it/s]
+2024-11-25 18:17:54 - INFO - Figures saved to [25112024_181743]StatViewer_pmt_22012_1_1_25112024_processed.pdf
+2024-11-25 18:17:54 - INFO - Finished

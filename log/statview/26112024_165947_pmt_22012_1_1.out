@@ -1,0 +1,35 @@
+nohup: ignoring input
+2024-11-26 16:59:49 - INFO - Reading PMT file PMTfied_1.parquet
+2024-11-26 16:59:49 - INFO - Saving PDF to [26112024_165949]StatView_pmt_22012_1_1.pdf
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+Plotting figures:   0%|          | 0/8 [00:00<?, ?it/s]2024-11-26 16:59:50 - INFO - Plotting histogram for DOM x distribution
+Plotting figures:  12%|█▎        | 1/8 [00:00<00:02,  3.18it/s]2024-11-26 16:59:50 - INFO - Plotting histogram for DOM y distribution
+Plotting figures:  25%|██▌       | 2/8 [00:00<00:01,  3.47it/s]2024-11-26 16:59:51 - INFO - Plotting histogram for DOM z distribution
+Plotting figures:  38%|███▊      | 3/8 [00:00<00:01,  3.33it/s]2024-11-26 16:59:51 - INFO - Plotting histogram for Distribution of 5 charges
+Plotting figures:  50%|█████     | 4/8 [00:01<00:01,  2.48it/s]2024-11-26 16:59:51 - INFO - Plotting histogram for Accumulated charge distribution
+Plotting figures:  50%|█████     | 4/8 [00:01<00:01,  2.44it/s]
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPMT.py", line 476, in <module>
+    pmt_viewer = PMTfiedStatViewer(file_dir, output_pdf_with_timestamp)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPMT.py", line 27, in __init__
+    self._saveFigures_twice()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPMT.py", line 31, in _saveFigures_twice
+    self._saveFigures(self.df_pmt, self.output_pdf + "_raw", isShow, bin_width_raw)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPMT.py", line 49, in _saveFigures
+    fig, ax = plot_function()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPMT.py", line 43, in <lambda>
+    lambda: self._plot_Q(df, bin_width=bin_width['Q']),
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPMT.py", line 193, in _plot_Q
+    "min": f"{Q25.min():.2f}",
+NameError: name 'Q25' is not defined
