@@ -2,12 +2,14 @@
 #SBATCH --job-name=pmtfication_%j
 #SBATCH --partition=icecube
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=48
-#SBATCH --mem=225G
-#SBATCH --time=3:00:00
+#SBATCH --cpus-per-task=32
+#SBATCH --mem=192G
+#SBATCH --time=8:00:00
 #SBATCH --signal=B:USR1@60
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=cyan.jo@proton.me
+#SBATCH --output=/dev/null
+#SBATCH --error=/dev/null
 
 LOG_DIR="log/${SUBDIR}"
 
@@ -22,6 +24,6 @@ exec > "${logfile}" 2> "${errfile}"
 echo "Starting job at $(date)"
 echo "Running PMTfier.py for subdirectory ${SUBDIR} part ${PART} with ${NEVENTS} events per shard"
 
-python3.9 PMTfy_by_part.py "${SUBDIR}" "${PART}" "${NEVENTS}"
+python3.9 PMTfy_by_part.py "${SnowstormOrCorsika}" "${SUBDIR}" "${PART}" "${NEVENTS}"
 
 echo "Job completed at $(date)"

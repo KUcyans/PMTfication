@@ -16,18 +16,21 @@ def main():
     logging.info("PMTfication by part starts...")
     
     #### change the final destination: source_root, dest_root
-    source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/sqlite_pulses/Snowstorm/"
-    dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/"
+    source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/sqlite_pulses/"
+    dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/"
     source_table_name = 'SRTInIcePulses'
     
     # command-line arguments
     parser = argparse.ArgumentParser(description="PMTfication of a single SQLite database into Parquet files.")
+    parser.add_argument("Snowstorm_or_Corsika", type=str, help="Snowstorm or Corsika.")
     parser.add_argument("subdirectory_in_number", type=str, help="Name of the source subdirectory.")
     parser.add_argument("part_number", type=str, help="Part number.")
     parser.add_argument("N_events_per_shard", type=int, help="Number of events per shard.")
     args = parser.parse_args()
     
-    # Logging the subdirectory being processed
+    source_root = os.path.join(source_root, args.Snowstorm_or_Corsika)
+    dest_root = os.path.join(dest_root, args.Snowstorm_or_Corsika)
+    
     subdirectory_path = os.path.join(source_root, args.subdirectory_in_number)
     source_file_path = os.path.join(subdirectory_path, f"merged_part_{args.part_number}.db")
     
@@ -51,7 +54,6 @@ def main():
     )
     logging.info("PMTfication completed.")
 
-# Wrap the main function in a try-except block
 if __name__ == "__main__":
     try:
         main()

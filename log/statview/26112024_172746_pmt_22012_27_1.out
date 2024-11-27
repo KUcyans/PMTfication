@@ -1,0 +1,60 @@
+nohup: ignoring input
+2024-11-26 17:27:48 - INFO - Reading PMT file PMTfied_1.parquet
+2024-11-26 17:27:48 - INFO - Saving PDF to [26112024_172748]StatView_pmt_22012_27_1.pdf
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+Plotting figures:   0%|          | 0/8 [00:00<?, ?it/s]2024-11-26 17:27:49 - INFO - Plotting histogram for DOM x distribution
+Plotting figures:   0%|          | 0/8 [00:00<?, ?it/s]
+/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPMT.py:53: MatplotlibDeprecationWarning: Keeping empty pdf files is deprecated since 3.8 and support will be removed in 3.10.
+  plt.close()
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPMT.py", line 50, in _saveFigures
+    pdf.savefig(fig)
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/matplotlib/backends/backend_pdf.py", line 2758, in savefig
+    figure.savefig(self, format="pdf", backend="pdf", **kwargs)
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/matplotlib/figure.py", line 3388, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/matplotlib/backend_bases.py", line 2218, in print_figure
+    result = print_method(
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/matplotlib/backend_bases.py", line 2068, in <lambda>
+    print_method = functools.wraps(meth)(lambda *args, **kwargs: meth(
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/matplotlib/backends/backend_pdf.py", line 2790, in print_pdf
+    file = filename._ensure_file()
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/matplotlib/backends/backend_pdf.py", line 2712, in _ensure_file
+    self._file = PdfFile(self._filename, metadata=self._metadata)  # init.
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/matplotlib/backends/backend_pdf.py", line 688, in __init__
+    fh, opened = cbook.to_filehandle(filename, "wb", return_opened=True)
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/matplotlib/cbook.py", line 483, in to_filehandle
+    fh = open(fname, flag, encoding=encoding)
+FileNotFoundError: [Errno 2] No such file or directory: '/StatView/[26112024_172748]StatView_pmt_22012_27_1_raw.pdf'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPMT.py", line 459, in <module>
+    pmt_viewer = PMTfiedStatViewer(file_dir, output_pdf_with_timestamp)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPMT.py", line 27, in __init__
+    self._saveFigures_twice()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPMT.py", line 31, in _saveFigures_twice
+    self._saveFigures(self.df_pmt, self.output_pdf + "_raw", isShow, bin_width_raw)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPMT.py", line 53, in _saveFigures
+    plt.close()
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/matplotlib/backends/backend_pdf.py", line 2708, in __exit__
+    self.close()
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/matplotlib/backends/backend_pdf.py", line 2728, in close
+    PdfFile(self._filename, metadata=self._metadata).close()  # touch the file.
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/matplotlib/backends/backend_pdf.py", line 688, in __init__
+    fh, opened = cbook.to_filehandle(filename, "wb", return_opened=True)
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/matplotlib/cbook.py", line 483, in to_filehandle
+    fh = open(fname, flag, encoding=encoding)
+FileNotFoundError: [Errno 2] No such file or directory: '/StatView/[26112024_172748]StatView_pmt_22012_27_1_raw.pdf'

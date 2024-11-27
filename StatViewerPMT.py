@@ -54,7 +54,7 @@ class PMTfiedStatViewer:
     
     def _build_process_params(self) -> dict:
         self.position_scaler = 500
-        self.t_scaler = 1e-3
+        self.t_scaler = 1e-4
         self.t_shifter = 10_000
         self.Q_shifter = 2
         
@@ -103,18 +103,29 @@ class PMTfiedStatViewer:
         return df
 
         
-    def _plot_histogram(self, *data, bins, xlabel, ylabel, title, log_scale=False, **labels):
+    def _plot_histogram(self, *data, bins, xlabel, ylabel, title, log_scale_y=False, log_scale_x=False, **labels):
         logging.info(f"Plotting histogram for {title}")
         fig, ax = plt.subplots(figsize=(11, 7))
         
-        # Iterate over datasets and their respective labels
         for i, dataset in enumerate(data, start=1):
-            label = labels.get(f"label{i}", f"Data {i}")  # Default label if not provided
-            hatch = '//' if i % 2 == 0 else '\\'  # Alternate hatches for different datasets
+            label = labels.get(f"label{i}", f"Data {i}")
+            if i % 5 == 1:
+                hatch = ''
+            elif i % 5 == 2:
+                hatch = '//'
+            elif i % 5 == 3:
+                hatch = ''
+            elif i % 5 == 4:
+                hatch = '\\'
+            else:
+                hatch = ''
             ax.hist(dataset, bins=bins, histtype='step', linewidth=2, label=label, hatch=hatch)
         
-        if log_scale:
+        if log_scale_y:
             ax.set_yscale("log")
+        
+        if log_scale_x:
+            ax.set_xscale("log")
         
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
@@ -143,7 +154,7 @@ class PMTfiedStatViewer:
             xlabel=f"DOM {axis}",
             ylabel="Counts",
             title=f"DOM {axis} distribution",
-            log_scale=False,
+            log_scale_y=False,
             label1=f"DOM {axis} position",
             label2=f"DOM {axis} relative position"
         )
@@ -185,7 +196,7 @@ class PMTfiedStatViewer:
             xlabel="Q",
             ylabel="Counts",
             title="Accumulated charge distribution",
-            log_scale=True,
+            log_scale_y=True,
             **labels
         )
         for i, col in enumerate(q_columns):
@@ -197,12 +208,11 @@ class PMTfiedStatViewer:
                 "std": f"{q_data[col].std():.2f}",
                 "bin_width": f"{bin_width}",
             }
-            add_text_to_ax(0.25 + i * 0.4, 0.95, nice_string_output(stats), ax, fontsize=12)
+            add_text_to_ax(0.1 + i * 0.3, 0.95, nice_string_output(stats), ax, fontsize=10)
         
         return fig, ax
     
-    def _plot_q(self, df: pd.DataFrame, bin_width=5):
-        # Extract all columns starting with 'q' followed by a number
+    def _plot_q(self, df: pd.DataFrame, bin_width=0.1):
         q_columns = [col for col in df.columns if col.startswith('q') and col[1:].isdigit()]
         q_data = {col: df[col] for col in q_columns}
         
@@ -215,11 +225,12 @@ class PMTfiedStatViewer:
             data_args[f"label{i + 1}"] = col
         
         fig, ax = self._plot_histogram(
+            *q_data.values(),
             bins=bins,
             xlabel="Q",
             ylabel="Counts",
-            title=f"Distribution of {len(q_columns)} charges",
-            log_scale=True,
+            title=f"Distribution of first {len(q_columns)} charges",
+            log_scale_y=True,
             **data_args
         )
         
@@ -232,62 +243,10 @@ class PMTfiedStatViewer:
                 "std": f"{q_data[col].std():.2f}",
                 "bin_width": f"{bin_width}",
             }
-            x_pos = 0.10 + i * 0.30
-            add_text_to_ax(x_pos, 0.95, nice_string_output(stats), ax, fontsize=12)
+            x_pos = 0.01 + i * 0.20
+            add_text_to_ax(x_pos, 0.95, nice_string_output(stats), ax, fontsize=8)
         
         return fig, ax
-
-
-    # def _plot_q(self, df: pd.DataFrame, bin_width = 5):
-    #     q1 = df["q1"]
-    #     q2 = df["q2"]
-    #     q3 = df["q3"]
-    #     # if df has q4, and q5 
-        
-    #     bins = np.arange(q1.min(), q1.max() + bin_width, bin_width)
-        
-    #     fig, ax = self._plot_histogram(
-    #         data1=q1, bins=bins, 
-    #         xlabel="Q", ylabel="Counts", 
-    #         title="First three charges distribution",
-    #         data2=q2, 
-    #         data3=q3,
-    #         label1="q1",
-    #         label2="q2",
-    #         label3="q3",
-    #         log_scale=True
-    #     )
-        
-    #     d_1 = {
-    #         "q_1": "",
-    #         "min": f"{q1.min():.2f}",
-    #         "max": f"{q1.max():.2f}",
-    #         "mean": f"{q1.mean():.2f}",
-    #         "std": f"{q1.std():.2f}",
-    #         "bin_width": f"{bin_width}",
-    #     }
-    #     d_2 = {
-    #         "q_2": "",
-    #         "min": f"{q2.min():.2f}",
-    #         "max": f"{q2.max():.2f}",
-    #         "mean": f"{q2.mean():.2f}",
-    #         "std": f"{q2.std():.2f}",
-    #         "bin_width": f"{bin_width}",
-    #     }
-    #     d_3 = {
-    #         "q_3": "",
-    #         "min": f"{q3.min():.2f}",
-    #         "max": f"{q3.max():.2f}",
-    #         "mean": f"{q3.mean():.2f}",
-    #         "std": f"{q3.std():.2f}",
-    #         "bin_width": f"{bin_width}",
-    #     }
-        
-    #     add_text_to_ax(0.10, 0.95, nice_string_output(d_1), ax, fontsize=12)
-    #     add_text_to_ax(0.40, 0.95, nice_string_output(d_2), ax, fontsize=12)
-    #     add_text_to_ax(0.70, 0.95, nice_string_output(d_3), ax, fontsize=12)
-        
-    #     return fig, ax
     
     def _plot_t(self, df: pd.DataFrame, bin_width = 100):
         t_columns = [col for col in df.columns if col.startswith('t') and col[1:].isdigit()]
@@ -302,11 +261,12 @@ class PMTfiedStatViewer:
             data_args[f"label{i + 1}"] = col
             
         fig, ax = self._plot_histogram(
+            *t_data.values(),
             bins=bins,
             xlabel="t",
             ylabel="Counts",
-            title=f"Distribution of {len(t_columns)} times",
-            log_scale=True,
+            title=f"Distribution of first {len(t_columns)} pulse times",
+            log_scale_y=True,
             **data_args
         )
         
@@ -319,62 +279,11 @@ class PMTfiedStatViewer:
                 "std": f"{t_data[col].std():.2f}",
                 "bin_width": f"{bin_width}",
             }
-            x_pos = 0.10 + i * 0.30
-            add_text_to_ax(x_pos, 0.95, nice_string_output(stats), ax, fontsize=12)
+            x_pos = 0.01 + i * 0.20
+            add_text_to_ax(x_pos, 0.95, nice_string_output(stats), ax, fontsize=8)
             
         return fig, ax
         
-        
-    # def _plot_t(self, df: pd.DataFrame, bin_width = 100):
-    #     t1 = df["t1"]
-    #     t2 = df["t2"]
-    #     t3 = df["t3"]
-        
-    #     bins = np.arange(t1.min(), t1.max() + bin_width, bin_width)
-        
-    #     fig, ax = self._plot_histogram(
-    #         data1=t1, bins=bins, 
-    #         xlabel="t", ylabel="Counts", 
-    #         title="First three time distribution",
-    #         data2=t2, 
-    #         data3=t3,
-    #         label1="t1",
-    #         label2="t2",
-    #         label3="t3",
-    #         log_scale=True
-    #     )
-        
-    #     d_1 = {
-    #         "t_1": "",
-    #         "min": f"{t1.min():.1f}",
-    #         "max": f"{t1.max():.1f}",
-    #         "mean": f"{t1.mean():.1f}",
-    #         "std": f"{t1.std():.1f}",
-    #         "bin_width": f"{bin_width}",
-    #     }
-    #     d_2 = {
-    #         "t_2": "",
-    #         "min": f"{t2.min():.1f}",
-    #         "max": f"{t2.max():.1f}",
-    #         "mean": f"{t2.mean():.1f}",
-    #         "std": f"{t2.std():.1f}",
-    #         "bin_width": f"{bin_width}",
-    #     }
-    #     d_3 = {
-    #         "t_3": "",
-    #         "min": f"{t3.min():.1f}",
-    #         "max": f"{t3.max():.1f}",
-    #         "mean": f"{t3.mean():.1f}",
-    #         "std": f"{t3.std():.1f}",
-    #         "bin_width": f"{bin_width}",
-    #     }
-        
-    #     add_text_to_ax(0.10, 0.95, nice_string_output(d_1), ax, fontsize=12)
-    #     add_text_to_ax(0.40, 0.95, nice_string_output(d_2), ax, fontsize=12)
-    #     add_text_to_ax(0.70, 0.95, nice_string_output(d_3), ax, fontsize=12)
-        
-    #     return fig, ax
-    
     def plot_T(self, df: pd.DataFrame, bin_width = 100):
         t_columns = ["T10", "T50"]
         t_data = {col: df[col] for col in t_columns}
@@ -390,7 +299,7 @@ class PMTfiedStatViewer:
             xlabel="T",
             ylabel="Counts",
             title="T10 and T50 distribution",
-            log_scale=True,
+            log_scale_y=True,
             **labels
         )
         
@@ -418,7 +327,7 @@ class PMTfiedStatViewer:
             xlabel="sigma_T",
             ylabel="Counts",
             title="sigma_T distribution",
-            log_scale=True,
+            log_scale_y=True,
             label1="sigma_T"
         )
         
@@ -430,7 +339,7 @@ class PMTfiedStatViewer:
             "std": f"{sigma_T.std():.1f}",
             "bin_width": f"{bin_width}",
         }
-        add_text_to_ax(0.10, 0.95, nice_string_output(stats_sigma_T), ax, fontsize=12)
+        add_text_to_ax(0.60, 0.95, nice_string_output(stats_sigma_T), ax, fontsize=12)
         
         return fig, ax
     
@@ -446,7 +355,7 @@ if __name__ == "__main__":
     output_file_pdf = f"StatView_pmt_{args.subdir}_{args.part}_{args.shard}"
     
     timestamp = datetime.now().strftime("%d%m%Y_%H%M%S")
-    output_pdf_with_timestamp = f"[{timestamp}]{output_file_pdf}"
+    output_pdf_with_timestamp = os.path.join("./StatView/" + f"[{timestamp}]{output_file_pdf}")
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s',
