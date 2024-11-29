@@ -89,7 +89,7 @@ class PMTSummariser:
         processed_data = []
 
         for event_no, strings_doms_pulses in events_doms_pulses.items():
-            avg_dom_position = self._get_Q_weighted_DOM_position(strings_doms_pulses)
+            avg_dom_position = self._get_Q_weighted_DOM_position(strings_doms_pulses) # one per event
             for string, doms_pulses in strings_doms_pulses.items():    
                 for dom_no, pulses in doms_pulses.items():
                     dom_data = self._process_DOM(pulses, avg_dom_position)
@@ -160,16 +160,17 @@ class PMTSummariser:
         # charge = [pulse[self.dom_charge_idx] for pulse in pulses]
         dom_position = self._get_DOM_position(pulses)
         rel_dom_pos = self._get_relative_DOM_position(dom_position, avg_dom_position)
+        
         pmt_area = self._get_pmt_area(pulses)
         rde = self._get_rde(pulses)
         saturation_status = self._get_saturation_status(pulses)
         
-        first_charge_readout = self._get_first_charge_readout(pulses, saturation_status)
-        accumulated_charge_after_nc = self._get_accumulated_charge_after_ns(pulses, saturation_status)
-        first_pulse_time = self._get_first_pulse_time(pulses, saturation_status)
+        first_charge_readout = self._get_first_charge_readout(pulses)
+        accumulated_charge_after_nc = self._get_accumulated_charge_after_ns(pulses)
+        first_pulse_time = self._get_first_pulse_time(pulses)
         first_hlc = self._get_first_hlc(pulses)
-        elapsed_time_until_charge_fraction = self._get_elapsed_time_until_charge_fraction(pulses, saturation_status)
-        standard_deviation = self._get_time_standard_deviation(pulses, saturation_status)
+        elapsed_time_until_charge_fraction = self._get_elapsed_time_until_charge_fraction(pulses)
+        standard_deviation = self._get_time_standard_deviation(pulses)
         
         data_dom = (
                     dom_position.tolist()                
@@ -233,15 +234,11 @@ class PMTSummariser:
         return hlc
     
     def _get_first_charge_readout(self,
-                                pulses: List[List[float]], 
-                                saturationStatus: int) -> np.ndarray:
+                                pulses: List[List[float]]) -> np.ndarray:
         # HACK consider changing the fill values
-        _fillSaturated = -1
         _fillIncomplete = -1
 
-        if saturationStatus == 1:
-            charge_readouts = np.full(self.n_pulse_collect, _fillSaturated, dtype=float)
-        elif len(pulses) < self.n_pulse_collect:
+        if len(pulses) < self.n_pulse_collect:
             charge_readouts = np.array([pulse[self.dom_charge_idx] for pulse in pulses], dtype=float)
             charge_readouts = np.pad(charge_readouts, (0, self.n_pulse_collect - len(charge_readouts)), constant_values=_fillIncomplete)
         else:
@@ -251,16 +248,12 @@ class PMTSummariser:
     
     def _get_accumulated_charge_after_ns(self,
                                         pulses: List[List[float]], 
-                                        saturationStatus: int, 
                                         interval1=25, 
                                         interval2=75) -> np.ndarray:
         # HACK consider changing the fill values
-        _fillSaturated = -1
         _fillIncomplete = -1
 
-        if saturationStatus == 1:
-            accumulated_charges = np.full(3, _fillSaturated, dtype=float)
-        elif not pulses or len(pulses) < 1:
+        if not pulses or len(pulses) < 1:
             accumulated_charges = np.full(3, _fillIncomplete, dtype=float)
         else:
             t_0 = pulses[0][self.dom_time_idx]
@@ -277,14 +270,10 @@ class PMTSummariser:
         return accumulated_charges
     
     def _get_first_pulse_time(self, 
-                            pulses_dom: List[List[float]], 
-                            saturationStatus: int) -> np.ndarray:
-        _fillSaturated = -1
+                            pulses_dom: List[List[float]]) -> np.ndarray:
         _fillIncomplete = -1
 
-        if saturationStatus == 1:
-            pulse_times = np.full(self.n_pulse_collect, _fillSaturated, dtype=float)
-        elif len(pulses_dom) < self.n_pulse_collect:
+        if len(pulses_dom) < self.n_pulse_collect:
             pulse_times = np.array([pulse[self.dom_time_idx] for pulse in pulses_dom])
             pulse_times = np.pad(pulse_times, (0, self.n_pulse_collect - len(pulse_times)), constant_values=_fillIncomplete)
         else:
@@ -294,17 +283,13 @@ class PMTSummariser:
         
     def _get_elapsed_time_until_charge_fraction(self,
                                                 pulses_dom: List[List[float]], 
-                                                saturationStatus: int, 
                                                 percentile1 = 10, 
                                                 percentile2 = 50,
                                                 ) -> np.ndarray:
         # HACK consider changing the fill values
-        _fillSaturated = -1
         _fillIncomplete = -1
 
-        if saturationStatus == 1:
-            times = np.full(2, _fillSaturated, dtype=float)
-        elif len(pulses_dom) < 2:
+        if len(pulses_dom) < 2:
             times = np.full(2, _fillIncomplete, dtype=float)
         else:
             charges = np.array([pulse[self.dom_charge_idx] for pulse in pulses_dom], dtype=float)
@@ -319,16 +304,12 @@ class PMTSummariser:
         return times
     
     def _get_time_standard_deviation(self,
-                                    pulses_dom: List[List[float]], 
-                                    saturationStatus: int) -> float:
+                                    pulses_dom: List[List[float]]) -> float:
         # HACK consider changing the fill values
-        _fillSaturated = -1
         _fillIncomplete = -1
         
         pulse_times = np.array([pulse[self.dom_time_idx] for pulse in pulses_dom])
-        if saturationStatus == 1:
-            sigmaT = _fillSaturated
-        elif len(pulse_times) < 2:
+        if len(pulse_times) < 2:
             sigmaT = _fillIncomplete
         else:
             sigmaT = np.std(pulse_times)

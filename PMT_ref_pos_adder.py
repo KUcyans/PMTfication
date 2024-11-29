@@ -1,7 +1,7 @@
 import numpy as np
 import sqlite3 as sql
 from typing import List
-import pandas as pd
+import pyarrow as pa
 import logging
 
 class ReferencePositionAdder:
@@ -22,26 +22,17 @@ class ReferencePositionAdder:
         self.tolerance_z = tolerance_z
 
     def __call__(self) -> None:
-        """
-        Callable method to update string and dom_number for a subset of events.
-        """
         self._add_columns_if_missing()
         self._update_string_dom_number()
 
     def _load_reference_data(self, filepath: str) -> np.ndarray:
-        """
-        Load reference data from a CSV file, skipping the header row.
-        """
         return np.loadtxt(filepath, delimiter=',', skiprows=1)
 
     def _add_columns_if_missing(self) -> None:
         cur_source = self.con_source.cursor()
         cur_source.execute(f"PRAGMA table_info({self.source_table})")
-        existing_columns = [col[1] for col in cur_source.fetchall()]
-        if 'string' not in existing_columns:
-            cur_source.execute(f"ALTER TABLE {self.source_table} ADD COLUMN string INTEGER")
-        if 'dom_number' not in existing_columns:
-            cur_source.execute(f"ALTER TABLE {self.source_table} ADD COLUMN dom_number INTEGER")
+        cur_source.execute(f"ALTER TABLE {self.source_table} ADD COLUMN string INTEGER")
+        cur_source.execute(f"ALTER TABLE {self.source_table} ADD COLUMN dom_number INTEGER")
         self.con_source.commit()
         self._create_indexes()
         
@@ -126,11 +117,7 @@ class ReferencePositionAdder:
             ))
         ]
 
-    # HACK confirm exception handling 
-    def _fetch_rows_to_update(self) -> pd.DataFrame:
-        if not self.event_no_subset:
-            return pd.DataFrame()
-
+    def _fetch_rows_to_update(self) -> pa.Table:
         event_filter = ','.join(map(str, self.event_no_subset))
         query = f"""
             SELECT rowid, dom_x, dom_y, dom_z 
@@ -139,7 +126,14 @@ class ReferencePositionAdder:
             AND (string IS NULL OR dom_number IS NULL) 
         """
         try:
-            rows_to_update_df = pd.read_sql_query(query, self.con_source)
-            return rows_to_update_df
-        except Exception:
-            return pd.DataFrame()
+            cursor = self.con_source.cursor()
+            cursor.execute(query)
+            rows_to_update = cursor.fetchall()
+            column_names = [desc[0] for desc in cursor.description]
+            table = pa.Table.from_arrays(
+                [pa.array([row[i] for row in rows_to_update]) for i in range(len(column_names))],
+                names=column_names,
+            )
+            return table
+        except Exception as e:
+            logging.error(f"Error fetching rows to update: {e}")

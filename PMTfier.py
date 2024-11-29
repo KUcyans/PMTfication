@@ -1,8 +1,6 @@
 import sqlite3 as sql
-import pandas as pd
 import sys
 import os
-import numpy as np
 from os import getenv
 
 from typing import List
@@ -12,11 +10,9 @@ import pyarrow.parquet as pq
 
 from tqdm import tqdm
 import argparse
-
 import logging
 
 from concurrent.futures import as_completed, ProcessPoolExecutor
-
 from multiprocessing import cpu_count
 
 from PMT_summariser import PMTSummariser
@@ -52,7 +48,9 @@ class PMTfier:
             ORDER BY event_no
             LIMIT {batch_size}
             """
-            batch = pd.read_sql_query(query, conn)['event_no'].tolist()
+            cursor = conn.cursor()
+            cursor.execute(query)
+            batch = [row[0] for row in cursor.fetchall()]
             if not batch:
                 break
             last_event_no = batch[-1]
@@ -119,13 +117,17 @@ class PMTfier:
         if 'event_no' in pa_table.schema.names:
             original_event_no = pa_table['event_no']
             enhanced_event_no = [
-                f"{signal_or_noise_tag}{subdir_tag:02}{part_no:04}{event_no.as_py():08}"
+                int(f"{signal_or_noise_tag}{subdir_tag:02}{part_no:04}{event_no.as_py():08}")
                 for event_no in original_event_no
             ]
 
             pa_table = pa_table.remove_column(pa_table.schema.get_field_index('event_no'))
-            pa_table = pa_table.append_column('original_event_no', original_event_no)
-            pa_table = pa_table.append_column('event_no', pa.array(enhanced_event_no))
+            pa_table = pa_table.append_column(
+                'original_event_no', pa.array(original_event_no, type=pa.int32())
+                )
+            pa_table = pa_table.append_column(
+                'event_no', pa.array(enhanced_event_no, type=pa.int64())
+                )
 
             reordered_columns = ['event_no', 'original_event_no'] + [
                 name for name in pa_table.schema.names if name not in ('event_no', 'original_event_no')
@@ -141,7 +143,7 @@ class PMTfier:
                     source_subdirectory: str,
                     part_no: int,
                     shard_no: int,
-                    event_batch: List[int]) -> pd.DataFrame:
+                    event_batch: List[int]) -> pa.Table:
         subdir_tag = self._get_subdir_tag(source_subdirectory)
         dest_dir = os.path.join(self.dest_root, source_subdirectory, str(part_no))
         os.makedirs(dest_dir, exist_ok=True)
@@ -172,7 +174,7 @@ class PMTfier:
                             truth_table_name: str,
                             source_subdirectory: str, 
                             part_no: int, 
-                            N_events_per_shard: int) -> pd.DataFrame:
+                            N_events_per_shard: int) -> pa.Table:
         """
         Divides the database events into shards and processes each shard, consolidating the truth+receipt data.
         """

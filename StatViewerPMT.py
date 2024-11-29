@@ -54,7 +54,7 @@ class PMTfiedStatViewer:
     
     def _build_process_params(self) -> dict:
         self.position_scaler = 500
-        self.t_scaler = 1e-4
+        self.t_scaler = 3e-4
         self.t_shifter = 10_000
         self.Q_shifter = 2
         
@@ -236,7 +236,7 @@ class PMTfiedStatViewer:
         
         for i, col in enumerate(q_columns):
             stats = {
-                "charge": col,
+                col: "",
                 "min": f"{q_data[col].min():.2f}",
                 "max": f"{q_data[col].max():.2f}",
                 "mean": f"{q_data[col].mean():.2f}",
@@ -272,7 +272,7 @@ class PMTfiedStatViewer:
         
         for i, col in enumerate(t_columns):
             stats = {
-                "time": col,
+                col: "",
                 "min": f"{t_data[col].min():.2f}",
                 "max": f"{t_data[col].max():.2f}",
                 "mean": f"{t_data[col].mean():.2f}",

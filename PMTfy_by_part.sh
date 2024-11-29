@@ -4,7 +4,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=32
 #SBATCH --mem=192G
-#SBATCH --time=8:00:00
+#SBATCH --time=16:00:00
 #SBATCH --signal=B:USR1@60
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=cyan.jo@proton.me
@@ -16,10 +16,9 @@ LOG_DIR="log/${SUBDIR}"
 mkdir -p "${LOG_DIR}"
 
 timestamp=$(date +"%d%m%Y_%H%M%S")
-logfile="${LOG_DIR}/[${timestamp}]log_PMTfy_${SUBDIR}_${PART}_${SLURM_JOB_ID}.out"
-errfile="${LOG_DIR}/[${timestamp}]log_PMTfy_${SUBDIR}_${PART}_${SLURM_JOB_ID}.err"
+logfile="${LOG_DIR}/[${timestamp}]log_PMTfy_${SUBDIR}_${PART}_${SLURM_JOB_ID}.log"
 
-exec > "${logfile}" 2> "${errfile}"
+exec > /dev/null 2> "${logfile}"
 
 echo "Starting job at $(date)"
 echo "Running PMTfier.py for subdirectory ${SUBDIR} part ${PART} with ${NEVENTS} events per shard"

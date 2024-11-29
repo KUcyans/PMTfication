@@ -1,7 +1,0 @@
-nohup: ignoring input
-2024-11-19 10:12:59 - INFO - PMTfication starts...
-2024-11-19 10:12:59 - INFO - The number of files in the subdirectory: 27
-2024-11-19 10:12:59 - INFO - Using up to 15 workers.
-2024-11-19 10:12:59 - INFO - Found 27 database files in subdirectory 22012.
-2024-11-19 10:12:59 - INFO - Using 15 workers for parallel processing.
-Processing 22012:   0%|          | 0/27 [00:00<?, ?it/s]
