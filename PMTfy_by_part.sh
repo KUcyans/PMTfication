@@ -2,8 +2,8 @@
 #SBATCH --job-name=pmtfication_%j
 #SBATCH --partition=icecube
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=32
-#SBATCH --mem=192G
+#SBATCH --cpus-per-task=48
+#SBATCH --mem=64G
 #SBATCH --time=16:00:00
 #SBATCH --signal=B:USR1@60
 #SBATCH --mail-type=END,FAIL

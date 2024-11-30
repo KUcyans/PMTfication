@@ -1,0 +1,16 @@
+2024-11-30 00:32:34 - INFO - PMTfication by part starts...
+2024-11-30 00:32:34 - INFO - Processing file: merged_part_1.db
+2024-11-30 00:32:34 - INFO - Using up to 48 workers.
+2024-11-30 00:32:55 - INFO - Processing shard 1 of part 1 in subdirectory 0003000-0003999.
+2024-11-30 00:46:01 - INFO - Processing shard 2 of part 1 in subdirectory 0003000-0003999.
+2024-11-30 00:53:03 - INFO - Processing shard 3 of part 1 in subdirectory 0003000-0003999.
+2024-11-30 01:01:39 - INFO - Processing shard 4 of part 1 in subdirectory 0003000-0003999.
+2024-11-30 01:08:41 - INFO - Processing shard 5 of part 1 in subdirectory 0003000-0003999.
+2024-11-30 01:18:12 - INFO - Processing shard 6 of part 1 in subdirectory 0003000-0003999.
+2024-11-30 01:29:20 - INFO - Processing shard 7 of part 1 in subdirectory 0003000-0003999.
+2024-11-30 01:36:29 - INFO - Processing shard 8 of part 1 in subdirectory 0003000-0003999.
+2024-11-30 01:43:31 - INFO - Processing shard 9 of part 1 in subdirectory 0003000-0003999.
+2024-11-30 01:51:25 - INFO - Processing shard 10 of part 1 in subdirectory 0003000-0003999.
+2024-11-30 01:59:43 - INFO - Processing shard 11 of part 1 in subdirectory 0003000-0003999.
+2024-11-30 02:07:43 - INFO - Processing shard 12 of part 1 in subdirectory 0003000-0003999.
+2024-11-30 02:13:30 - INFO - PMTfication completed.

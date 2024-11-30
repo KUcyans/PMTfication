@@ -1,0 +1,77 @@
+nohup: ignoring input
+2024-11-29 22:40:41 - INFO - PMTfication starts...
+2024-11-29 22:40:41 - INFO - The number of files in the subdirectory: 2
+2024-11-29 22:40:41 - INFO - Using up to 1 workers.
+2024-11-29 22:40:41 - INFO - Found 2 database files in subdirectory 99999.
+Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2024-11-29 22:40:41 - INFO - Processing shard 1 of part 98 in subdirectory 99999.
+2024-11-29 22:40:44 - ERROR - Error processing file merged_part_98.db: __init__() takes exactly 2 positional arguments (1 given)
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 207, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 185, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 166, in pmtfy_shard
+    pa_truth_shard = truth_maker(int(subdir_tag), part_no, shard_no)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 27, in __call__
+    return self._get_truth_pa_shard(subdirectory_no, part_no, shard_no)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 61, in _get_truth_pa_shard
+    filtered_rows = pc.is_in(truth_table['event_no'], values=pa.array(receipt_pa['event_no']))
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/pyarrow/compute.py", line 260, in wrapper
+    options = _handle_options(func_name, options_class, options,
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/pyarrow/compute.py", line 223, in _handle_options
+    return options_class(*args, **kwargs)
+  File "pyarrow/_compute.pyx", line 1667, in pyarrow._compute.SetLookupOptions.__init__
+TypeError: __init__() takes exactly 2 positional arguments (1 given)
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 251, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+TypeError: __init__() takes exactly 2 positional arguments (1 given)
+Processing 99999:  50%|█████     | 1/2 [00:02<00:02,  2.95s/it]2024-11-29 22:40:44 - INFO - Processing shard 1 of part 99 in subdirectory 99999.
+2024-11-29 22:40:49 - ERROR - Error processing file merged_part_99.db: __init__() takes exactly 2 positional arguments (1 given)
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 207, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 185, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 166, in pmtfy_shard
+    pa_truth_shard = truth_maker(int(subdir_tag), part_no, shard_no)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 27, in __call__
+    return self._get_truth_pa_shard(subdirectory_no, part_no, shard_no)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 61, in _get_truth_pa_shard
+    filtered_rows = pc.is_in(truth_table['event_no'], values=pa.array(receipt_pa['event_no']))
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/pyarrow/compute.py", line 260, in wrapper
+    options = _handle_options(func_name, options_class, options,
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/pyarrow/compute.py", line 223, in _handle_options
+    return options_class(*args, **kwargs)
+  File "pyarrow/_compute.pyx", line 1667, in pyarrow._compute.SetLookupOptions.__init__
+TypeError: __init__() takes exactly 2 positional arguments (1 given)
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 251, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+TypeError: __init__() takes exactly 2 positional arguments (1 given)
+Processing 99999: 100%|██████████| 2/2 [00:08<00:00,  4.29s/it]Processing 99999: 100%|██████████| 2/2 [00:08<00:00,  4.09s/it]
+2024-11-29 22:40:49 - INFO - PMTfication completed.

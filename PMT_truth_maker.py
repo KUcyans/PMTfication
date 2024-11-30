@@ -2,26 +2,34 @@ import pyarrow as pa
 import pyarrow.compute as pc
 import sqlite3 as sql
 from typing import List, Dict
+from pyarrow.compute import SetLookupOptions
+
 
 class PMTTruthMaker:
-    _SCHEMA = None
+    _SCHEMA = pa.schema([
+            ('event_no', pa.int32()),
+            ('subdirectory_no', pa.int32()),
+            ('part_no', pa.int32()),
+            ('shard_no', pa.int32()),
+            ('N_doms', pa.int32()),
+            ('offset', pa.int32()),
+            ('energy', pa.float32()),
+            ('azimuth', pa.float32()),
+            ('zenith', pa.float32()),
+            ('pid', pa.int32())
+        ])
 
     def __init__(self, con_source: sql.Connection, source_table: str, truth_table_name: str, event_no_subset: List[int]) -> None:
         self.con_source = con_source
         self.source_table = source_table
         self.truth_table_name = truth_table_name
         self.event_no_subset = event_no_subset
-
-        if PMTTruthMaker._SCHEMA is None:
-            PMTTruthMaker._SCHEMA = self._build_schema()
-
-    def __call__(self, part_no: int, shard_no: int, subdirectory_no: int) -> pa.Table:
-        return self._get_truth_pa_shard(part_no, shard_no, subdirectory_no)
-    
-    def _get_truth_pa_shard(self, 
-                            part_no: int, 
-                            shard_no: int, 
-                            subdirectory_no: int) -> pa.Table:
+        
+    def __call__(self, subdirectory_no: int, part_no: int, shard_no: int) -> pa.Table:
+        return self._get_truth_pa_shard(subdirectory_no, part_no, shard_no)
+        
+    def _get_truth_pa_shard(self, part_no: int, shard_no: int, subdirectory_no: int) -> pa.Table:
+        # Create receipt data
         receipt_data = {
             'event_no': self.event_no_subset,
             'subdirectory_no': [subdirectory_no] * len(self.event_no_subset),
@@ -30,6 +38,7 @@ class PMTTruthMaker:
         }
         receipt_pa = pa.Table.from_pydict(receipt_data)
 
+        # SQL Query
         event_filter = ','.join(map(str, self.event_no_subset))
         truth_query = f"""
             SELECT t.event_no, t.energy, t.azimuth, t.zenith, t.pid,
@@ -42,40 +51,31 @@ class PMTTruthMaker:
         cursor = self.con_source.cursor()
         cursor.execute(truth_query)
         rows = cursor.fetchall()
+        if not rows:
+            return pa.Table.from_pydict({field.name: [] for field in PMTTruthMaker._SCHEMA}, schema=PMTTruthMaker._SCHEMA)
+
         columns = [desc[0] for desc in cursor.description]
-        truth_table = pa.Table.from_arrays(
-            [pa.array([row[i] for row in rows]) for i in range(len(columns))],
-            names=columns
-        )
+        truth_data = {col: [row[i] for row in rows] for i, col in enumerate(columns)}
+        truth_data['offset'] = pc.cumulative_sum(pa.array(truth_data['N_doms']))
+        truth_table = pa.Table.from_pydict(truth_data)
 
-        offset = pc.cumulative_sum(truth_table['N_doms'])
-        truth_table = truth_table.append_column('offset', offset)
+        event_no_column_truth_list = truth_table['event_no'].to_pylist()
+        event_no_column_receipt_list = receipt_pa['event_no'].to_pylist()
 
-        merged_data = {field.name: [] for field in PMTTruthMaker._SCHEMA}
-        for row in receipt_pa.to_pydict()['event_no']:
-            if row in truth_table['event_no']:
-                merged_row = {
-                    'event_no': row,
-                    'subdirectory_no': subdirectory_no,
-                    'part_no': part_no,
-                    'shard_no': shard_no,
-                    **{col: truth_table[col][row] for col in truth_table.column_names},
-                }
-                for key, value in merged_row.items():
-                    merged_data[key].append(value)
+        if not event_no_column_truth_list or not event_no_column_receipt_list:
+            return pa.Table.from_pydict({field.name: [] for field in PMTTruthMaker._SCHEMA}, schema=PMTTruthMaker._SCHEMA)
+
+        lookup_options = SetLookupOptions(value_set=pa.array(event_no_column_receipt_list))
+        filtered_rows = pc.is_in(pa.array(event_no_column_truth_list), options=lookup_options)
+        matched_truth_table = truth_table.filter(filtered_rows)
+
+        merged_data = {
+            'event_no': matched_truth_table['event_no'],
+            'subdirectory_no': pa.array([subdirectory_no] * len(matched_truth_table)),
+            'part_no': pa.array([part_no] * len(matched_truth_table)),
+            'shard_no': pa.array([shard_no] * len(matched_truth_table)),
+            **{col: matched_truth_table[col] for col in truth_table.column_names if col not in ['event_no']}
+        }
 
         return pa.Table.from_pydict(merged_data, schema=PMTTruthMaker._SCHEMA)
 
-    def _build_schema(self) -> pa.Schema:
-        return pa.schema([
-            ('event_no', pa.int64()),
-            ('subdirectory_no', pa.int32()),
-            ('part_no', pa.int32()),
-            ('shard_no', pa.int32()),
-            ('N_doms', pa.int32()),
-            ('offset', pa.int64()),
-            ('energy', pa.float64()),
-            ('azimuth', pa.float64()),
-            ('zenith', pa.float64()),
-            ('pid', pa.int32())
-        ])

@@ -163,7 +163,7 @@ class PMTfier:
         # NOTE
         # PMT truth table for this shard is created by PMTTruthMaker and returned
         truth_maker = PMTTruthMaker(con_source, source_table, truth_table_name, event_batch)
-        pa_truth_shard = truth_maker(part_no, shard_no, int(subdir_tag))
+        pa_truth_shard = truth_maker(int(subdir_tag), part_no, shard_no)
         pa_truth_shard = self._add_enhance_event_no(pa_truth_shard, subdir_tag, part_no)
         
         return pa_truth_shard
