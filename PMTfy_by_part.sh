@@ -3,7 +3,7 @@
 #SBATCH --partition=icecube
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=48
-#SBATCH --mem=64G
+#SBATCH --mem=32G
 #SBATCH --time=16:00:00
 #SBATCH --signal=B:USR1@60
 #SBATCH --mail-type=END,FAIL
