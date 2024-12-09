@@ -29,7 +29,6 @@ class PMTTruthMaker:
         return self._get_truth_pa_shard(subdirectory_no, part_no, shard_no)
         
     def _get_truth_pa_shard(self, subdirectory_no: int, part_no: int, shard_no: int) -> pa.Table:
-        # Create receipt data
         receipt_data = {
             'event_no': self.event_no_subset,
             'subdirectory_no': [subdirectory_no] * len(self.event_no_subset),
