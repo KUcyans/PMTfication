@@ -1,0 +1,142 @@
+nohup: ignoring input
+2024-12-10 14:57:43 - INFO - PMTfication starts...
+2024-12-10 14:57:43 - INFO - The number of files in the subdirectory: 2
+2024-12-10 14:57:43 - INFO - The number of files in the subdirectory: 2
+2024-12-10 14:57:43 - INFO - Using up to 1 workers.
+2024-12-10 14:57:43 - INFO - PMTfying Snowstorm...
+2024-12-10 14:57:43 - INFO - Found 2 database files in subdirectory 99999.
+Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2024-12-10 14:57:44 - INFO - Processing shard 1 of part 98 in subdirectory 99999.
+2024-12-10 14:57:47 - ERROR - Error processing file merged_part_98.db: Cannot append scalar of type int64 to builder for type int32
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 217, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 200, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 186, in pmtfy_shard
+    pa_truth_shard = self._add_enhance_event_no(pa_truth_shard, subdir_tag, part_no)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 148, in _add_enhance_event_no
+    'original_event_no', pa.array(original_event_no, type=pa.int32())
+  File "pyarrow/array.pxi", line 370, in pyarrow.lib.array
+  File "pyarrow/array.pxi", line 42, in pyarrow.lib._sequence_to_array
+  File "pyarrow/error.pxi", line 155, in pyarrow.lib.pyarrow_internal_check_status
+  File "pyarrow/error.pxi", line 92, in pyarrow.lib.check_status
+pyarrow.lib.ArrowInvalid: Cannot append scalar of type int64 to builder for type int32
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 248, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+pyarrow.lib.ArrowInvalid: Cannot append scalar of type int64 to builder for type int32
+Processing 99999:  50%|█████     | 1/2 [00:04<00:04,  4.41s/it]2024-12-10 14:57:48 - INFO - Processing shard 1 of part 99 in subdirectory 99999.
+2024-12-10 14:57:57 - ERROR - Error processing file merged_part_99.db: Cannot append scalar of type int64 to builder for type int32
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 217, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 200, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 186, in pmtfy_shard
+    pa_truth_shard = self._add_enhance_event_no(pa_truth_shard, subdir_tag, part_no)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 148, in _add_enhance_event_no
+    'original_event_no', pa.array(original_event_no, type=pa.int32())
+  File "pyarrow/array.pxi", line 370, in pyarrow.lib.array
+  File "pyarrow/array.pxi", line 42, in pyarrow.lib._sequence_to_array
+  File "pyarrow/error.pxi", line 155, in pyarrow.lib.pyarrow_internal_check_status
+  File "pyarrow/error.pxi", line 92, in pyarrow.lib.check_status
+pyarrow.lib.ArrowInvalid: Cannot append scalar of type int64 to builder for type int32
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 248, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+pyarrow.lib.ArrowInvalid: Cannot append scalar of type int64 to builder for type int32
+Processing 99999: 100%|██████████| 2/2 [00:13<00:00,  7.30s/it]Processing 99999: 100%|██████████| 2/2 [00:13<00:00,  6.86s/it]
+2024-12-10 14:57:57 - INFO - PMTfication for Snowstorm completed.
+2024-12-10 14:57:57 - INFO - PMTfying Corsika...
+2024-12-10 14:57:57 - INFO - Found 2 database files in subdirectory 9999999-9999999.
+Processing 9999999-9999999:   0%|          | 0/2 [00:00<?, ?it/s]2024-12-10 14:57:57 - INFO - Processing shard 1 of part 96 in subdirectory 9999999-9999999.
+2024-12-10 14:58:31 - ERROR - Error processing file merged_part_96.db: Cannot append scalar of type int64 to builder for type int32
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 217, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 200, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 186, in pmtfy_shard
+    pa_truth_shard = self._add_enhance_event_no(pa_truth_shard, subdir_tag, part_no)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 148, in _add_enhance_event_no
+    'original_event_no', pa.array(original_event_no, type=pa.int32())
+  File "pyarrow/array.pxi", line 370, in pyarrow.lib.array
+  File "pyarrow/array.pxi", line 42, in pyarrow.lib._sequence_to_array
+  File "pyarrow/error.pxi", line 155, in pyarrow.lib.pyarrow_internal_check_status
+  File "pyarrow/error.pxi", line 92, in pyarrow.lib.check_status
+pyarrow.lib.ArrowInvalid: Cannot append scalar of type int64 to builder for type int32
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 248, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+pyarrow.lib.ArrowInvalid: Cannot append scalar of type int64 to builder for type int32
+Processing 9999999-9999999:  50%|█████     | 1/2 [00:33<00:33, 33.82s/it]2024-12-10 14:58:31 - INFO - Processing shard 1 of part 97 in subdirectory 9999999-9999999.
+2024-12-10 14:58:37 - ERROR - Error processing file merged_part_97.db: Cannot append scalar of type int64 to builder for type int32
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 217, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 200, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 186, in pmtfy_shard
+    pa_truth_shard = self._add_enhance_event_no(pa_truth_shard, subdir_tag, part_no)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 148, in _add_enhance_event_no
+    'original_event_no', pa.array(original_event_no, type=pa.int32())
+  File "pyarrow/array.pxi", line 370, in pyarrow.lib.array
+  File "pyarrow/array.pxi", line 42, in pyarrow.lib._sequence_to_array
+  File "pyarrow/error.pxi", line 155, in pyarrow.lib.pyarrow_internal_check_status
+  File "pyarrow/error.pxi", line 92, in pyarrow.lib.check_status
+pyarrow.lib.ArrowInvalid: Cannot append scalar of type int64 to builder for type int32
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 248, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+pyarrow.lib.ArrowInvalid: Cannot append scalar of type int64 to builder for type int32
+Processing 9999999-9999999: 100%|██████████| 2/2 [00:40<00:00, 17.69s/it]Processing 9999999-9999999: 100%|██████████| 2/2 [00:40<00:00, 20.11s/it]
+2024-12-10 14:58:37 - INFO - PMTfication for Corsika completed.
+2024-12-10 14:58:37 - INFO - PMTfication completed.

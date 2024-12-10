@@ -1,0 +1,15 @@
+nohup: ignoring input
+2024-12-10 12:55:06 - INFO - PMTfication starts...
+2024-12-10 12:55:06 - INFO - The number of files in the subdirectory: 2
+2024-12-10 12:55:06 - INFO - The number of files in the subdirectory: 2
+2024-12-10 12:55:06 - INFO - Using up to 1 workers.
+2024-12-10 12:55:06 - INFO - PMTfying Corsika...
+2024-12-10 12:55:06 - INFO - PMTfication for Corsika completed.
+2024-12-10 12:55:06 - INFO - PMTfication completed.
+source_root: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/sqlite_pulses/Corsika/
+source_subdirectory: 9999999-9999999
+source_table: SRTInIcePulses
+dest_root: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Corsika/
+N_events_per_shard: 10
+subdirectory_path in subdir_parallel: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/sqlite_pulses/Corsika/9999999-9999999
+os.path.isdir(subdirectory_path) and self.source_subdirectory.isdigit() is False: False

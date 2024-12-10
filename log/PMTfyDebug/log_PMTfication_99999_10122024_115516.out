@@ -1,0 +1,73 @@
+nohup: ignoring input
+2024-12-10 11:55:17 - INFO - PMTfication starts...
+2024-12-10 11:55:17 - INFO - The number of files in the subdirectory: 2
+2024-12-10 11:55:17 - INFO - Using up to 1 workers.
+2024-12-10 11:55:17 - INFO - Found 2 database files in subdirectory 99999.
+Source directory: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/sqlite_pulses/Snowstorm/99999
+First database file: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/sqlite_pulses/Snowstorm/99999/merged_part_98.db
+Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2024-12-10 11:55:17 - INFO - Processing shard 1 of part 98 in subdirectory 99999.
+2024-12-10 11:55:21 - ERROR - Error processing file merged_part_98.db: 0
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 220, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 203, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 188, in pmtfy_shard
+    pa_truth_shard = truth_maker(int(subdir_tag), part_no, shard_no)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 53, in __call__
+    return self._merge_tables(truth_table, HE_daughter_table)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 97, in _merge_tables
+    truth_event_map = {row[0]: row for row in truth_table.to_pylist()}
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 97, in <dictcomp>
+    truth_event_map = {row[0]: row for row in truth_table.to_pylist()}
+KeyError: 0
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 252, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+KeyError: 0
+Processing 99999:  50%|█████     | 1/2 [00:04<00:04,  4.90s/it]2024-12-10 11:55:21 - INFO - Processing shard 1 of part 99 in subdirectory 99999.
+2024-12-10 11:55:32 - ERROR - Error processing file merged_part_99.db: 0
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 220, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 203, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 188, in pmtfy_shard
+    pa_truth_shard = truth_maker(int(subdir_tag), part_no, shard_no)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 53, in __call__
+    return self._merge_tables(truth_table, HE_daughter_table)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 97, in _merge_tables
+    truth_event_map = {row[0]: row for row in truth_table.to_pylist()}
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 97, in <dictcomp>
+    truth_event_map = {row[0]: row for row in truth_table.to_pylist()}
+KeyError: 0
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 252, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+KeyError: 0
+Processing 99999: 100%|██████████| 2/2 [00:15<00:00,  8.25s/it]Processing 99999: 100%|██████████| 2/2 [00:15<00:00,  7.75s/it]
+2024-12-10 11:55:32 - INFO - PMTfication completed.

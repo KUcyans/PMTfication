@@ -1,0 +1,15 @@
+nohup: ignoring input
+2024-12-10 11:37:34 - INFO - PMTfication starts...
+2024-12-10 11:37:34 - INFO - The number of files in the subdirectory: 2
+2024-12-10 11:37:34 - INFO - Using up to 1 workers.
+2024-12-10 11:37:34 - ERROR - An error occurred: expected str, bytes or os.PathLike object, not NoneType
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 300, in <module>
+    main()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 286, in main
+    pmtfier = PMTfier(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 36, in __init__
+    self.truth_table_name = self._get_truth_table_name_db(first_db_file)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 69, in _get_truth_table_name_db
+    con_source = sql.connect(source_file)
+TypeError: expected str, bytes or os.PathLike object, not NoneType

@@ -1,0 +1,10 @@
+nohup: ignoring input
+2024-12-10 12:47:52 - INFO - PMTfication starts...
+2024-12-10 12:47:52 - INFO - The number of files in the subdirectory: 2
+2024-12-10 12:47:52 - INFO - The number of files in the subdirectory: 2
+2024-12-10 12:47:52 - INFO - Using up to 1 workers.
+2024-12-10 12:47:52 - INFO - PMTfying Corsika...
+2024-12-10 12:47:52 - INFO - PMTfication for Corsika completed.
+2024-12-10 12:47:52 - INFO - PMTfication completed.
+Signal or noise name: Snowstorm
+Signal or noise name: Corsika

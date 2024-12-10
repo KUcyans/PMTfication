@@ -1,0 +1,17 @@
+nohup: ignoring input
+2024-12-10 11:45:02 - INFO - PMTfication starts...
+2024-12-10 11:45:02 - INFO - The number of files in the subdirectory: 2
+2024-12-10 11:45:02 - INFO - Using up to 1 workers.
+2024-12-10 11:45:02 - ERROR - An error occurred: Neither 'truth' nor 'Truth' table exists in the source database.
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 303, in <module>
+    main()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 289, in main
+    pmtfier = PMTfier(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 39, in __init__
+    self.truth_table_name = self._get_truth_table_name_db(first_db_file)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 81, in _get_truth_table_name_db
+    raise ValueError("Neither 'truth' nor 'Truth' table exists in the source database.")
+ValueError: Neither 'truth' nor 'Truth' table exists in the source database.
+Source directory: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/sqlite_pulses/Snowstorm/99999
+First database file: merged_part_98.db

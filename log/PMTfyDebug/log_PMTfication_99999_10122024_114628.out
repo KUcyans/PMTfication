@@ -1,0 +1,55 @@
+nohup: ignoring input
+2024-12-10 11:46:29 - INFO - PMTfication starts...
+2024-12-10 11:46:29 - INFO - The number of files in the subdirectory: 2
+2024-12-10 11:46:29 - INFO - Using up to 1 workers.
+2024-12-10 11:46:29 - INFO - Found 2 database files in subdirectory 99999.
+Source directory: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/sqlite_pulses/Snowstorm/99999
+First database file: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/sqlite_pulses/Snowstorm/99999/merged_part_98.db
+Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2024-12-10 11:46:29 - ERROR - Error processing file merged_part_98.db: 'PMTfier' object has no attribute 'source_subdirectory'
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 220, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 202, in _divide_and_conquer_part
+    logging.info(f"Processing shard {shard_no} of part {part_no} in subdirectory {self.source_subdirectory}.")
+AttributeError: 'PMTfier' object has no attribute 'source_subdirectory'
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 252, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+AttributeError: 'PMTfier' object has no attribute 'source_subdirectory'
+Processing 99999:  50%|█████     | 1/2 [00:00<00:00,  3.72it/s]2024-12-10 11:46:30 - ERROR - Error processing file merged_part_99.db: 'PMTfier' object has no attribute 'source_subdirectory'
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 220, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 202, in _divide_and_conquer_part
+    logging.info(f"Processing shard {shard_no} of part {part_no} in subdirectory {self.source_subdirectory}.")
+AttributeError: 'PMTfier' object has no attribute 'source_subdirectory'
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 252, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+AttributeError: 'PMTfier' object has no attribute 'source_subdirectory'
+Processing 99999: 100%|██████████| 2/2 [00:01<00:00,  1.28it/s]Processing 99999: 100%|██████████| 2/2 [00:01<00:00,  1.42it/s]
+2024-12-10 11:46:30 - INFO - PMTfication completed.

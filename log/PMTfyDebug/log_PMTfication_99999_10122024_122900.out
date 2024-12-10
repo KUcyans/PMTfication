@@ -1,0 +1,14 @@
+nohup: ignoring input
+2024-12-10 12:29:00 - INFO - PMTfication starts...
+2024-12-10 12:29:00 - INFO - The number of files in the subdirectory: 2
+2024-12-10 12:29:00 - INFO - The number of files in the subdirectory: 2
+2024-12-10 12:29:00 - INFO - Using up to 1 workers.
+2024-12-10 12:29:00 - ERROR - An error occurred: [Errno 2] No such file or directory: '/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/sqlite_pulses/99999'
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfy_sample.py", line 78, in <module>
+    main()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfy_sample.py", line 52, in main
+    pmtfier_snowstorm = PMTfier(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 36, in __init__
+    first_db_file = os.path.join(source_dir, next((f for f in os.listdir(source_dir) if f.endswith('.db')), None))
+FileNotFoundError: [Errno 2] No such file or directory: '/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/sqlite_pulses/99999'
