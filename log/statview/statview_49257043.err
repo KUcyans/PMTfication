@@ -1,0 +1,17 @@
+Generating plots:   0%|          | 0/18 [00:00<?, ?it/s]Generating plots:   6%|▌         | 1/18 [00:26<07:38, 26.98s/it]Generating plots:  11%|█         | 2/18 [00:28<03:08, 11.76s/it]Generating plots:  17%|█▋        | 3/18 [00:41<03:08, 12.57s/it]Generating plots:  22%|██▏       | 4/18 [02:02<09:14, 39.57s/it]Generating plots:  22%|██▏       | 4/18 [03:28<12:10, 52.17s/it]
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPulseMap.py", line 453, in <module>
+    viewer = PulseMapStatViewer(args.source_db, args.output_pdf, args.N)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPulseMap.py", line 23, in __init__
+    self._saveFigures(self.df_features, self.df_truth, output_pdf)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPulseMap.py", line 84, in _saveFigures
+    fig, ax = plot_func()  # Call the plotting function to generate the figure
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPulseMap.py", line 65, in <lambda>
+    lambda: self._plotNpulsesPerDOM_IT(df_features, df_truth, file),
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPulseMap.py", line 159, in _plotNpulsesPerDOM_IT
+    Nbins, binwidth, bins, counts, bin_centers = getHistoParam(Npulses_CC, binwidth=20)
+  File "/groups/icecube/cyan/Utils/PlotUtils.py", line 83, in getHistoParam
+    start_bin = np.floor(data.min()) - 0.5 * binwidth
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/numpy/core/_methods.py", line 45, in _amin
+    return umr_minimum(a, axis, None, out, keepdims, initial, where)
+ValueError: zero-size array to reduction operation minimum which has no identity

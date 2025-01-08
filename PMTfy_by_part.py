@@ -45,13 +45,14 @@ def main():
     logging.info(f"Using up to {max_workers} workers.")
     
     N_events_per_shard = args.N_events_per_shard
-    pmtfier = PMTfier(source_table_name, dest_root, N_events_per_shard)
-    pmtfier.pmtfy_part(
+    pmtfier = PMTfier(
+        source_root= source_root, 
         source_subdirectory=args.subdirectory_in_number,
-        source_part_file=source_file_path,
         source_table=source_table_name,
-        N_events_per_shard=N_events_per_shard
-    )
+        dest_root=dest_root,
+        N_events_per_shard=N_events_per_shard) 
+    
+    pmtfier.pmtfy_part(source_part_file=source_file_path)
     logging.info("PMTfication completed.")
 
 if __name__ == "__main__":

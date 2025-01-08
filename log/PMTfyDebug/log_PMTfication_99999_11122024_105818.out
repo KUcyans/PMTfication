@@ -1,0 +1,302 @@
+nohup: ignoring input
+2024-12-11 10:58:18 - INFO - PMTfication starts...
+2024-12-11 10:58:18 - INFO - The number of files in the subdirectory: 2
+2024-12-11 10:58:18 - INFO - The number of files in the subdirectory: 2
+2024-12-11 10:58:18 - INFO - Using up to 1 workers.
+2024-12-11 10:58:18 - INFO - PMTfying Snowstorm...
+2024-12-11 10:58:18 - INFO - Found 2 database files in subdirectory 99999.
+Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2024-12-11 10:58:19 - INFO - Processing shard 1 of part 98 in subdirectory 99999.
+2024-12-11 10:58:23 - ERROR - Error processing file merged_part_98.db: "SetLookupOptions(value_set=int64:[
+  1419,
+  1420,
+  1421,
+  1422,
+  1423,
+  1424,
+  1425,
+  1426,
+  1427,
+  1428
+], null_matching_behavior=MATCH)" is not a valid value set
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 207, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 189, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 176, in pmtfy_shard
+    pa_truth_shard = truth_maker(int(self.subdir_tag), part_no, shard_no, event_batch)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 56, in __call__
+    truth_table = self._get_truth_pa_shard(receipt_pa, event_no_subset)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 73, in _get_truth_pa_shard
+    return self._filter_rows(truth_table, receipt_pa)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 127, in _filter_rows
+    filtered_rows = pc.is_in(table['event_no'], SetLookupOptions(pa.array(receipt_pa['event_no'])))
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/pyarrow/compute.py", line 260, in wrapper
+    options = _handle_options(func_name, options_class, options,
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/pyarrow/compute.py", line 223, in _handle_options
+    return options_class(*args, **kwargs)
+  File "pyarrow/_compute.pyx", line 1668, in pyarrow._compute.SetLookupOptions.__init__
+  File "pyarrow/_compute.pyx", line 1647, in pyarrow._compute._SetLookupOptions._set_options
+  File "pyarrow/_compute.pyx", line 657, in pyarrow._compute._raise_invalid_function_option
+TypeError: "SetLookupOptions(value_set=int64:[
+  1419,
+  1420,
+  1421,
+  1422,
+  1423,
+  1424,
+  1425,
+  1426,
+  1427,
+  1428
+], null_matching_behavior=MATCH)" is not a valid value set
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 239, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+TypeError: "SetLookupOptions(value_set=int64:[
+  1419,
+  1420,
+  1421,
+  1422,
+  1423,
+  1424,
+  1425,
+  1426,
+  1427,
+  1428
+], null_matching_behavior=MATCH)" is not a valid value set
+Processing 99999:  50%|█████     | 1/2 [00:04<00:04,  4.41s/it]2024-12-11 10:58:23 - INFO - Processing shard 1 of part 99 in subdirectory 99999.
+2024-12-11 10:58:32 - ERROR - Error processing file merged_part_99.db: "SetLookupOptions(value_set=int64:[
+  366,
+  367,
+  368,
+  369,
+  370,
+  371,
+  372,
+  373,
+  374,
+  375
+], null_matching_behavior=MATCH)" is not a valid value set
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 207, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 189, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 176, in pmtfy_shard
+    pa_truth_shard = truth_maker(int(self.subdir_tag), part_no, shard_no, event_batch)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 56, in __call__
+    truth_table = self._get_truth_pa_shard(receipt_pa, event_no_subset)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 73, in _get_truth_pa_shard
+    return self._filter_rows(truth_table, receipt_pa)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 127, in _filter_rows
+    filtered_rows = pc.is_in(table['event_no'], SetLookupOptions(pa.array(receipt_pa['event_no'])))
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/pyarrow/compute.py", line 260, in wrapper
+    options = _handle_options(func_name, options_class, options,
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/pyarrow/compute.py", line 223, in _handle_options
+    return options_class(*args, **kwargs)
+  File "pyarrow/_compute.pyx", line 1668, in pyarrow._compute.SetLookupOptions.__init__
+  File "pyarrow/_compute.pyx", line 1647, in pyarrow._compute._SetLookupOptions._set_options
+  File "pyarrow/_compute.pyx", line 657, in pyarrow._compute._raise_invalid_function_option
+TypeError: "SetLookupOptions(value_set=int64:[
+  366,
+  367,
+  368,
+  369,
+  370,
+  371,
+  372,
+  373,
+  374,
+  375
+], null_matching_behavior=MATCH)" is not a valid value set
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 239, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+TypeError: "SetLookupOptions(value_set=int64:[
+  366,
+  367,
+  368,
+  369,
+  370,
+  371,
+  372,
+  373,
+  374,
+  375
+], null_matching_behavior=MATCH)" is not a valid value set
+Processing 99999: 100%|██████████| 2/2 [00:13<00:00,  7.44s/it]Processing 99999: 100%|██████████| 2/2 [00:13<00:00,  6.99s/it]
+2024-12-11 10:58:32 - INFO - PMTfication for Snowstorm completed.
+2024-12-11 10:58:32 - INFO - PMTfying Corsika...
+2024-12-11 10:58:32 - INFO - Found 2 database files in subdirectory 9999999-9999999.
+Processing 9999999-9999999:   0%|          | 0/2 [00:00<?, ?it/s]2024-12-11 10:58:33 - INFO - Processing shard 1 of part 96 in subdirectory 9999999-9999999.
+2024-12-11 10:59:03 - ERROR - Error processing file merged_part_96.db: "SetLookupOptions(value_set=int64:[
+  998,
+  999,
+  1000,
+  1001,
+  1002,
+  1003,
+  1004,
+  1005,
+  1006,
+  1007
+], null_matching_behavior=MATCH)" is not a valid value set
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 207, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 189, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 176, in pmtfy_shard
+    pa_truth_shard = truth_maker(int(self.subdir_tag), part_no, shard_no, event_batch)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 56, in __call__
+    truth_table = self._get_truth_pa_shard(receipt_pa, event_no_subset)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 73, in _get_truth_pa_shard
+    return self._filter_rows(truth_table, receipt_pa)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 127, in _filter_rows
+    filtered_rows = pc.is_in(table['event_no'], SetLookupOptions(pa.array(receipt_pa['event_no'])))
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/pyarrow/compute.py", line 260, in wrapper
+    options = _handle_options(func_name, options_class, options,
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/pyarrow/compute.py", line 223, in _handle_options
+    return options_class(*args, **kwargs)
+  File "pyarrow/_compute.pyx", line 1668, in pyarrow._compute.SetLookupOptions.__init__
+  File "pyarrow/_compute.pyx", line 1647, in pyarrow._compute._SetLookupOptions._set_options
+  File "pyarrow/_compute.pyx", line 657, in pyarrow._compute._raise_invalid_function_option
+TypeError: "SetLookupOptions(value_set=int64:[
+  998,
+  999,
+  1000,
+  1001,
+  1002,
+  1003,
+  1004,
+  1005,
+  1006,
+  1007
+], null_matching_behavior=MATCH)" is not a valid value set
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 239, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+TypeError: "SetLookupOptions(value_set=int64:[
+  998,
+  999,
+  1000,
+  1001,
+  1002,
+  1003,
+  1004,
+  1005,
+  1006,
+  1007
+], null_matching_behavior=MATCH)" is not a valid value set
+Processing 9999999-9999999:  50%|█████     | 1/2 [00:30<00:30, 30.86s/it]2024-12-11 10:59:04 - INFO - Processing shard 1 of part 97 in subdirectory 9999999-9999999.
+2024-12-11 10:59:10 - ERROR - Error processing file merged_part_97.db: "SetLookupOptions(value_set=int64:[
+  600,
+  601,
+  602,
+  603,
+  604,
+  605,
+  606,
+  607,
+  608,
+  609
+], null_matching_behavior=MATCH)" is not a valid value set
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 207, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 189, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 176, in pmtfy_shard
+    pa_truth_shard = truth_maker(int(self.subdir_tag), part_no, shard_no, event_batch)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 56, in __call__
+    truth_table = self._get_truth_pa_shard(receipt_pa, event_no_subset)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 73, in _get_truth_pa_shard
+    return self._filter_rows(truth_table, receipt_pa)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 127, in _filter_rows
+    filtered_rows = pc.is_in(table['event_no'], SetLookupOptions(pa.array(receipt_pa['event_no'])))
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/pyarrow/compute.py", line 260, in wrapper
+    options = _handle_options(func_name, options_class, options,
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/pyarrow/compute.py", line 223, in _handle_options
+    return options_class(*args, **kwargs)
+  File "pyarrow/_compute.pyx", line 1668, in pyarrow._compute.SetLookupOptions.__init__
+  File "pyarrow/_compute.pyx", line 1647, in pyarrow._compute._SetLookupOptions._set_options
+  File "pyarrow/_compute.pyx", line 657, in pyarrow._compute._raise_invalid_function_option
+TypeError: "SetLookupOptions(value_set=int64:[
+  600,
+  601,
+  602,
+  603,
+  604,
+  605,
+  606,
+  607,
+  608,
+  609
+], null_matching_behavior=MATCH)" is not a valid value set
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 239, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+TypeError: "SetLookupOptions(value_set=int64:[
+  600,
+  601,
+  602,
+  603,
+  604,
+  605,
+  606,
+  607,
+  608,
+  609
+], null_matching_behavior=MATCH)" is not a valid value set
+Processing 9999999-9999999: 100%|██████████| 2/2 [00:37<00:00, 16.46s/it]Processing 9999999-9999999: 100%|██████████| 2/2 [00:37<00:00, 18.62s/it]
+2024-12-11 10:59:10 - INFO - PMTfication for Corsika completed.
+2024-12-11 10:59:10 - INFO - PMTfication completed.

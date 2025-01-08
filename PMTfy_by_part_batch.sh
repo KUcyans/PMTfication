@@ -6,12 +6,23 @@
 # NEVENTS: Number of events per shard
 
 conditions=(
-    "Snowstorm 22010 3 3 200000"
-    "Snowstorm 22011 3 3 20000"
-    "Snowstorm 22012 3 3 2000"
-    "Corsika 0003000-0003999 3 3 20000"
-    "Corsika 0004000-0004999 3 3 20000"
-    "Corsika 0005000-0005999 3 3 20000"
+    "Snowstorm 22010 6 11 200000"
+    # "Snowstorm 22011 5 10 20000"
+    # "Snowstorm 22012 11 21 2000"
+    # "Snowstorm 22013 1 5 200000"
+    # "Snowstorm 22014 6 6 20000"
+    # "Snowstorm 22015 6 12 2000"
+    # "Snowstorm 22016 1 5 200000"
+    # "Snowstorm 22017 1 5 20000"
+    # "Snowstorm 22018 6 21 2000"
+    # "Corsika 0002000-0002999 1 8 20000"
+    # "Corsika 0003000-0003999 5 9 20000"
+    # "Corsika 0004000-0004999 5 9 20000"
+    # "Corsika 0005000-0005999 5 9 20000"
+    # "Corsika 0006000-0006999 5 9 20000"
+    # "Corsika 0007000-0007999 5 9 20000"
+    # "Corsika 0008000-0008999 5 8 20000"
+    # "Corsika 0009000-0009999 5 9 20000"
 )
 
 for condition in "${conditions[@]}"; do

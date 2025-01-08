@@ -66,6 +66,8 @@ class PMTSummariser:
         self.pmt_area_idx = columns.index('pmt_area')
         self.rde_idx = columns.index('rde')
         self.saturation_status_idx = columns.index('is_saturated_dom')
+        self.bad_dom_status_idx = columns.index('is_bad_dom')
+        self.bright_dom_status_idx = columns.index('is_bright_dom')
 
         if PMTSummariser._SCHEMA is None:
             PMTSummariser._SCHEMA = self._build_schema()
@@ -164,6 +166,8 @@ class PMTSummariser:
         pmt_area = self._get_pmt_area(pulses)
         rde = self._get_rde(pulses)
         saturation_status = self._get_saturation_status(pulses)
+        bad_dom_status = self._get_bad_dom_status(pulses)
+        bright_dom_status = self._get_bright_dom_status(pulses)
         
         first_charge_readout = self._get_first_charge_readout(pulses)
         accumulated_charge_after_nc = self._get_accumulated_charge_after_ns(pulses)
@@ -175,7 +179,7 @@ class PMTSummariser:
         data_dom = (
                     dom_position.tolist()                
                     + rel_dom_pos.tolist()               
-                    + [pmt_area, rde, saturation_status]
+                    + [pmt_area, rde, saturation_status, bad_dom_status, bright_dom_status]
                     + first_charge_readout.tolist()
                     + accumulated_charge_after_nc.tolist()
                     + first_hlc.tolist()
@@ -219,6 +223,16 @@ class PMTSummariser:
                 self,
                 pulses_dom: List[List[float]]) -> int:
         return pulses_dom[0][self.saturation_status_idx]
+    
+    def _get_bad_dom_status(
+                self,
+                pulses_dom: List[List[float]]) -> int:
+        return pulses_dom[0][self.bad_dom_status_idx]
+    
+    def _get_bright_dom_status(
+                self,
+                pulses_dom: List[List[float]]) -> int:
+        return pulses_dom[0][self.bright_dom_status_idx]
     
     def _get_first_hlc(self,
                     pulses_dom: List[List[float]]) -> np.ndarray:
@@ -327,6 +341,8 @@ class PMTSummariser:
             ('pmt_area', pa.float32()),
             ('rde', pa.float32()),
             ('saturation_status', pa.int32()),
+            ('bad_dom_status', pa.int32()),
+            ('bright_dom_status', pa.int32()),
         ]
         # q1, q2, q3 (,q4, q5, ...)
         charge_columns = [

@@ -1,0 +1,22 @@
+2024-12-16 02:07:12 - INFO - PMTfication by part starts...
+2024-12-16 02:07:12 - INFO - Processing file: merged_part_16.db
+2024-12-16 02:07:12 - INFO - Using up to 40 workers.
+2024-12-16 02:07:14 - INFO - Processing shard 1 of part 16 in subdirectory 22018.
+2024-12-16 02:18:52 - INFO - Processing shard 2 of part 16 in subdirectory 22018.
+2024-12-16 02:29:35 - INFO - Processing shard 3 of part 16 in subdirectory 22018.
+2024-12-16 02:35:24 - INFO - Processing shard 4 of part 16 in subdirectory 22018.
+2024-12-16 02:41:08 - INFO - Processing shard 5 of part 16 in subdirectory 22018.
+2024-12-16 02:46:49 - INFO - Processing shard 6 of part 16 in subdirectory 22018.
+2024-12-16 02:55:35 - INFO - Processing shard 7 of part 16 in subdirectory 22018.
+2024-12-16 03:04:08 - INFO - Processing shard 8 of part 16 in subdirectory 22018.
+2024-12-16 03:12:20 - INFO - Processing shard 9 of part 16 in subdirectory 22018.
+2024-12-16 03:18:09 - INFO - Processing shard 10 of part 16 in subdirectory 22018.
+2024-12-16 03:25:04 - INFO - Processing shard 11 of part 16 in subdirectory 22018.
+2024-12-16 03:30:43 - INFO - Processing shard 12 of part 16 in subdirectory 22018.
+2024-12-16 03:36:56 - INFO - Processing shard 13 of part 16 in subdirectory 22018.
+2024-12-16 03:42:36 - INFO - Processing shard 14 of part 16 in subdirectory 22018.
+2024-12-16 03:48:12 - INFO - Processing shard 15 of part 16 in subdirectory 22018.
+2024-12-16 03:55:51 - INFO - Processing shard 16 of part 16 in subdirectory 22018.
+2024-12-16 04:01:20 - INFO - Processing shard 17 of part 16 in subdirectory 22018.
+2024-12-16 04:08:27 - INFO - Processing shard 18 of part 16 in subdirectory 22018.
+2024-12-16 04:10:15 - INFO - PMTfication completed.

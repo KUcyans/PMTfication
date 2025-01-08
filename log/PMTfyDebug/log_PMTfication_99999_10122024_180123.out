@@ -1,0 +1,14 @@
+nohup: ignoring input
+2024-12-10 18:01:24 - INFO - PMTfication starts...
+2024-12-10 18:01:24 - INFO - The number of files in the subdirectory: 2
+2024-12-10 18:01:24 - INFO - The number of files in the subdirectory: 2
+2024-12-10 18:01:24 - INFO - Using up to 1 workers.
+2024-12-10 18:01:24 - ERROR - An error occurred: 'PMTfier' object has no attribute 'dest_root'
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfy_sample.py", line 78, in <module>
+    main()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfy_sample.py", line 50, in main
+    pmtfier_snowstorm = PMTfier(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 30, in __init__
+    self.signal_or_noise_name = os.path.basename(os.path.normpath(self.dest_root))
+AttributeError: 'PMTfier' object has no attribute 'dest_root'

@@ -1,0 +1,138 @@
+nohup: ignoring input
+2024-12-10 18:25:37 - INFO - PMTfication starts...
+2024-12-10 18:25:37 - INFO - The number of files in the subdirectory: 2
+2024-12-10 18:25:37 - INFO - The number of files in the subdirectory: 2
+2024-12-10 18:25:37 - INFO - Using up to 1 workers.
+2024-12-10 18:25:37 - INFO - PMTfying Snowstorm...
+2024-12-10 18:25:37 - INFO - Found 2 database files in subdirectory 99999.
+Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2024-12-10 18:25:37 - INFO - Processing shard 1 of part 98 in subdirectory 99999.
+2024-12-10 18:25:40 - ERROR - Error processing file merged_part_98.db: 'Field "event_no" exists 2 times in schema'
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 209, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 191, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 179, in pmtfy_shard
+    pa_truth_shard = self._add_enhance_event_no(pa_truth_shard, part_no)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 133, in _add_enhance_event_no
+    original_event_no = pa_table['event_no']
+  File "pyarrow/table.pxi", line 1693, in pyarrow.lib._Tabular.__getitem__
+  File "pyarrow/table.pxi", line 1779, in pyarrow.lib._Tabular.column
+  File "pyarrow/table.pxi", line 1718, in pyarrow.lib._Tabular._ensure_integer_index
+KeyError: 'Field "event_no" exists 2 times in schema'
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 241, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+KeyError: 'Field "event_no" exists 2 times in schema'
+Processing 99999:  50%|█████     | 1/2 [00:02<00:02,  2.94s/it]2024-12-10 18:25:40 - INFO - Processing shard 1 of part 99 in subdirectory 99999.
+2024-12-10 18:25:45 - ERROR - Error processing file merged_part_99.db: 'Field "event_no" exists 2 times in schema'
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 209, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 191, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 179, in pmtfy_shard
+    pa_truth_shard = self._add_enhance_event_no(pa_truth_shard, part_no)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 133, in _add_enhance_event_no
+    original_event_no = pa_table['event_no']
+  File "pyarrow/table.pxi", line 1693, in pyarrow.lib._Tabular.__getitem__
+  File "pyarrow/table.pxi", line 1779, in pyarrow.lib._Tabular.column
+  File "pyarrow/table.pxi", line 1718, in pyarrow.lib._Tabular._ensure_integer_index
+KeyError: 'Field "event_no" exists 2 times in schema'
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 241, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+KeyError: 'Field "event_no" exists 2 times in schema'
+Processing 99999: 100%|██████████| 2/2 [00:08<00:00,  4.25s/it]Processing 99999: 100%|██████████| 2/2 [00:08<00:00,  4.06s/it]
+2024-12-10 18:25:45 - INFO - PMTfication for Snowstorm completed.
+2024-12-10 18:25:45 - INFO - PMTfying Corsika...
+2024-12-10 18:25:45 - INFO - Found 2 database files in subdirectory 9999999-9999999.
+Processing 9999999-9999999:   0%|          | 0/2 [00:00<?, ?it/s]2024-12-10 18:25:45 - INFO - Processing shard 1 of part 96 in subdirectory 9999999-9999999.
+2024-12-10 18:25:48 - ERROR - Error processing file merged_part_96.db: 'Field "event_no" exists 2 times in schema'
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 209, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 191, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 179, in pmtfy_shard
+    pa_truth_shard = self._add_enhance_event_no(pa_truth_shard, part_no)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 133, in _add_enhance_event_no
+    original_event_no = pa_table['event_no']
+  File "pyarrow/table.pxi", line 1693, in pyarrow.lib._Tabular.__getitem__
+  File "pyarrow/table.pxi", line 1779, in pyarrow.lib._Tabular.column
+  File "pyarrow/table.pxi", line 1718, in pyarrow.lib._Tabular._ensure_integer_index
+KeyError: 'Field "event_no" exists 2 times in schema'
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 241, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+KeyError: 'Field "event_no" exists 2 times in schema'
+Processing 9999999-9999999:  50%|█████     | 1/2 [00:03<00:03,  3.28s/it]2024-12-10 18:25:48 - INFO - Processing shard 1 of part 97 in subdirectory 9999999-9999999.
+2024-12-10 18:25:52 - ERROR - Error processing file merged_part_97.db: 'Field "event_no" exists 2 times in schema'
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 209, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 191, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 179, in pmtfy_shard
+    pa_truth_shard = self._add_enhance_event_no(pa_truth_shard, part_no)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 133, in _add_enhance_event_no
+    original_event_no = pa_table['event_no']
+  File "pyarrow/table.pxi", line 1693, in pyarrow.lib._Tabular.__getitem__
+  File "pyarrow/table.pxi", line 1779, in pyarrow.lib._Tabular.column
+  File "pyarrow/table.pxi", line 1718, in pyarrow.lib._Tabular._ensure_integer_index
+KeyError: 'Field "event_no" exists 2 times in schema'
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 241, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+KeyError: 'Field "event_no" exists 2 times in schema'
+Processing 9999999-9999999: 100%|██████████| 2/2 [00:06<00:00,  3.38s/it]Processing 9999999-9999999: 100%|██████████| 2/2 [00:06<00:00,  3.37s/it]
+2024-12-10 18:25:52 - INFO - PMTfication for Corsika completed.
+2024-12-10 18:25:52 - INFO - PMTfication completed.

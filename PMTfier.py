@@ -1,5 +1,4 @@
 import sqlite3 as sql
-import sys
 import os
 from os import getenv
 
@@ -9,7 +8,6 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 from tqdm import tqdm
-import argparse
 import logging
 
 from concurrent.futures import as_completed, ProcessPoolExecutor
@@ -26,20 +24,14 @@ class PMTfier:
                 dest_root: str, 
                 N_events_per_shard: int) -> None:
         self.source_root = source_root
-        self.source_subdirectory = source_subdirectory
         self.source_table = source_table
+        self.source_subdirectory = source_subdirectory
         self.dest_root = dest_root
         self.N_events_per_shard = N_events_per_shard
-        
-        source_dir = os.path.join(self.source_root, self.source_subdirectory)
-        # first file in the destination root is used to obtain the truth table name
-        first_db_file = os.path.join(source_dir, next((f for f in os.listdir(source_dir) if f.endswith('.db')), None))
-        self.truth_table_name = self._get_truth_table_name_db(first_db_file)
-        self.HE_dauther_table_name = "GNHighestEDaughter" # table name for the highest energy daughter particle
-        
         self.signal_or_noise_name = os.path.basename(os.path.normpath(self.dest_root))
-        if self.signal_or_noise_name not in ['Snowstorm', 'Corsika']:
-            raise ValueError(f"Invalid destination root: {self.dest_root}.")
+        self.subdir_tag = self._get_subdir_tag()
+        self.truth_table_name = self._get_truth_table_name_db()
+        self.HE_dauther_table_name = "GNHighestEDaughter" # table name for the highest energy daughter particle
         
     def _get_table_event_count(self, conn: sql.Connection, table: str) -> int:
         cursor = conn.cursor()
@@ -66,47 +58,46 @@ class PMTfier:
             last_event_no = batch[-1]
             yield batch
     
-    def _get_truth_table_name_db(self, source_file:str) -> str:
-        con_source = sql.connect(source_file)
+    def _get_truth_table_name_db(self) -> str:
+        # first file in the destination root is used to obtain the truth table name
+        source_dir = os.path.join(self.source_root, self.source_subdirectory)
+        first_db_file = os.path.join(source_dir, next((f for f in os.listdir(source_dir) if f.endswith('.db')), None))
+        con_source = sql.connect(first_db_file)
         cur_source = con_source.cursor()
         cur_source.execute("SELECT name FROM sqlite_master WHERE type='table'")
         tables = [row[0] for row in cur_source.fetchall()]
+        
         if 'truth' in tables:
             truth_table = 'truth'
         elif 'Truth' in tables:
             truth_table = 'Truth'
         else:
             raise ValueError("Neither 'truth' nor 'Truth' table exists in the source database.")
+        
         con_source.close()
         return truth_table
     
-    # def _get_truth_table_name_db(self, con_source: sql.Connection) -> str:
-    #     cur_source = con_source.cursor()
-    #     cur_source.execute("SELECT name FROM sqlite_master WHERE type='table'")
-    #     tables = [row[0] for row in cur_source.fetchall()]
-    #     if 'truth' in tables:
-    #         truth_table = 'truth'
-    #     elif 'Truth' in tables:
-    #         truth_table = 'Truth'
-    #     else:
-    #         raise ValueError("Neither 'truth' nor 'Truth' table exists in the source database.")
-    #     return truth_table
-    
-    def _get_subdir_tag(self, subdir: str) -> int:
+    def _get_subdir_tag(self) -> int:
+        if self.signal_or_noise_name not in ['Snowstorm', 'Corsika']:
+            raise ValueError(f"Invalid destination root: {self.dest_root}.")
         if self.signal_or_noise_name == 'Snowstorm':
             # "22012" -> 12
-            return int(subdir[-2:])
+            # "22017" -> 17
+            subdir_tag = int(self.source_subdirectory[-2:])
         elif self.signal_or_noise_name == 'Corsika':
             # "0002000-0002999" -> 20
             # "0003000-0003999" -> 30
-            range_start = subdir.split('-')[0]  # "0002000"
-            range_end = subdir.split('-')[1]  # "0002999"
+            range_start = self.source_subdirectory.split('-')[0]  # "0002000"
+            range_end = self.source_subdirectory.split('-')[1]  # "0002999"
             
             first_half_subdir_no = range_start[3:5]  # "20"
             second_half_subdir_no = range_end[3:5]  # "29"
             
             combined_subdir_no = int(first_half_subdir_no + second_half_subdir_no)
-            return combined_subdir_no
+            subdir_tag = combined_subdir_no
+        else:
+            raise ValueError(f"Invalid destination root: {self.dest_root}.")
+        return subdir_tag
             
     def _get_part_no(self, file: str) -> int:
         """
@@ -119,7 +110,7 @@ class PMTfier:
         
         return file_no
     
-    def _add_enhance_event_no(self, pa_table: pa.Table, subdir_tag: int, part_no: int) -> pa.Table:
+    def _add_enhance_event_no(self, pa_table: pa.Table, part_no: int) -> pa.Table:
         """
         (1) (2)  (3)  (4)
         1   12  0027 00012345 
@@ -139,7 +130,7 @@ class PMTfier:
         if 'event_no' in pa_table.schema.names:
             original_event_no = pa_table['event_no']
             enhanced_event_no = [
-                int(f"{signal_or_noise_tag}{subdir_tag:02}{part_no:04}{event_no.as_py():08}")
+                int(f"{signal_or_noise_tag}{self.subdir_tag:02}{part_no:04}{event_no.as_py():08}")
                 for event_no in original_event_no
             ]
 
@@ -162,8 +153,8 @@ class PMTfier:
                     con_source: sql.Connection,
                     part_no: int,
                     shard_no: int,
+                    truth_maker: PMTTruthMaker,
                     event_batch: List[int]) -> pa.Table:
-        subdir_tag = self._get_subdir_tag(self.source_subdirectory)
         dest_dir = os.path.join(self.dest_root, self.source_subdirectory, str(part_no))
         os.makedirs(dest_dir, exist_ok=True)
         
@@ -175,24 +166,22 @@ class PMTfier:
             event_no_subset=event_batch)
         
         pa_pmtfied = summariser()
-        pa_pmtfied = self._add_enhance_event_no(pa_pmtfied, subdir_tag, part_no)
+        pa_pmtfied = self._add_enhance_event_no(pa_pmtfied, part_no)
+        dest_dir = os.path.join(self.dest_root, self.source_subdirectory, str(part_no))
         pmtfied_file = os.path.join(dest_dir, f"PMTfied_{shard_no}.parquet")        
         pq.write_table(pa_pmtfied, pmtfied_file)
         
         # NOTE
         # PMT truth table for this shard is created by PMTTruthMaker and returned
-        truth_maker = PMTTruthMaker(con_source, self.source_table, self.truth_table_name, self.HE_dauther_table_name, event_batch)
-        pa_truth_shard = truth_maker(int(subdir_tag), part_no, shard_no)
-        pa_truth_shard = self._add_enhance_event_no(pa_truth_shard, subdir_tag, part_no)
+        pa_truth_shard = truth_maker(int(self.subdir_tag), part_no, shard_no, event_batch)
+        pa_truth_shard = self._add_enhance_event_no(pa_truth_shard, part_no)
         
         return pa_truth_shard
         
     def _divide_and_conquer_part(self, 
                             con_source: sql.Connection,
-                            part_no: int) -> pa.Table:
-        """
-        Divides the database events into shards and processes each shard, consolidating the truth+receipt data.
-        """
+                            part_no: int,
+                            truth_maker: PMTTruthMaker) -> pa.Table:
         truth_shards = []
         
         for shard_no, event_batch in enumerate(self._get_event_no_batches(con_source, self.source_table, self.N_events_per_shard), start=1):
@@ -201,22 +190,24 @@ class PMTfier:
                 con_source=con_source,
                 part_no=part_no,
                 shard_no=shard_no,
+                truth_maker=truth_maker,
                 event_batch=event_batch)
             truth_shards.append(pa_truth_shard)
 
-        consolidated_truth = pa.concat_tables(truth_shards)
-        return consolidated_truth
+        return pa.concat_tables(truth_shards)
         
     def pmtfy_part(self, 
                    source_part_file: str,
                    ) -> None:
         part_no = self._get_part_no(source_part_file)
         con_source = sql.connect(source_part_file)
-        # truth_table_name = self._get_truth_table_name_db(con_source)
         
+        # truth maker is part-wise as con_source is part-wise 
+        truth_maker = PMTTruthMaker(con_source, self.source_table, self.truth_table_name, self.HE_dauther_table_name)
         consolidated_truth = self._divide_and_conquer_part(
             con_source=con_source,
-            part_no=part_no)
+            part_no=part_no,
+            truth_maker=truth_maker)
 
         dest_subdirectory_path = os.path.join(self.dest_root, self.source_subdirectory)
         os.makedirs(dest_subdirectory_path, exist_ok=True)

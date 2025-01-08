@@ -2,9 +2,9 @@
 #SBATCH --job-name=pmtfication_%j
 #SBATCH --partition=icecube
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=48
-#SBATCH --mem=60G
-#SBATCH --time=24:00:00
+#SBATCH --cpus-per-task=40
+#SBATCH --mem=32G
+#SBATCH --time=48:00:00
 #SBATCH --signal=B:USR1@60
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=cyan.jo@proton.me

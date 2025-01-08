@@ -1,0 +1,268 @@
+nohup: ignoring input
+2024-12-11 11:46:44 - INFO - PMTfication starts...
+2024-12-11 11:46:44 - INFO - The number of files in the subdirectory: 2
+2024-12-11 11:46:44 - INFO - The number of files in the subdirectory: 2
+2024-12-11 11:46:44 - INFO - Using up to 1 workers.
+2024-12-11 11:46:45 - INFO - PMTfying Snowstorm...
+2024-12-11 11:46:45 - INFO - Found 2 database files in subdirectory 99999.
+Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2024-12-11 11:46:45 - INFO - Processing shard 1 of part 98 in subdirectory 99999.
+2024-12-11 11:46:47 - INFO - Processing shard 2 of part 98 in subdirectory 99999.
+2024-12-11 11:46:52 - INFO - Processing shard 3 of part 98 in subdirectory 99999.
+2024-12-11 11:46:58 - INFO - Processing shard 4 of part 98 in subdirectory 99999.
+2024-12-11 11:47:02 - INFO - Processing shard 5 of part 98 in subdirectory 99999.
+2024-12-11 11:47:08 - INFO - Processing shard 6 of part 98 in subdirectory 99999.
+2024-12-11 11:47:14 - INFO - Processing shard 7 of part 98 in subdirectory 99999.
+2024-12-11 11:47:19 - INFO - Processing shard 8 of part 98 in subdirectory 99999.
+2024-12-11 11:47:21 - INFO - Finished processing database file: merged_part_98.db
+Processing 99999:  50%|█████     | 1/2 [00:36<00:36, 36.18s/it]2024-12-11 11:47:21 - INFO - Processing shard 1 of part 99 in subdirectory 99999.
+2024-12-11 11:47:27 - INFO - Processing shard 2 of part 99 in subdirectory 99999.
+2024-12-11 11:47:30 - INFO - Processing shard 3 of part 99 in subdirectory 99999.
+2024-12-11 11:47:36 - INFO - Processing shard 4 of part 99 in subdirectory 99999.
+2024-12-11 11:47:40 - INFO - Processing shard 5 of part 99 in subdirectory 99999.
+2024-12-11 11:47:45 - INFO - Processing shard 6 of part 99 in subdirectory 99999.
+2024-12-11 11:47:49 - INFO - Processing shard 7 of part 99 in subdirectory 99999.
+2024-12-11 11:47:55 - INFO - Processing shard 8 of part 99 in subdirectory 99999.
+2024-12-11 11:47:59 - INFO - Finished processing database file: merged_part_99.db
+Processing 99999: 100%|██████████| 2/2 [01:14<00:00, 37.37s/it]Processing 99999: 100%|██████████| 2/2 [01:14<00:00, 37.19s/it]
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+2024-12-11 11:47:59 - INFO - PMTfication for Snowstorm completed.
+2024-12-11 11:47:59 - INFO - PMTfying Corsika...
+2024-12-11 11:47:59 - INFO - Found 2 database files in subdirectory 9999999-9999999.
+Processing 9999999-9999999:   0%|          | 0/2 [00:00<?, ?it/s]2024-12-11 11:47:59 - INFO - Processing shard 1 of part 96 in subdirectory 9999999-9999999.
+2024-12-11 11:48:02 - INFO - Processing shard 2 of part 96 in subdirectory 9999999-9999999.
+2024-12-11 11:48:05 - INFO - Processing shard 3 of part 96 in subdirectory 9999999-9999999.
+2024-12-11 11:48:08 - INFO - Processing shard 4 of part 96 in subdirectory 9999999-9999999.
+2024-12-11 11:48:12 - INFO - Processing shard 5 of part 96 in subdirectory 9999999-9999999.
+2024-12-11 11:48:15 - INFO - Processing shard 6 of part 96 in subdirectory 9999999-9999999.
+2024-12-11 11:48:16 - INFO - Finished processing database file: merged_part_96.db
+Processing 9999999-9999999:  50%|█████     | 1/2 [00:17<00:17, 17.24s/it]2024-12-11 11:48:16 - INFO - Processing shard 1 of part 97 in subdirectory 9999999-9999999.
+2024-12-11 11:48:20 - INFO - Processing shard 2 of part 97 in subdirectory 9999999-9999999.
+2024-12-11 11:48:23 - INFO - Processing shard 3 of part 97 in subdirectory 9999999-9999999.
+2024-12-11 11:48:23 - INFO - Finished processing database file: merged_part_97.db
+Processing 9999999-9999999: 100%|██████████| 2/2 [00:23<00:00, 11.06s/it]Processing 9999999-9999999: 100%|██████████| 2/2 [00:23<00:00, 11.99s/it]
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     1
+azimuth_GNHighestEDaughter    1
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      1
+pos_y_GNHighestEDaughter      1
+pos_z_GNHighestEDaughter      1
+dtype: int64
+zenith_GNHighestEDaughter: 0
+Check for nulls in pandas: event_no                      0
+zenith_GNHighestEDaughter     0
+azimuth_GNHighestEDaughter    0
+energy_GNHighestEDaughter     0
+pos_x_GNHighestEDaughter      0
+pos_y_GNHighestEDaughter      0
+pos_z_GNHighestEDaughter      0
+dtype: int64
+zenith_GNHighestEDaughter: 0
+2024-12-11 11:48:23 - INFO - PMTfication for Corsika completed.
+2024-12-11 11:48:23 - INFO - PMTfication completed.

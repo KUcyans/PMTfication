@@ -58,25 +58,25 @@ class PulseMapStatViewer:
             
             # List of functions that create plots
             plot_functions = [
-                # lambda: self._plotNDOMsPerEvent(df_features, file),
-                # lambda: self._plotNpulsesPerEvent(df_features, file),
+                lambda: self._plotNDOMsPerEvent(df_features, file),
+                lambda: self._plotNpulsesPerEvent(df_features, file),
                 lambda: self._plotNpulsesPerDOM(df_features, file),
                 lambda: self._plotNpulsesPerDOM_NS(df_features, df_truth, file),
                 lambda: self._plotNpulsesPerDOM_IT(df_features, df_truth, file),
-                # lambda: self._plotChargePerPulse(df_features, file),
-                # lambda: self._plotTotalChargePerDOM(df_features, file),
-                # lambda: self._plotTotalChargePerEvent(df_features, file),
-                # lambda: self._plotPosition(df_features, 'dom_x', file),
-                # lambda: self._plotPosition(df_features, 'dom_y', file),
-                # lambda: self._plotPosition(df_features, 'dom_z', file),
+                lambda: self._plotChargePerPulse(df_features, file),
+                lambda: self._plotTotalChargePerDOM(df_features, file),
+                lambda: self._plotTotalChargePerEvent(df_features, file),
+                lambda: self._plotPosition(df_features, 'dom_x', file),
+                lambda: self._plotPosition(df_features, 'dom_y', file),
+                lambda: self._plotPosition(df_features, 'dom_z', file),
                 
-                # lambda: self._plotLog10energy(df_truth, file),
-                # lambda: self._plotZenith(df_truth, file),
-                # lambda: self._plotCosZenith(df_truth, file),
-                # lambda: self._plotAzimuth(df_truth, file),
-                # lambda: self._plotPosition(df_truth, 'position_y', file),
-                # lambda: self._plotPosition(df_truth, 'position_x', file),
-                # lambda: self._plotPosition(df_truth, 'position_z', file),
+                lambda: self._plotLog10energy(df_truth, file),
+                lambda: self._plotZenith(df_truth, file),
+                lambda: self._plotCosZenith(df_truth, file),
+                lambda: self._plotAzimuth(df_truth, file),
+                lambda: self._plotPosition(df_truth, 'position_y', file),
+                lambda: self._plotPosition(df_truth, 'position_x', file),
+                lambda: self._plotPosition(df_truth, 'position_z', file),
             ]
             
             # Iterate over the plotting functions, execute them, and save the generated figures to the PDF
