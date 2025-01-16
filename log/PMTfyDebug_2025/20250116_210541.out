@@ -1,0 +1,101 @@
+nohup: ignoring input
+2025-01-16 21:05:42 - INFO - PMTfication for a subdirectory starts...
+2025-01-16 21:05:42 - INFO - The number of files in the subdirectory: 2
+2025-01-16 21:05:42 - INFO - Using up to 1 workers.
+2025-01-16 21:05:42 - INFO - Found 2 database files in subdirectory 99999.
+Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2025-01-16 21:05:42 - INFO - Processing shard 1 of part 98 in subdirectory 99999.
+2025-01-16 21:05:44 - ERROR - Error processing file merged_part_98.db: "The passed mapping doesn't contain the following field(s) of the schema: GNLabelTrackEnergyDeposited, GNLabelTrackEnergyOnEntrance, GNLabelTrackEnergyOnEntrancePrimary, GNLabelTrackEnergyDepositedPrimary, GNLabelEnergyPrimary, GNLabelCascadeEnergyDepositedPrimary, GNLabelCascadeEnergyDeposited, GNLabelEnergyDepositedTotal, GNLabelEnergyDepositedPrimary, GNLabelHighestEInIceParticleIsChild, GNLabelHighestEInIceParticleDistance, GNLabelHighestEInIceParticleEFraction, GNLabelHighestEDaughterDistance, GNLabelHighestEDaughterEFraction, zenith_GNHighestEInIceParticle, azimuth_GNHighestEInIceParticle, dir_x_GNHighestEInIceParticle, dir_y_GNHighestEInIceParticle, dir_z_GNHighestEInIceParticle, pos_x_GNHighestEInIceParticle, pos_y_GNHighestEInIceParticle, pos_z_GNHighestEInIceParticle, time_GNHighestEInIceParticle, speed_GNHighestEInIceParticle, energy_GNHighestEInIceParticle, zenith_GNHighestEDaughter, azimuth_GNHighestEDaughter, dir_x_GNHighestEDaughter, dir_y_GNHighestEDaughter, dir_z_GNHighestEDaughter, pos_x_GNHighestEDaughter, pos_y_GNHighestEDaughter, pos_z_GNHighestEDaughter, time_GNHighestEDaughter, speed_GNHighestEDaughter, energy_GNHighestEDaughter"
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "pyarrow/table.pxi", line 6291, in pyarrow.lib._from_pydict
+KeyError: 'GNLabelTrackEnergyDeposited'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "pyarrow/table.pxi", line 6294, in pyarrow.lib._from_pydict
+KeyError: b'GNLabelTrackEnergyDeposited'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 212, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 190, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 177, in pmtfy_shard
+    pa_truth_shard = truth_maker(int(self.subdir_tag), part_no, shard_no, event_batch)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 141, in __call__
+    return self._merge_tables(truth_table,
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 215, in _merge_tables
+    return pa.Table.from_pydict(merged_data, schema=PMTTruthMaker._MERGED_SCHEMA)
+  File "pyarrow/table.pxi", line 1968, in pyarrow.lib._Tabular.from_pydict
+  File "pyarrow/table.pxi", line 6298, in pyarrow.lib._from_pydict
+KeyError: "The passed mapping doesn't contain the following field(s) of the schema: GNLabelTrackEnergyDeposited, GNLabelTrackEnergyOnEntrance, GNLabelTrackEnergyOnEntrancePrimary, GNLabelTrackEnergyDepositedPrimary, GNLabelEnergyPrimary, GNLabelCascadeEnergyDepositedPrimary, GNLabelCascadeEnergyDeposited, GNLabelEnergyDepositedTotal, GNLabelEnergyDepositedPrimary, GNLabelHighestEInIceParticleIsChild, GNLabelHighestEInIceParticleDistance, GNLabelHighestEInIceParticleEFraction, GNLabelHighestEDaughterDistance, GNLabelHighestEDaughterEFraction, zenith_GNHighestEInIceParticle, azimuth_GNHighestEInIceParticle, dir_x_GNHighestEInIceParticle, dir_y_GNHighestEInIceParticle, dir_z_GNHighestEInIceParticle, pos_x_GNHighestEInIceParticle, pos_y_GNHighestEInIceParticle, pos_z_GNHighestEInIceParticle, time_GNHighestEInIceParticle, speed_GNHighestEInIceParticle, energy_GNHighestEInIceParticle, zenith_GNHighestEDaughter, azimuth_GNHighestEDaughter, dir_x_GNHighestEDaughter, dir_y_GNHighestEDaughter, dir_z_GNHighestEDaughter, pos_x_GNHighestEDaughter, pos_y_GNHighestEDaughter, pos_z_GNHighestEDaughter, time_GNHighestEDaughter, speed_GNHighestEDaughter, energy_GNHighestEDaughter"
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 244, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+KeyError: "The passed mapping doesn't contain the following field(s) of the schema: GNLabelTrackEnergyDeposited, GNLabelTrackEnergyOnEntrance, GNLabelTrackEnergyOnEntrancePrimary, GNLabelTrackEnergyDepositedPrimary, GNLabelEnergyPrimary, GNLabelCascadeEnergyDepositedPrimary, GNLabelCascadeEnergyDeposited, GNLabelEnergyDepositedTotal, GNLabelEnergyDepositedPrimary, GNLabelHighestEInIceParticleIsChild, GNLabelHighestEInIceParticleDistance, GNLabelHighestEInIceParticleEFraction, GNLabelHighestEDaughterDistance, GNLabelHighestEDaughterEFraction, zenith_GNHighestEInIceParticle, azimuth_GNHighestEInIceParticle, dir_x_GNHighestEInIceParticle, dir_y_GNHighestEInIceParticle, dir_z_GNHighestEInIceParticle, pos_x_GNHighestEInIceParticle, pos_y_GNHighestEInIceParticle, pos_z_GNHighestEInIceParticle, time_GNHighestEInIceParticle, speed_GNHighestEInIceParticle, energy_GNHighestEInIceParticle, zenith_GNHighestEDaughter, azimuth_GNHighestEDaughter, dir_x_GNHighestEDaughter, dir_y_GNHighestEDaughter, dir_z_GNHighestEDaughter, pos_x_GNHighestEDaughter, pos_y_GNHighestEDaughter, pos_z_GNHighestEDaughter, time_GNHighestEDaughter, speed_GNHighestEDaughter, energy_GNHighestEDaughter"
+Processing 99999:  50%|█████     | 1/2 [00:02<00:02,  2.29s/it]2025-01-16 21:05:44 - INFO - Processing shard 1 of part 99 in subdirectory 99999.
+2025-01-16 21:05:49 - ERROR - Error processing file merged_part_99.db: "The passed mapping doesn't contain the following field(s) of the schema: GNLabelTrackEnergyDeposited, GNLabelTrackEnergyOnEntrance, GNLabelTrackEnergyOnEntrancePrimary, GNLabelTrackEnergyDepositedPrimary, GNLabelEnergyPrimary, GNLabelCascadeEnergyDepositedPrimary, GNLabelCascadeEnergyDeposited, GNLabelEnergyDepositedTotal, GNLabelEnergyDepositedPrimary, GNLabelHighestEInIceParticleIsChild, GNLabelHighestEInIceParticleDistance, GNLabelHighestEInIceParticleEFraction, GNLabelHighestEDaughterDistance, GNLabelHighestEDaughterEFraction, zenith_GNHighestEInIceParticle, azimuth_GNHighestEInIceParticle, dir_x_GNHighestEInIceParticle, dir_y_GNHighestEInIceParticle, dir_z_GNHighestEInIceParticle, pos_x_GNHighestEInIceParticle, pos_y_GNHighestEInIceParticle, pos_z_GNHighestEInIceParticle, time_GNHighestEInIceParticle, speed_GNHighestEInIceParticle, energy_GNHighestEInIceParticle, zenith_GNHighestEDaughter, azimuth_GNHighestEDaughter, dir_x_GNHighestEDaughter, dir_y_GNHighestEDaughter, dir_z_GNHighestEDaughter, pos_x_GNHighestEDaughter, pos_y_GNHighestEDaughter, pos_z_GNHighestEDaughter, time_GNHighestEDaughter, speed_GNHighestEDaughter, energy_GNHighestEDaughter"
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "pyarrow/table.pxi", line 6291, in pyarrow.lib._from_pydict
+KeyError: 'GNLabelTrackEnergyDeposited'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "pyarrow/table.pxi", line 6294, in pyarrow.lib._from_pydict
+KeyError: b'GNLabelTrackEnergyDeposited'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 212, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 190, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 177, in pmtfy_shard
+    pa_truth_shard = truth_maker(int(self.subdir_tag), part_no, shard_no, event_batch)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 141, in __call__
+    return self._merge_tables(truth_table,
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 215, in _merge_tables
+    return pa.Table.from_pydict(merged_data, schema=PMTTruthMaker._MERGED_SCHEMA)
+  File "pyarrow/table.pxi", line 1968, in pyarrow.lib._Tabular.from_pydict
+  File "pyarrow/table.pxi", line 6298, in pyarrow.lib._from_pydict
+KeyError: "The passed mapping doesn't contain the following field(s) of the schema: GNLabelTrackEnergyDeposited, GNLabelTrackEnergyOnEntrance, GNLabelTrackEnergyOnEntrancePrimary, GNLabelTrackEnergyDepositedPrimary, GNLabelEnergyPrimary, GNLabelCascadeEnergyDepositedPrimary, GNLabelCascadeEnergyDeposited, GNLabelEnergyDepositedTotal, GNLabelEnergyDepositedPrimary, GNLabelHighestEInIceParticleIsChild, GNLabelHighestEInIceParticleDistance, GNLabelHighestEInIceParticleEFraction, GNLabelHighestEDaughterDistance, GNLabelHighestEDaughterEFraction, zenith_GNHighestEInIceParticle, azimuth_GNHighestEInIceParticle, dir_x_GNHighestEInIceParticle, dir_y_GNHighestEInIceParticle, dir_z_GNHighestEInIceParticle, pos_x_GNHighestEInIceParticle, pos_y_GNHighestEInIceParticle, pos_z_GNHighestEInIceParticle, time_GNHighestEInIceParticle, speed_GNHighestEInIceParticle, energy_GNHighestEInIceParticle, zenith_GNHighestEDaughter, azimuth_GNHighestEDaughter, dir_x_GNHighestEDaughter, dir_y_GNHighestEDaughter, dir_z_GNHighestEDaughter, pos_x_GNHighestEDaughter, pos_y_GNHighestEDaughter, pos_z_GNHighestEDaughter, time_GNHighestEDaughter, speed_GNHighestEDaughter, energy_GNHighestEDaughter"
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 244, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+KeyError: "The passed mapping doesn't contain the following field(s) of the schema: GNLabelTrackEnergyDeposited, GNLabelTrackEnergyOnEntrance, GNLabelTrackEnergyOnEntrancePrimary, GNLabelTrackEnergyDepositedPrimary, GNLabelEnergyPrimary, GNLabelCascadeEnergyDepositedPrimary, GNLabelCascadeEnergyDeposited, GNLabelEnergyDepositedTotal, GNLabelEnergyDepositedPrimary, GNLabelHighestEInIceParticleIsChild, GNLabelHighestEInIceParticleDistance, GNLabelHighestEInIceParticleEFraction, GNLabelHighestEDaughterDistance, GNLabelHighestEDaughterEFraction, zenith_GNHighestEInIceParticle, azimuth_GNHighestEInIceParticle, dir_x_GNHighestEInIceParticle, dir_y_GNHighestEInIceParticle, dir_z_GNHighestEInIceParticle, pos_x_GNHighestEInIceParticle, pos_y_GNHighestEInIceParticle, pos_z_GNHighestEInIceParticle, time_GNHighestEInIceParticle, speed_GNHighestEInIceParticle, energy_GNHighestEInIceParticle, zenith_GNHighestEDaughter, azimuth_GNHighestEDaughter, dir_x_GNHighestEDaughter, dir_y_GNHighestEDaughter, dir_z_GNHighestEDaughter, pos_x_GNHighestEDaughter, pos_y_GNHighestEDaughter, pos_z_GNHighestEDaughter, time_GNHighestEDaughter, speed_GNHighestEDaughter, energy_GNHighestEDaughter"
+Processing 99999: 100%|██████████| 2/2 [00:07<00:00,  4.12s/it]Processing 99999: 100%|██████████| 2/2 [00:07<00:00,  3.84s/it]
+Columns in GNLabel_table: ['event_no', 'GNLabelTrackEnergyDeposited', 'GNLabelTrackEnergyOnEntrance', 'GNLabelTrackEnergyOnEntrancePrimary', 'GNLabelTrackEnergyDepositedPrimary', 'GNLabelEnergyPrimary', 'GNLabelCascadeEnergyDepositedPrimary', 'GNLabelCascadeEnergyDeposited', 'GNLabelEnergyDepositedTotal', 'GNLabelEnergyDepositedPrimary', 'GNLabelHighestEInIceParticleIsChild', 'GNLabelHighestEInIceParticleDistance', 'GNLabelHighestEInIceParticleEFraction', 'GNLabelHighestEDaughterDistance', 'GNLabelHighestEDaughterEFraction']
+Columns in HighestEInIceParticle_table: ['event_no', 'zenith_GNHighestEInIceParticle', 'azimuth_GNHighestEInIceParticle', 'dir_x_GNHighestEInIceParticle', 'dir_y_GNHighestEInIceParticle', 'dir_z_GNHighestEInIceParticle', 'pos_x_GNHighestEInIceParticle', 'pos_y_GNHighestEInIceParticle', 'pos_z_GNHighestEInIceParticle', 'time_GNHighestEInIceParticle', 'speed_GNHighestEInIceParticle', 'energy_GNHighestEInIceParticle']
+Columns in HE_daughter_table: ['event_no', 'zenith_GNHighestEDaughter', 'azimuth_GNHighestEDaughter', 'dir_x_GNHighestEDaughter', 'dir_y_GNHighestEDaughter', 'dir_z_GNHighestEDaughter', 'pos_x_GNHighestEDaughter', 'pos_y_GNHighestEDaughter', 'pos_z_GNHighestEDaughter', 'time_GNHighestEDaughter', 'speed_GNHighestEDaughter', 'energy_GNHighestEDaughter']
+Columns in GNLabel_table: ['event_no', 'GNLabelTrackEnergyDeposited', 'GNLabelTrackEnergyOnEntrance', 'GNLabelTrackEnergyOnEntrancePrimary', 'GNLabelTrackEnergyDepositedPrimary', 'GNLabelEnergyPrimary', 'GNLabelCascadeEnergyDepositedPrimary', 'GNLabelCascadeEnergyDeposited', 'GNLabelEnergyDepositedTotal', 'GNLabelEnergyDepositedPrimary', 'GNLabelHighestEInIceParticleIsChild', 'GNLabelHighestEInIceParticleDistance', 'GNLabelHighestEInIceParticleEFraction', 'GNLabelHighestEDaughterDistance', 'GNLabelHighestEDaughterEFraction']
+Columns in HighestEInIceParticle_table: ['event_no', 'zenith_GNHighestEInIceParticle', 'azimuth_GNHighestEInIceParticle', 'dir_x_GNHighestEInIceParticle', 'dir_y_GNHighestEInIceParticle', 'dir_z_GNHighestEInIceParticle', 'pos_x_GNHighestEInIceParticle', 'pos_y_GNHighestEInIceParticle', 'pos_z_GNHighestEInIceParticle', 'time_GNHighestEInIceParticle', 'speed_GNHighestEInIceParticle', 'energy_GNHighestEInIceParticle']
+Columns in HE_daughter_table: ['event_no', 'zenith_GNHighestEDaughter', 'azimuth_GNHighestEDaughter', 'dir_x_GNHighestEDaughter', 'dir_y_GNHighestEDaughter', 'dir_z_GNHighestEDaughter', 'pos_x_GNHighestEDaughter', 'pos_y_GNHighestEDaughter', 'pos_z_GNHighestEDaughter', 'time_GNHighestEDaughter', 'speed_GNHighestEDaughter', 'energy_GNHighestEDaughter']
+2025-01-16 21:05:49 - INFO - PMTfication completed.

@@ -31,6 +31,7 @@ class PMTfier:
         self.signal_or_noise_name = os.path.basename(os.path.normpath(self.dest_root))
         self.subdir_tag = self._get_subdir_tag()
         self.truth_table_name = self._get_truth_table_name_db()
+        self.HighestEInIceParticle_table_name = "GNHighestEInIceParticle" # table name for the highest energy in-ice particle
         self.HE_dauther_table_name = "GNHighestEDaughter" # table name for the highest energy daughter particle
         
     def _get_table_event_count(self, conn: sql.Connection, table: str) -> int:
@@ -128,7 +129,7 @@ class PMTfier:
             signal_or_noise_tag = "0"
             
         if 'event_no' in pa_table.schema.names:
-            original_event_no = pa_table['event_no']
+            original_event_no = pa_table['event_no']#.cast(pa.int32())
             enhanced_event_no = [
                 int(f"{signal_or_noise_tag}{self.subdir_tag:02}{part_no:04}{event_no.as_py():08}")
                 for event_no in original_event_no
@@ -203,7 +204,11 @@ class PMTfier:
         con_source = sql.connect(source_part_file)
         
         # truth maker is part-wise as con_source is part-wise 
-        truth_maker = PMTTruthMaker(con_source, self.source_table, self.truth_table_name, self.HE_dauther_table_name)
+        truth_maker = PMTTruthMaker(con_source, 
+                                    self.source_table, 
+                                    self.truth_table_name, 
+                                    self.HighestEInIceParticle_table_name,
+                                    self.HE_dauther_table_name)
         consolidated_truth = self._divide_and_conquer_part(
             con_source=con_source,
             part_no=part_no,

@@ -6,9 +6,9 @@
 # NEVENTS: Number of events per shard
 
 conditions=(
-    "Snowstorm 22010 6 11 200000"
-    # "Snowstorm 22011 5 10 20000"
-    # "Snowstorm 22012 11 21 2000"
+    # "Snowstorm 22010 10 10 200000"
+    # "Snowstorm 22011 1 4 20000"
+    # "Snowstorm 22012 22 27 2000"
     # "Snowstorm 22013 1 5 200000"
     # "Snowstorm 22014 6 6 20000"
     # "Snowstorm 22015 6 12 2000"

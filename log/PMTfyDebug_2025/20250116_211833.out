@@ -1,0 +1,77 @@
+nohup: ignoring input
+2025-01-16 21:18:34 - INFO - PMTfication for a subdirectory starts...
+2025-01-16 21:18:34 - INFO - The number of files in the subdirectory: 2
+2025-01-16 21:18:34 - INFO - Using up to 1 workers.
+2025-01-16 21:18:34 - INFO - Found 2 database files in subdirectory 99999.
+Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2025-01-16 21:18:34 - INFO - Processing shard 1 of part 98 in subdirectory 99999.
+2025-01-16 21:18:36 - ERROR - Error processing file merged_part_98.db: 'Field "GNLabel_event_no" does not exist in schema'
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 212, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 190, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 177, in pmtfy_shard
+    pa_truth_shard = truth_maker(int(self.subdir_tag), part_no, shard_no, event_batch)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 134, in __call__
+    GNLabel_table = self._get_GNLabel_pa_shard(receipt_pa, event_no_subset)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 193, in _get_GNLabel_pa_shard
+    return self._filter_rows(table, receipt_pa, 'GNLabel_event_no')
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 172, in _filter_rows
+    event_no_column_truth_list = table[event_no_column].to_pylist()
+  File "pyarrow/table.pxi", line 1693, in pyarrow.lib._Tabular.__getitem__
+  File "pyarrow/table.pxi", line 1779, in pyarrow.lib._Tabular.column
+  File "pyarrow/table.pxi", line 1715, in pyarrow.lib._Tabular._ensure_integer_index
+KeyError: 'Field "GNLabel_event_no" does not exist in schema'
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 244, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+KeyError: 'Field "GNLabel_event_no" does not exist in schema'
+Processing 99999:  50%|█████     | 1/2 [00:02<00:02,  2.40s/it]2025-01-16 21:18:36 - INFO - Processing shard 1 of part 99 in subdirectory 99999.
+2025-01-16 21:18:42 - ERROR - Error processing file merged_part_99.db: 'Field "GNLabel_event_no" does not exist in schema'
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 212, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 190, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 177, in pmtfy_shard
+    pa_truth_shard = truth_maker(int(self.subdir_tag), part_no, shard_no, event_batch)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 134, in __call__
+    GNLabel_table = self._get_GNLabel_pa_shard(receipt_pa, event_no_subset)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 193, in _get_GNLabel_pa_shard
+    return self._filter_rows(table, receipt_pa, 'GNLabel_event_no')
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 172, in _filter_rows
+    event_no_column_truth_list = table[event_no_column].to_pylist()
+  File "pyarrow/table.pxi", line 1693, in pyarrow.lib._Tabular.__getitem__
+  File "pyarrow/table.pxi", line 1779, in pyarrow.lib._Tabular.column
+  File "pyarrow/table.pxi", line 1715, in pyarrow.lib._Tabular._ensure_integer_index
+KeyError: 'Field "GNLabel_event_no" does not exist in schema'
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 244, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+KeyError: 'Field "GNLabel_event_no" does not exist in schema'
+Processing 99999: 100%|██████████| 2/2 [00:07<00:00,  4.22s/it]Processing 99999: 100%|██████████| 2/2 [00:07<00:00,  3.95s/it]
+2025-01-16 21:18:42 - INFO - PMTfication completed.

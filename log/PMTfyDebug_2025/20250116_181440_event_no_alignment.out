@@ -1,0 +1,189 @@
+nohup: ignoring input
+2025-01-16 18:14:41 - INFO - PMTfication for a subdirectory starts...
+2025-01-16 18:14:41 - INFO - The number of files in the subdirectory: 2
+2025-01-16 18:14:41 - INFO - Using up to 1 workers.
+2025-01-16 18:14:41 - INFO - Found 2 database files in subdirectory 99999.
+
+Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2025-01-16 18:14:41 - INFO - Processing shard 1 of part 98 in subdirectory 99999.
+2025-01-16 18:14:43 - INFO - Processing shard 2 of part 98 in subdirectory 99999.
+2025-01-16 18:14:48 - INFO - Processing shard 3 of part 98 in subdirectory 99999.
+2025-01-16 18:14:53 - INFO - Processing shard 4 of part 98 in subdirectory 99999.
+2025-01-16 18:14:56 - INFO - Processing shard 5 of part 98 in subdirectory 99999.
+2025-01-16 18:15:01 - INFO - Processing shard 6 of part 98 in subdirectory 99999.
+2025-01-16 18:15:07 - INFO - Processing shard 7 of part 98 in subdirectory 99999.
+2025-01-16 18:15:10 - INFO - Processing shard 8 of part 98 in subdirectory 99999.
+2025-01-16 18:15:12 - INFO - Finished processing database file: merged_part_98.db
+
+Processing 99999:  50%|█████     | 1/2 [00:31<00:31, 31.07s/it]2025-01-16 18:15:12 - INFO - Processing shard 1 of part 99 in subdirectory 99999.
+2025-01-16 18:15:17 - INFO - Processing shard 2 of part 99 in subdirectory 99999.
+2025-01-16 18:15:20 - INFO - Processing shard 3 of part 99 in subdirectory 99999.
+2025-01-16 18:15:25 - INFO - Processing shard 4 of part 99 in subdirectory 99999.
+2025-01-16 18:15:29 - INFO - Processing shard 5 of part 99 in subdirectory 99999.
+2025-01-16 18:15:33 - INFO - Processing shard 6 of part 99 in subdirectory 99999.
+2025-01-16 18:15:37 - INFO - Processing shard 7 of part 99 in subdirectory 99999.
+2025-01-16 18:15:42 - INFO - Processing shard 8 of part 99 in subdirectory 99999.
+2025-01-16 18:15:45 - INFO - Finished processing database file: merged_part_99.db
+
+Processing 99999: 100%|██████████| 2/2 [01:04<00:00, 32.30s/it]
+Processing 99999: 100%|██████████| 2/2 [01:04<00:00, 32.11s/it]
+truth_table event_no type: int64
+GNLabel_table event_no type: int32
+HighestEInIceParticle_table event_no type: int32
+HE_daughter_table event_no type: int32
+Sample truth_table event_no: [1419, 1420, 1421, 1422, 1423]
+Sample GNLabel_table event_no: [1419, 1420, 1421, 1422, 1423]
+Keys in GNLabel_map: [1419, 1420, 1421, 1422, 1423]
+Keys in HighestEInIceParticle_map: [1419, 1420, 1421, 1422, 1423]
+Keys in daughter_event_map: [1419, 1420, 1421, 1422, 1423]
+Event numbers missing in GNLabel_table: set()
+truth_table event_no type: int64
+GNLabel_table event_no type: int32
+HighestEInIceParticle_table event_no type: int32
+HE_daughter_table event_no type: int32
+Sample truth_table event_no: [1429, 1430, 1431, 1432, 1433]
+Sample GNLabel_table event_no: [1429, 1430, 1431, 1432, 1433]
+Keys in GNLabel_map: [1429, 1430, 1431, 1432, 1433]
+Keys in HighestEInIceParticle_map: [1429, 1430, 1431, 1432, 1433]
+Keys in daughter_event_map: [1429, 1430, 1431, 1432, 1433]
+Event numbers missing in GNLabel_table: set()
+truth_table event_no type: int64
+GNLabel_table event_no type: int32
+HighestEInIceParticle_table event_no type: int32
+HE_daughter_table event_no type: int32
+Sample truth_table event_no: [1439, 1440, 1441, 1442, 1443]
+Sample GNLabel_table event_no: [1439, 1440, 1441, 1442, 1443]
+Keys in GNLabel_map: [1439, 1440, 1441, 1442, 1443]
+Keys in HighestEInIceParticle_map: [1439, 1440, 1441, 1442, 1443]
+Keys in daughter_event_map: [1439, 1440, 1441, 1442, 1443]
+Event numbers missing in GNLabel_table: set()
+truth_table event_no type: int64
+GNLabel_table event_no type: int32
+HighestEInIceParticle_table event_no type: int32
+HE_daughter_table event_no type: int32
+Sample truth_table event_no: [1449, 1450, 1451, 1452, 1453]
+Sample GNLabel_table event_no: [1449, 1450, 1451, 1452, 1453]
+Keys in GNLabel_map: [1449, 1450, 1451, 1452, 1453]
+Keys in HighestEInIceParticle_map: [1449, 1450, 1451, 1452, 1453]
+Keys in daughter_event_map: [1449, 1450, 1451, 1452, 1453]
+Event numbers missing in GNLabel_table: set()
+truth_table event_no type: int64
+GNLabel_table event_no type: int32
+HighestEInIceParticle_table event_no type: int32
+HE_daughter_table event_no type: int32
+Sample truth_table event_no: [1459, 1460, 1461, 1462, 1463]
+Sample GNLabel_table event_no: [1459, 1460, 1461, 1462, 1463]
+Keys in GNLabel_map: [1459, 1460, 1461, 1462, 1463]
+Keys in HighestEInIceParticle_map: [1459, 1460, 1461, 1462, 1463]
+Keys in daughter_event_map: [1459, 1460, 1461, 1462, 1463]
+Event numbers missing in GNLabel_table: set()
+truth_table event_no type: int64
+GNLabel_table event_no type: int32
+HighestEInIceParticle_table event_no type: int32
+HE_daughter_table event_no type: int32
+Sample truth_table event_no: [1469, 1470, 1471, 1472, 1473]
+Sample GNLabel_table event_no: [1469, 1470, 1471, 1472, 1473]
+Keys in GNLabel_map: [1469, 1470, 1471, 1472, 1473]
+Keys in HighestEInIceParticle_map: [1469, 1470, 1471, 1472, 1473]
+Keys in daughter_event_map: [1469, 1470, 1471, 1472, 1473]
+Event numbers missing in GNLabel_table: set()
+truth_table event_no type: int64
+GNLabel_table event_no type: int32
+HighestEInIceParticle_table event_no type: int32
+HE_daughter_table event_no type: int32
+Sample truth_table event_no: [1479, 1480, 1481, 1482, 1483]
+Sample GNLabel_table event_no: [1479, 1480, 1481, 1482, 1483]
+Keys in GNLabel_map: [1479, 1480, 1481, 1482, 1483]
+Keys in HighestEInIceParticle_map: [1479, 1480, 1481, 1482, 1483]
+Keys in daughter_event_map: [1479, 1480, 1481, 1482, 1483]
+Event numbers missing in GNLabel_table: set()
+truth_table event_no type: int64
+GNLabel_table event_no type: int32
+HighestEInIceParticle_table event_no type: int32
+HE_daughter_table event_no type: int32
+Sample truth_table event_no: [1489, 1490, 1491, 1492]
+Sample GNLabel_table event_no: [1489, 1490, 1491, 1492]
+Keys in GNLabel_map: [1489, 1490, 1491, 1492]
+Keys in HighestEInIceParticle_map: [1489, 1490, 1491, 1492]
+Keys in daughter_event_map: [1489, 1490, 1491, 1492]
+Event numbers missing in GNLabel_table: set()
+truth_table event_no type: int64
+GNLabel_table event_no type: int32
+HighestEInIceParticle_table event_no type: int32
+HE_daughter_table event_no type: int32
+Sample truth_table event_no: [366, 367, 368, 369, 370]
+Sample GNLabel_table event_no: [366, 367, 368, 369, 370]
+Keys in GNLabel_map: [366, 367, 368, 369, 370]
+Keys in HighestEInIceParticle_map: [366, 367, 368, 369, 370]
+Keys in daughter_event_map: [366, 367, 368, 369, 370]
+Event numbers missing in GNLabel_table: set()
+truth_table event_no type: int64
+GNLabel_table event_no type: int32
+HighestEInIceParticle_table event_no type: int32
+HE_daughter_table event_no type: int32
+Sample truth_table event_no: [376, 377, 378, 379, 380]
+Sample GNLabel_table event_no: [376, 377, 378, 379, 380]
+Keys in GNLabel_map: [376, 377, 378, 379, 380]
+Keys in HighestEInIceParticle_map: [376, 377, 378, 379, 380]
+Keys in daughter_event_map: [376, 377, 378, 379, 380]
+Event numbers missing in GNLabel_table: set()
+truth_table event_no type: int64
+GNLabel_table event_no type: int32
+HighestEInIceParticle_table event_no type: int32
+HE_daughter_table event_no type: int32
+Sample truth_table event_no: [386, 387, 388, 389, 390]
+Sample GNLabel_table event_no: [386, 387, 388, 389, 390]
+Keys in GNLabel_map: [386, 387, 388, 389, 390]
+Keys in HighestEInIceParticle_map: [386, 387, 388, 389, 390]
+Keys in daughter_event_map: [386, 387, 388, 389, 390]
+Event numbers missing in GNLabel_table: set()
+truth_table event_no type: int64
+GNLabel_table event_no type: int32
+HighestEInIceParticle_table event_no type: int32
+HE_daughter_table event_no type: int32
+Sample truth_table event_no: [396, 397, 398, 399, 400]
+Sample GNLabel_table event_no: [396, 397, 398, 399, 400]
+Keys in GNLabel_map: [396, 397, 398, 399, 400]
+Keys in HighestEInIceParticle_map: [396, 397, 398, 399, 400]
+Keys in daughter_event_map: [396, 397, 398, 399, 400]
+Event numbers missing in GNLabel_table: set()
+truth_table event_no type: int64
+GNLabel_table event_no type: int32
+HighestEInIceParticle_table event_no type: int32
+HE_daughter_table event_no type: int32
+Sample truth_table event_no: [406, 407, 408, 409, 410]
+Sample GNLabel_table event_no: [406, 407, 408, 409, 410]
+Keys in GNLabel_map: [406, 407, 408, 409, 410]
+Keys in HighestEInIceParticle_map: [406, 407, 408, 409, 410]
+Keys in daughter_event_map: [406, 407, 408, 409, 410]
+Event numbers missing in GNLabel_table: set()
+truth_table event_no type: int64
+GNLabel_table event_no type: int32
+HighestEInIceParticle_table event_no type: int32
+HE_daughter_table event_no type: int32
+Sample truth_table event_no: [416, 417, 418, 419, 420]
+Sample GNLabel_table event_no: [416, 417, 418, 419, 420]
+Keys in GNLabel_map: [416, 417, 418, 419, 420]
+Keys in HighestEInIceParticle_map: [416, 417, 418, 419, 420]
+Keys in daughter_event_map: [416, 417, 418, 419, 420]
+Event numbers missing in GNLabel_table: set()
+truth_table event_no type: int64
+GNLabel_table event_no type: int32
+HighestEInIceParticle_table event_no type: int32
+HE_daughter_table event_no type: int32
+Sample truth_table event_no: [426, 427, 428, 429, 430]
+Sample GNLabel_table event_no: [426, 427, 428, 429, 430]
+Keys in GNLabel_map: [426, 427, 428, 429, 430]
+Keys in HighestEInIceParticle_map: [426, 427, 428, 429, 430]
+Keys in daughter_event_map: [426, 427, 428, 429, 430]
+Event numbers missing in GNLabel_table: set()
+truth_table event_no type: int64
+GNLabel_table event_no type: int32
+HighestEInIceParticle_table event_no type: int32
+HE_daughter_table event_no type: int32
+Sample truth_table event_no: [436, 437, 438, 439, 440]
+Sample GNLabel_table event_no: [436, 437, 438, 439, 440]
+Keys in GNLabel_map: [436, 437, 438, 439, 440]
+Keys in HighestEInIceParticle_map: [436, 437, 438, 439, 440]
+Keys in daughter_event_map: [436, 437, 438, 439, 440]
+Event numbers missing in GNLabel_table: set()
+2025-01-16 18:15:45 - INFO - PMTfication completed.

@@ -1,0 +1,8 @@
+nohup: ignoring input
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 17, in <module>
+    from PMT_truth_maker import PMTTruthMaker
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_truth_maker.py", line 288
+    'time_GNHighestEDaughter': -1,
+    ^
+SyntaxError: invalid syntax
