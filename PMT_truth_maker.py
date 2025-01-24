@@ -3,7 +3,6 @@ import pyarrow.compute as pc
 import sqlite3 as sql
 from typing import List
 from pyarrow.compute import SetLookupOptions
-import pandas as pd
 
 class PMTTruthMaker:
     _TRUTH_SCHEMA = pa.schema([
