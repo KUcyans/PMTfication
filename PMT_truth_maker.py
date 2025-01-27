@@ -31,7 +31,7 @@ class PMTTruthMaker:
         ('inelasticity', pa.float32()),
         ('DeepCoreFilter_13', pa.int32()),
         ('CascadeFilter_13', pa.int32()),
-        ('MuonFilter_13', pa.int32()),
+        ('MuonFilter_13', pa.int32()), # only include True/
         ('OnlineL2Filter_17', pa.int32()),
         ('L3_oscNext_bool', pa.int32()),
         ('L4_oscNext_bool', pa.int32()),
