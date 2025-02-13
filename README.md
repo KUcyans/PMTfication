@@ -1,7 +1,10 @@
 # DOM-wise Summarisation for IceCube Monte Carlo Data
 > python files a user runs: [PMTfy_by_part.py(recommended)](https://github.com/KUcyans/PMTfication/blob/main/PMTfy_by_part.py) of `PMTfy_by_subdir.py`.
+This is an algorithm to shrink pulse map data from IceCube Neutrino Observatory in an elegant way. It reduces the pulsemap series to one row per DOM position in a single event while keeping essential information such as charge and time profiles.
+![alt text](image-1.png)
 
 ## Assumptions and the Data Storage Structure:
+> The algoritm requires very specific data storage format. The data storage structure is assumed to be as follows:
 1. By Jan. 2025, only summarisation **from sqlite .db to .parquet** format is supported
 2. Source Data(.db):
    * Data are stored across several directories.
@@ -12,6 +15,9 @@
    * In each directory, there will be several subdirectories in each directory. The subdirectories correspond to the 'parts'(the .db files in the source directory)
    * In each directory, there will also be truth parquet files and they also correspond to the 'parts'
    * In each subdirectory, there will be DOM-wise summarised files. Each of them are called 'shard' in the code.
+   * Missing data in the source data will be filled with the default value of the data type. 
+4. Neither the source data nor the summarised data are selected based on the feature.
+5. 
 ![image](https://github.com/user-attachments/assets/cebfef9b-aa21-424d-9a52-3bb9c8df39ff)
 
 ## Logical structure of the code
@@ -26,6 +32,52 @@
     * PMT_truth_maker is on one more level above, part: (this is why truth files are stored part-wisely)
     * it generates a new event_no based on the location of the data so that every even_no is distinctive from one another. See `_add_enhance_event_no` function.
 ![image](https://github.com/user-attachments/assets/bdcfb4d1-30b0-486e-a1f5-995e1802b1f3)
+
+## Summarising Features
+### Relative Position Calculation: implying the how much charge was accumulated in an individual DOMs in an event
+> dom_rel: relative position of the DOM with respect to charge weighted average position of the DOM in the event
+#### $x_{rel,jk} = x_{jk}-\bar{x_{k}}$
+
+* $i$: pulse index
+* $j$: dom index
+* $k$: event number
+
+For a single DOM($j$), a given event($k$), the charge-weighted average position $\bar{x_{jk}}$ is calculated as follows:
+
+
+1. First, the total charge accumulated in the DOM($j$) in the event($k$) is calculated as follows:
+$$
+Q_{jk} = \sum_{i=1}^{n_{jk}} q_{ijk}
+$$
+$i$ denotes individual pulses, $n_{jk}$ is the total number of pulses in the DOM($j$) in the event($k$).  
+
+2. Secondly, the total charge accumulated in all the DOMs involved in the event($k$) is calculated as follows:
+$$
+Q_{k} = \sum_{j=1}^{N_k} Q_{jk}
+$$  
+$N_k$ is the total number of DOMs involved in the event($k$).s
+
+3. Next — come back to the DOM($j$) in the event($k$) level to calculate the charge-weighted average of the position
+$$
+\bar{x_{k}} = \frac{\sum_{j=1}^{N_k} \sum_{i=1}^{n_{jk}} x_{ijk} \, q_{ijk}}{Q_{k}}
+$$
+again, $i$ denotes individual pulses, $n_{jk}$ is the total number of pulses in the DOM($j$) in the event($k$).
+
+4. Finally, the relative position for DOM($j$), event($k$): 
+$$ 
+x_{rel, jk} = x_{jk} - \bar{x_{k}}
+$$
+
+5. To summarise, the relative position of the DOM($j$) in the event($k$) is calculated by subtracting the charge-weighted average position of the DOM in the event from the absolute position of the DOM in the event.
+$$
+\boxed{x_{rel, jk} = x_{jk} - \frac{\sum_{j=1}^{N_k} \sum_{i=1}^{n_{jk}} x_{ijk} \, q_{ijk}}{Q_{k}}}
+$$
+![alt text](image.png)
+
+### Q and T: implying the overall profile of the charge-time distribution
+* $Q_{25}, Q_{75}$ are the accumulated charge in the time window starting from the first pulse time and ending at 25ns and 75ns respectively.
+* $T_{10}, T_{50},$ are the time at which the accumulated charge reaches 10%, and 50% of the total charge respectively.
+![alt text](image-2.png)
 
 ## Execution
   * Can be submitted to slurm if available. [See this shell script](https://github.com/KUcyans/PMTfication/blob/main/PMTfy_by_part.sh)

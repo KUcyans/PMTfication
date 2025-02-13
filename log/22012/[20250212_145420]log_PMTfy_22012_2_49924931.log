@@ -1,0 +1,19 @@
+2025-02-12 14:54:22 - INFO - PMTfication by part starts...
+2025-02-12 14:54:22 - INFO - Processing file: merged_part_2.db
+2025-02-12 14:54:22 - INFO - Using up to 40 workers.
+2025-02-12 14:54:25 - INFO - Processing shard 1 of part 2 in subdirectory 22012.
+2025-02-12 15:07:20 - INFO - Processing shard 2 of part 2 in subdirectory 22012.
+2025-02-12 15:16:49 - INFO - Processing shard 3 of part 2 in subdirectory 22012.
+2025-02-12 15:25:51 - INFO - Processing shard 4 of part 2 in subdirectory 22012.
+2025-02-12 15:34:08 - INFO - Processing shard 5 of part 2 in subdirectory 22012.
+2025-02-12 15:42:03 - INFO - Processing shard 6 of part 2 in subdirectory 22012.
+2025-02-12 15:49:06 - INFO - Processing shard 7 of part 2 in subdirectory 22012.
+2025-02-12 15:55:57 - INFO - Processing shard 8 of part 2 in subdirectory 22012.
+2025-02-12 16:03:51 - INFO - Processing shard 9 of part 2 in subdirectory 22012.
+2025-02-12 16:10:43 - INFO - Processing shard 10 of part 2 in subdirectory 22012.
+2025-02-12 16:19:23 - INFO - Processing shard 11 of part 2 in subdirectory 22012.
+2025-02-12 16:29:37 - INFO - Processing shard 12 of part 2 in subdirectory 22012.
+2025-02-12 16:38:35 - INFO - Processing shard 13 of part 2 in subdirectory 22012.
+2025-02-12 16:46:44 - INFO - Processing shard 14 of part 2 in subdirectory 22012.
+2025-02-12 16:54:01 - INFO - Processing shard 15 of part 2 in subdirectory 22012.
+2025-02-12 16:59:58 - INFO - PMTfication completed.

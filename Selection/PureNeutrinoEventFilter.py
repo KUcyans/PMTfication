@@ -1,0 +1,106 @@
+import pyarrow.parquet as pq
+import pyarrow.csv as pcsv
+import os
+
+from EventFilter import EventFilter, override
+
+class PureNeutrinoEventFilter(EventFilter):
+    def __init__(self, 
+                 source_dir: str, 
+                 output_dir: str, 
+                 subdir_no: int, 
+                 part_no: int):
+        super().__init__(source_dir=source_dir,
+                        output_dir=output_dir,
+                        subdir_no=subdir_no,
+                        part_no=part_no)
+        self.pure_nu_specifier_dir = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/clean_events_dict/"
+
+    def __call__(self):
+        """Executes the filtering process, including truth and PMTfied file processing."""
+        self.logger.info(f"Starting filtering process for {self.subdir_no}/{self.part_no}")
+        self._filter_truth()
+        self._filter_shards()
+        self.logger.info("Filtering process completed.")
+    
+    @override
+    def _filter_truth(self):
+        source_truth_file = os.path.join(self.source_dir, str(self.subdir_no), f"truth_{self.part_no}.parquet")
+        if not os.path.isfile(source_truth_file):
+            self.logger.error(f"Truth file not found: {source_truth_file}")
+        truth_table = pq.read_table(source_truth_file)
+        relevant_csvs = self._get_relevant_csv_files(truth_table)
+        
+        if not relevant_csvs:
+            self.logger.warning(f"No matching CSV files found for {self.subdir_no}/{self.part_no}")
+
+        pure_neutrino_events = self._load_pure_neutrino_events(relevant_csvs)
+        filtered_truth_table = self._apply_event_filter(truth_table, pure_neutrino_events)
+        
+        output_truth_file = os.path.join(self.output_dir, str(self.subdir_no), f"truth_{self.part_no}.parquet")
+        # os.makedirs(os.path.dirname(output_file), exist_ok=True)
+        pq.write_table(filtered_truth_table, output_truth_file)
+        self.logger.info(f"Filtered truth file saved to: {output_truth_file}")
+        
+        self._generate_receipt(source_truth_file, output_truth_file)
+
+    def _get_event_specifier_files(self) -> list:
+        """Loads Janni files from the specified directory."""
+        ### HACK the path is extremely specific
+        csv_path = os.path.join(self.pure_nu_specifier_dir, str(self.subdir_no), str(self.subdir_no), 'reduced')
+        files = os.listdir(csv_path)
+
+        file_ranges = [
+            (int(f.split("_")[-1].split("-")[0]), int(f.split("-")[-1].split(".")[0]), os.path.join(csv_path, f))
+            for f in files if f.startswith("clean_event_ids_") and f.endswith(".csv")
+        ]
+
+        file_ranges.sort(key=lambda x: x[0])
+        self.logger.info(f"Loaded {len(file_ranges)} event specifier files from {csv_path}")
+        return file_ranges
+
+    def _get_relevant_csv_files(self, truth_table: pq.Table) -> list:
+        """pick which CSV files to use based on the RunID range."""
+        file_ranges = self._get_event_specifier_files()
+        
+        run_ids = truth_table.column("RunID").to_pylist()
+        effective_run_ids = [rid % 100000 for rid in run_ids]
+
+        min_id, max_id = min(effective_run_ids), max(effective_run_ids)
+        relevant_files = [file for file_min, file_max, file in file_ranges if file_min <= max_id and file_max >= min_id]
+
+        self.logger.info(f"Selected {len(relevant_files)} CSV files covering event range [{min_id}, {max_id}]")
+        return relevant_files
+
+    def _load_pure_neutrino_events(self, csv_files: list) -> set:
+        """Loads (RunID, EventID) pairs from relevant CSV files."""
+        pure_neutrino_events = set()
+        for csv_file in csv_files:
+            table = pcsv.read_csv(csv_file)
+            run_ids = table.column("RunID").to_pylist()
+            event_ids = table.column("EventID").to_pylist()
+            pure_neutrino_events.update(zip(run_ids, event_ids))
+
+        self.logger.info(f"Loaded {len(pure_neutrino_events)} valid (RunID, EventID) pairs from CSV files")
+        return pure_neutrino_events
+        
+    def _apply_event_filter(self, truth_table: pq.Table, pure_neutrino_events: set) -> pq.Table:
+        required_columns = {"RunID", "EventID", "N_doms"}
+        missing_columns = required_columns - set(truth_table.column_names)
+        if missing_columns:
+            self.logger.error(f"Missing required columns: {missing_columns}. Cannot proceed with filtering.")
+            return None
+        run_ids = truth_table.column("RunID").to_pylist()
+        event_ids = truth_table.column("EventID").to_pylist()
+
+        valid_indices = [i for i, (rid, eid) in enumerate(zip(run_ids, event_ids)) if (rid, eid) in pure_neutrino_events]
+
+        if not valid_indices:
+            self.logger.warning(f"No valid events in {self.subdir_no}/{self.part_no}. Skipping filtering.")
+            return None
+        # apply filter
+        filtered_table = truth_table.take(valid_indices)
+        self.valid_event_nos = set(filtered_table.column("event_no").to_pylist())
+        filtered_table = self._recalculate_offset(filtered_table)
+
+        return filtered_table

@@ -169,7 +169,7 @@ class PMTfier:
         pa_pmtfied = summariser()
         pa_pmtfied = self._add_enhance_event_no(pa_pmtfied, part_no)
         dest_dir = os.path.join(self.dest_root, self.source_subdirectory, str(part_no))
-        pmtfied_file = os.path.join(dest_dir, f"PMTfied_{shard_no}.parquet")        
+        pmtfied_file = os.path.join(dest_dir, f"PMTfied_{shard_no}.parquet")
         pq.write_table(pa_pmtfied, pmtfied_file)
         
         # NOTE
