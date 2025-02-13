@@ -1,0 +1,20 @@
+Starting job at Thu Feb 13 03:49:13 PM CET 2025
+Running Filter_by_part.py for subdirectory 22011, part 1, with filters: MuonLike
+Lmod has detected the following error: The following module(s) are unknown:
+"python/3.9"
+
+Please check the spelling or version number. Also try "module spider ..."
+It is also possible your cache file is out-of-date; it may help to try:
+  $ module --ignore_cache load "python/3.9"
+
+Also make sure that all modulefiles written in TCL start with the string
+#%Module
+
+
+
+2025-02-13 15:49:14 - INFO - Event filtering process starts...
+usage: Filter_by_part.py [-h]
+                         Snowstorm_or_Corsika subdirectory_in_number
+                         part_number
+Filter_by_part.py: error: unrecognized arguments: MuonLike
+Job completed at Thu Feb 13 03:49:14 PM CET 2025

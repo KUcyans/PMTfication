@@ -25,7 +25,7 @@ class Muon13Filter(EventFilter):
     @override    
     def _filter_truth(self):
         """Filters truth file based on MuonFilter_13 and writes it back."""
-        source_truth_file = os.path.join(self.source_dir, str(self.subdir_no), f"truth_{self.part_no}.parquet")
+        source_truth_file = os.path.join(self.source_dir, f"truth_{self.part_no}.parquet")
         if not os.path.isfile(source_truth_file):
             self.logger.error(f"Truth file not found: {source_truth_file}")
             return
@@ -36,7 +36,7 @@ class Muon13Filter(EventFilter):
         if filtered_truth_table is None:
             return
 
-        output_truth_file = os.path.join(self.output_dir, str(self.subdir_no), f"truth_{self.part_no}.parquet")
+        output_truth_file = os.path.join(self.output_dir, f"truth_{self.part_no}.parquet")
         pq.write_table(filtered_truth_table, output_truth_file)
         self.logger.info(f"Filtered truth file saved to: {output_truth_file}")
         
@@ -52,7 +52,7 @@ class Muon13Filter(EventFilter):
 
         # Convert MuonFilter_13 to boolean values if needed
         muon_filter = truth_table.column("MuonFilter_13")
-        valid_indices = pc.equal(muon_filter, True).to_numpy().nonzero()[0]
+        valid_indices = pc.equal(muon_filter, pa.scalar(1, type=muon_filter.type)).to_numpy().nonzero()[0]
 
         if len(valid_indices) == 0:
             self.logger.warning(f"No valid MuonFilter_13 events found in {self.subdir_no}/{self.part_no}. Skipping filtering.")

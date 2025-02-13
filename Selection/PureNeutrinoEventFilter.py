@@ -1,4 +1,5 @@
 import pyarrow.parquet as pq
+import pyarrow as pa
 import pyarrow.csv as pcsv
 import os
 
@@ -25,7 +26,7 @@ class PureNeutrinoEventFilter(EventFilter):
     
     @override
     def _filter_truth(self):
-        source_truth_file = os.path.join(self.source_dir, str(self.subdir_no), f"truth_{self.part_no}.parquet")
+        source_truth_file = os.path.join(self.source_dir, f"truth_{self.part_no}.parquet")
         if not os.path.isfile(source_truth_file):
             self.logger.error(f"Truth file not found: {source_truth_file}")
         truth_table = pq.read_table(source_truth_file)
@@ -37,7 +38,7 @@ class PureNeutrinoEventFilter(EventFilter):
         pure_neutrino_events = self._load_pure_neutrino_events(relevant_csvs)
         filtered_truth_table = self._apply_event_filter(truth_table, pure_neutrino_events)
         
-        output_truth_file = os.path.join(self.output_dir, str(self.subdir_no), f"truth_{self.part_no}.parquet")
+        output_truth_file = os.path.join(self.output_dir, f"truth_{self.part_no}.parquet")
         # os.makedirs(os.path.dirname(output_file), exist_ok=True)
         pq.write_table(filtered_truth_table, output_truth_file)
         self.logger.info(f"Filtered truth file saved to: {output_truth_file}")
@@ -59,7 +60,7 @@ class PureNeutrinoEventFilter(EventFilter):
         self.logger.info(f"Loaded {len(file_ranges)} event specifier files from {csv_path}")
         return file_ranges
 
-    def _get_relevant_csv_files(self, truth_table: pq.Table) -> list:
+    def _get_relevant_csv_files(self, truth_table: pa.Table) -> list:
         """pick which CSV files to use based on the RunID range."""
         file_ranges = self._get_event_specifier_files()
         
@@ -84,7 +85,7 @@ class PureNeutrinoEventFilter(EventFilter):
         self.logger.info(f"Loaded {len(pure_neutrino_events)} valid (RunID, EventID) pairs from CSV files")
         return pure_neutrino_events
         
-    def _apply_event_filter(self, truth_table: pq.Table, pure_neutrino_events: set) -> pq.Table:
+    def _apply_event_filter(self, truth_table: pa.Table, pure_neutrino_events: set) -> pa.Table:
         required_columns = {"RunID", "EventID", "N_doms"}
         missing_columns = required_columns - set(truth_table.column_names)
         if missing_columns:

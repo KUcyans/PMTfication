@@ -1,0 +1,8 @@
+nohup: ignoring input
+Total number of events in SRTInIcePulses: 402208
+Reading 1000 events from SRTInIcePulses...
+Total number of events in truth: 402208
+Reading 1000 events from truth...
+Generating plots:   0%|          | 0/1 [00:00<?, ?it/s]Generating plots: 100%|██████████| 1/1 [00:45<00:00, 45.72s/it]Generating plots: 100%|██████████| 1/1 [00:45<00:00, 45.72s/it]
+All plots have been saved in plots_StatView_22011_3_first1000.pdf
+Time taken to complete: 2099.61 seconds

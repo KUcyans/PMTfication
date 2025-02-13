@@ -28,7 +28,7 @@ for SUBDIR in {22010..22018}; do
     # Create output directory if it doesn't exist
     mkdir -p "$OUTPUT_DIR"
 
-    echo "Processing files in $INPUT_DIR"
+    echo "Processing files in $SUBDIR"
 
     # Process all CSV files in the directory
     for INPUT_FILE in "$INPUT_DIR"/*.csv; do

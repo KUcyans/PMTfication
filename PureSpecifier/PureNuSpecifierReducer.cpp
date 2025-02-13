@@ -3,53 +3,53 @@
 #include <sstream>
 #include <unordered_set>
 
-using namespace std;
-
 struct RowHash {
-    size_t operator()(const string &s) const {
-        return hash<string>{}(s);
+    size_t operator()(const std::string &s) const {
+        return std::hash<std::string>()(s);
     }
 };
 
 int main(int argc, char *argv[]) {
     if (argc != 3) {
-        cerr << "Usage: " << argv[0] << " input.csv output.csv\n";
+        std::cerr << "Usage: " << argv[0] << " input.csv output.csv\n";
         return 1;
     }
 
-    ifstream infile(argv[1]);
-    ofstream outfile(argv[2]);
+    std::ifstream infile(argv[1]);
+    std::ofstream outfile(argv[2]);
 
     if (!infile.is_open() || !outfile.is_open()) {
-        cerr << "Error opening files!\n";
+        std::cerr << "Error opening files!\n";
         return 1;
     }
 
-    string line;
-    unordered_set<string, RowHash> unique_rows;
+    std::string line;
+    std::unordered_set<std::string, RowHash> unique_rows;
 
-    // Read header and write the new reduced header to output
-    if (getline(infile, line)) {
-        outfile << "Run ID,Event ID,\n";
+    // Read and modify header
+    if (std::getline(infile, line)) {
+        outfile << "RunID,EventID\n";  // Standardized header
     }
 
-    while (getline(infile, line)) {
-        stringstream ss(line);
-        string run_id, subrun_id, event_id, subevent_id, subevent_stream;
+    while (std::getline(infile, line)) {
+        std::stringstream ss(line);
+        std::string run_id, subrun_id, event_id, subevent_id, subevent_stream;
 
-        // Read CSV columns
-        if (!getline(ss, run_id, ',') ||
-            !getline(ss, subrun_id, ',') ||
-            !getline(ss, event_id, ',') ||
-            !getline(ss, subevent_id, ',') ||
-            !getline(ss, subevent_stream, ',')) {
+        // Read known columns (Subevent Stream may be missing)
+        if (!std::getline(ss, run_id, ',') ||
+            !std::getline(ss, subrun_id, ',') ||
+            !std::getline(ss, event_id, ',') ||
+            !std::getline(ss, subevent_id, ',')) {
             continue;  // Skip malformed lines
         }
 
-        string row_key = run_id + "," + event_id + ",";  // Keep only Run ID and Event ID
+        // Read subevent_stream (optional)
+        std::getline(ss, subevent_stream, ',');
+
+        std::string row_key = run_id + "," + event_id;  // Keep only RunID and EventID
 
         if (unique_rows.insert(row_key).second) {
-            outfile << row_key << "\n";  // Write reduced row
+            outfile << row_key << "\n";  // Write reduced row without trailing comma
         }
     }
 

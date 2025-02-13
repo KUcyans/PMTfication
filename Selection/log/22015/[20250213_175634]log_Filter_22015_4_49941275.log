@@ -1,0 +1,30 @@
+Starting job at Thu Feb 13 05:56:34 PM CET 2025
+Running Filter_by_part.py for subdirectory 22015, part 4
+2025-02-13 17:56:34 - INFO - Event filtering process starts...
+2025-02-13 17:56:34 - INFO - Initialized PureNeutrinoEventFilter
+2025-02-13 17:56:34 - INFO - Starting filtering process for 22015/4
+2025-02-13 17:56:35 - INFO - Loaded 20 event specifier files from /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/clean_events_dict/22015/22015/reduced
+2025-02-13 17:56:35 - INFO - Selected 10 CSV files covering event range [248, 9898]
+2025-02-13 17:56:35 - INFO - Loaded 188586 valid (RunID, EventID) pairs from CSV files
+2025-02-13 17:56:36 - INFO - Recalculated 'offset' column based on filtered 'N_doms' values.
+2025-02-13 17:56:36 - INFO - Filtered truth file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/PureNu/Snowstorm/22015/truth_4.parquet
+2025-02-13 17:56:36 - INFO - Receipt file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/PureNu/Snowstorm/22015/[Receipt]22015_4.json
+2025-02-13 17:56:37 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/PureNu/Snowstorm/22015/4/PMTfied_11.parquet
+2025-02-13 17:56:39 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/PureNu/Snowstorm/22015/4/PMTfied_8.parquet
+2025-02-13 17:56:40 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/PureNu/Snowstorm/22015/4/PMTfied_4.parquet
+2025-02-13 17:56:41 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/PureNu/Snowstorm/22015/4/PMTfied_14.parquet
+2025-02-13 17:56:42 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/PureNu/Snowstorm/22015/4/PMTfied_10.parquet
+2025-02-13 17:56:44 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/PureNu/Snowstorm/22015/4/PMTfied_1.parquet
+2025-02-13 17:56:45 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/PureNu/Snowstorm/22015/4/PMTfied_5.parquet
+2025-02-13 17:56:46 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/PureNu/Snowstorm/22015/4/PMTfied_9.parquet
+2025-02-13 17:56:47 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/PureNu/Snowstorm/22015/4/PMTfied_12.parquet
+2025-02-13 17:56:49 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/PureNu/Snowstorm/22015/4/PMTfied_3.parquet
+2025-02-13 17:56:50 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/PureNu/Snowstorm/22015/4/PMTfied_7.parquet
+2025-02-13 17:56:51 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/PureNu/Snowstorm/22015/4/PMTfied_13.parquet
+2025-02-13 17:56:52 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/PureNu/Snowstorm/22015/4/PMTfied_2.parquet
+2025-02-13 17:56:54 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/PureNu/Snowstorm/22015/4/PMTfied_6.parquet
+2025-02-13 17:56:54 - INFO - Filtering process completed.
+2025-02-13 17:56:54 - INFO - Filtering process completed for all selected filters.
+2025-02-13 17:56:54 - INFO - Execution time: 19.45 seconds
+2025-02-13 17:56:54 - INFO - Updated receipt with execution time: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/PureNu/Snowstorm/22015/[Receipt]22015_4.json
+Job completed at Thu Feb 13 05:56:54 PM CET 2025

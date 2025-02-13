@@ -1,0 +1,23 @@
+Starting job at Thu Feb 13 03:46:17 PM CET 2025
+Running Filter_by_part.py for subdirectory 22011, part 1, with filters: MuonLike
+Lmod has detected the following error: The following module(s) are unknown:
+"python/3.9"
+
+Please check the spelling or version number. Also try "module spider ..."
+It is also possible your cache file is out-of-date; it may help to try:
+  $ module --ignore_cache load "python/3.9"
+
+Also make sure that all modulefiles written in TCL start with the string
+#%Module
+
+
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 6, in <module>
+    from PureNeutrinoEventFilter import PureNeutrinoEventFilter
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/PureNeutrinoEventFilter.py", line 7, in <module>
+    class PureNeutrinoEventFilter(EventFilter):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/PureNeutrinoEventFilter.py", line 62, in PureNeutrinoEventFilter
+    def _get_relevant_csv_files(self, truth_table: pq.Table) -> list:
+AttributeError: module 'pyarrow.parquet' has no attribute 'Table'
+Job completed at Thu Feb 13 03:46:21 PM CET 2025

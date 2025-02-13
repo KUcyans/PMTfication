@@ -58,25 +58,25 @@ class PulseMapStatViewer:
             
             # List of functions that create plots
             plot_functions = [
-                lambda: self._plotNDOMsPerEvent(df_features, file),
-                lambda: self._plotNpulsesPerEvent(df_features, file),
-                lambda: self._plotNpulsesPerDOM(df_features, file),
-                lambda: self._plotNpulsesPerDOM_NS(df_features, df_truth, file),
-                lambda: self._plotNpulsesPerDOM_IT(df_features, df_truth, file),
-                lambda: self._plotChargePerPulse(df_features, file),
-                lambda: self._plotTotalChargePerDOM(df_features, file),
-                lambda: self._plotTotalChargePerEvent(df_features, file),
-                lambda: self._plotPosition(df_features, 'dom_x', file),
-                lambda: self._plotPosition(df_features, 'dom_y', file),
-                lambda: self._plotPosition(df_features, 'dom_z', file),
+                # lambda: self._plotNDOMsPerEvent(df_features, file),
+                # lambda: self._plotNpulsesPerEvent(df_features, file),
+                # lambda: self._plotNpulsesPerDOM(df_features, file),
+                # lambda: self._plotNpulsesPerDOM_NS(df_features, df_truth, file),
+                # lambda: self._plotNpulsesPerDOM_IT(df_features, df_truth, file),
+                # lambda: self._plotChargePerPulse(df_features, file),
+                # lambda: self._plotTotalChargePerDOM(df_features, file),
+                # lambda: self._plotTotalChargePerEvent(df_features, file),
+                # lambda: self._plotPosition(df_features, 'dom_x', file),
+                # lambda: self._plotPosition(df_features, 'dom_y', file),
+                # lambda: self._plotPosition(df_features, 'dom_z', file),
                 
                 lambda: self._plotLog10energy(df_truth, file),
-                lambda: self._plotZenith(df_truth, file),
-                lambda: self._plotCosZenith(df_truth, file),
-                lambda: self._plotAzimuth(df_truth, file),
-                lambda: self._plotPosition(df_truth, 'position_y', file),
-                lambda: self._plotPosition(df_truth, 'position_x', file),
-                lambda: self._plotPosition(df_truth, 'position_z', file),
+                # lambda: self._plotZenith(df_truth, file),
+                # lambda: self._plotCosZenith(df_truth, file),
+                # lambda: self._plotAzimuth(df_truth, file),
+                # lambda: self._plotPosition(df_truth, 'position_y', file),
+                # lambda: self._plotPosition(df_truth, 'position_x', file),
+                # lambda: self._plotPosition(df_truth, 'position_z', file),
             ]
             
             # Iterate over the plotting functions, execute them, and save the generated figures to the PDF
@@ -437,22 +437,22 @@ class PulseMapStatViewer:
         return fig, ax
 
 if __name__ == "__main__":
-    # Setup argument parser
     parser = argparse.ArgumentParser(description="Run PulseMapStatViewer with input database and output PDF.")
-    parser.add_argument("source_db", type=str, help="Path to the source SQLite database file.")
-    parser.add_argument("output_pdf", type=str, help="Filename for the output PDF file.")
-    parser.add_argument("--N", type=int, default=None, help="Number of events to read from the database for data.")
+    parser.add_argument("subdir", type=str, help="Subdirectory number (e.g., 22012).")
+    parser.add_argument("part", type=str, help="Part number (e.g., 21).")
+    parser.add_argument("--N", type=int, default=2000, help="Number of events to read from the database.")
 
-    # Parse arguments
+    args = parser.parse_args()
+
+    base_path = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/sqlite_pulses/Snowstorm/"
+    source_db = f"{base_path}{args.subdir}/merged_part_{args.part}.db"
+    output_pdf = f"StatView_{args.subdir}_{args.part}_first{args.N}"
+    
     args = parser.parse_args()
     
-    # Start timing
     start_time = time.time()
+    viewer = PulseMapStatViewer(source_db, output_pdf, args.N)
     
-    # Instantiate and run the viewer
-    viewer = PulseMapStatViewer(args.source_db, args.output_pdf, args.N)
-    
-    # End timing
     end_time = time.time()
     elapsed_time = end_time - start_time
     

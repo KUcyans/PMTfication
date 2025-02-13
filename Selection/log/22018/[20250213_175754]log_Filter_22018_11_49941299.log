@@ -1,0 +1,27 @@
+Starting job at Thu Feb 13 05:57:54 PM CET 2025
+Running Filter_by_part.py for subdirectory 22018, part 11
+2025-02-13 17:57:55 - INFO - Event filtering process starts...
+2025-02-13 17:57:55 - INFO - Initialized PureNeutrinoEventFilter
+2025-02-13 17:57:55 - INFO - Starting filtering process for 22018/11
+2025-02-13 17:57:55 - INFO - Loaded 18 event specifier files from /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/clean_events_dict/22018/22018/reduced
+2025-02-13 17:57:55 - INFO - Selected 10 CSV files covering event range [4849, 13764]
+2025-02-13 17:57:55 - ERROR - An error occurred: 'Field "RunID" does not exist in schema'
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 85, in <module>
+    main()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 81, in main
+    run()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 72, in run
+    event_filter()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/PureNeutrinoEventFilter.py", line 23, in __call__
+    self._filter_truth()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/EventFilter.py", line 129, in wrapper
+    return method(*args, **kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/PureNeutrinoEventFilter.py", line 38, in _filter_truth
+    pure_neutrino_events = self._load_pure_neutrino_events(relevant_csvs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/PureNeutrinoEventFilter.py", line 81, in _load_pure_neutrino_events
+    run_ids = table.column("RunID").to_pylist()
+  File "pyarrow/table.pxi", line 1779, in pyarrow.lib._Tabular.column
+  File "pyarrow/table.pxi", line 1715, in pyarrow.lib._Tabular._ensure_integer_index
+KeyError: 'Field "RunID" does not exist in schema'
+Job completed at Thu Feb 13 05:57:55 PM CET 2025
