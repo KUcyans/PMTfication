@@ -39,3 +39,4 @@ echo "Job completed at $(date)"
 
 
 # sbatch --export=SnowstormOrCorsika=Snowstorm,SUBDIR=22011,PART=1 Filter_by_part.sh
+# nohup python3.9 Filter_by_part.py Snowstorm 22014 1 > log/22014/[$(date +"%Y%m%d_%H%M%S")]log_Filter_22014_1.log 2>&1 &

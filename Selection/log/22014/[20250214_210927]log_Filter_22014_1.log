@@ -1,0 +1,15 @@
+nohup: ignoring input
+2025-02-14 21:09:27 - INFO - Event filtering process starts...
+2025-02-14 21:09:27 - ERROR - An error occurred: 'EventFilterManager' object has no attribute 'source_subdir'
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 65, in <module>
+    main()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 61, in main
+    run()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 48, in run
+    filter_manager = EventFilterManager(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/EventFilterManager.py", line 17, in __init__
+    self.filter_instances = self._instantiate_filters() # dict[str, EventFilter]
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/EventFilterManager.py", line 68, in _instantiate_filters
+    source_subdir=self.source_subdir,
+AttributeError: 'EventFilterManager' object has no attribute 'source_subdir'

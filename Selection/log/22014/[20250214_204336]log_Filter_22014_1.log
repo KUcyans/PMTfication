@@ -1,0 +1,31 @@
+nohup: ignoring input
+2025-02-14 20:43:36 - INFO - Event filtering process starts...
+2025-02-14 20:43:36 - INFO - Initialized Muon13Filter
+2025-02-14 20:43:37 - INFO - Extracted 180046 valid events based on MuonFilter_13.
+2025-02-14 20:43:37 - INFO - Starting filtering process for 22014/1
+2025-02-14 20:43:37 - INFO - Starting filtering process for 22014/1
+2025-02-14 20:43:52 - INFO - Recalculated 'offset' column based on filtered 'N_doms' values.
+2025-02-14 20:43:55 - INFO - Filtered truth file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22014/truth_1.parquet
+2025-02-14 20:44:02 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22014/1/PMTfied_10.parquet
+2025-02-14 20:44:10 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22014/1/PMTfied_1.parquet
+2025-02-14 20:44:17 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22014/1/PMTfied_5.parquet
+2025-02-14 20:44:24 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22014/1/PMTfied_9.parquet
+2025-02-14 20:44:31 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22014/1/PMTfied_8.parquet
+2025-02-14 20:44:38 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22014/1/PMTfied_4.parquet
+2025-02-14 20:44:45 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22014/1/PMTfied_11.parquet
+2025-02-14 20:44:52 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22014/1/PMTfied_2.parquet
+2025-02-14 20:44:59 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22014/1/PMTfied_6.parquet
+2025-02-14 20:45:00 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22014/1/PMTfied_12.parquet
+2025-02-14 20:45:07 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22014/1/PMTfied_3.parquet
+2025-02-14 20:45:14 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22014/1/PMTfied_7.parquet
+2025-02-14 20:45:14 - INFO - Filtering process completed.
+2025-02-14 20:45:14 - INFO - Filtering process completed.
+2025-02-14 20:45:14 - ERROR - An error occurred: 'EventFilterManager' object has no attribute 'generate_receipt'
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 65, in <module>
+    main()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 61, in main
+    run()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 57, in run
+    filter_manager.generate_receipt(start_time=start_time, end_time=end_time)
+AttributeError: 'EventFilterManager' object has no attribute 'generate_receipt'
