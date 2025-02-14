@@ -1,111 +1,109 @@
-#include <algorithm>
-#include <cctype>
-#include <filesystem>
+#include <chrono>
+#include <ctime>
 #include <fstream>
 #include <iostream>
+#include <set>
 #include <sstream>
+#include <unordered_map>
 #include <vector>
 
-namespace fs = std::filesystem;
-
-const int NUM_PARTS = 10;
-const int RUN_ID_MIN = 2201000000;
-const int RUN_ID_MAX = 2201000999;
-const int BIN_SIZE = (RUN_ID_MAX - RUN_ID_MIN + 1) / NUM_PARTS;
-
-// Trim leading/trailing whitespace and remove non-numeric characters
-std::string clean_number(const std::string &str) {
-    std::string result;
-    for (char c : str) {
-        if (std::isdigit(c)) {  // Keep only numeric characters
-            result += c;
-        }
-    }
-    return result;
+// Function to get current timestamp as a string
+std::string getCurrentTimestamp() {
+    auto now = std::chrono::system_clock::now();
+    std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+    char buffer[100];
+    std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", std::localtime(&now_c));
+    return std::string(buffer);
 }
 
-// Function to determine which file a row should go to
-int get_part_index(int run_id) {
-    return (run_id - RUN_ID_MIN) / BIN_SIZE;
+void splitCSVByRunID(const std::string &inputFile, const std::string &outputDir) {
+    std::ifstream infile(inputFile);
+    if (!infile.is_open()) {
+        std::cerr << "Error: Could not open input file: " << inputFile << std::endl;
+        return;
+    }
+
+    std::unordered_map<long long, std::ofstream> fileMap;
+    std::string line;
+    std::set<long long> seenRunIDs;  // Track unique RunIDs
+    std::set<long long> missingRunIDs = {2201000020LL, 2201000107LL, 2201000731LL, 2201000858LL, 2201000904LL, 2201000963LL};
+
+    std::cout << "[" << getCurrentTimestamp() << "] Started processing file: " << inputFile << std::endl;
+
+    // Read header line and store it for writing to each file
+    if (!std::getline(infile, line)) {
+        std::cerr << "Error: Input file is empty or not formatted correctly." << std::endl;
+        return;
+    }
+    std::string header = line;
+
+    while (std::getline(infile, line)) {
+        std::stringstream ss(line);
+        std::string runIDStr, eventIDStr;
+
+        if (!std::getline(ss, runIDStr, ',') || !std::getline(ss, eventIDStr, ',')) {
+            std::cerr << "Warning: Skipping malformed line: " << line << std::endl;
+            continue;
+        }
+
+        // Convert to long long using std::stoll()
+        long long runID = std::stoll(runIDStr);
+        seenRunIDs.insert(runID);  // Track seen RunIDs
+
+        // Skip known missing RunIDs
+        if (missingRunIDs.find(runID) != missingRunIDs.end()) {
+            std::cerr << "Skipping missing RunID: " << runID << std::endl;
+            continue;
+        }
+
+        long long bucket = (runID % 1000) / 100 * 100;  // Extract range (000-099, 100-199, etc.)
+
+        std::string filename = outputDir + "/clean_event_ids_" +
+                               std::to_string(bucket).insert(0, 7 - std::to_string(bucket).length(), '0') +
+                               "-" +
+                               std::to_string(bucket + 99).insert(0, 7 - std::to_string(bucket + 99).length(), '0') +
+                               ".csv";
+
+        if (fileMap.find(bucket) == fileMap.end()) {
+            fileMap[bucket].open(filename);
+            if (!fileMap[bucket].is_open()) {
+                std::cerr << "Error: Could not open output file " << filename << std::endl;
+                continue;
+            }
+            fileMap[bucket] << header << std::endl;
+        }
+
+        fileMap[bucket] << line << std::endl;
+    }
+
+    for (auto &pair : fileMap) {
+        pair.second.close();
+    }
+    infile.close();
+
+    std::cout << "[" << getCurrentTimestamp() << "] Splitting completed successfully! Output saved in: " << outputDir << std::endl;
 }
 
 int main(int argc, char *argv[]) {
-    if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " input.csv\n";
+    if (argc != 3) {
+        std::cerr << "Usage: " << argv[0] << " <input_file> <output_directory>" << std::endl;
         return 1;
     }
 
-    std::string input_file = argv[1];
-    std::ifstream infile(input_file);
-    if (!infile.is_open()) {
-        std::cerr << "Error opening input file: " << input_file << "!\n";
-        return 1;
-    }
+    std::string inputFile = argv[1];
+    std::string outputDir = argv[2];
 
-    // Extract parent directory from input file
-    fs::path input_path(input_file);
-    fs::path output_dir = input_path.parent_path();
+    // Start time
+    auto start = std::chrono::high_resolution_clock::now();
 
-    // Read and verify the header
-    std::string header;
-    if (!std::getline(infile, header)) {
-        std::cerr << "Error: Empty file or missing header in " << input_file << "!\n";
-        return 1;
-    }
+    splitCSVByRunID(inputFile, outputDir);
 
-    // Open multiple output files with correct naming
-    std::vector<std::ofstream> outfiles(NUM_PARTS);
-    for (int i = 0; i < NUM_PARTS; i++) {
-        int start_range = RUN_ID_MIN + i * BIN_SIZE;
-        int end_range = start_range + BIN_SIZE - 1;
+    // End time
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end - start;
 
-        std::string output_filename = "clean_event_ids_" +
-                                      std::to_string(start_range - RUN_ID_MIN).insert(0, 7 - std::to_string(start_range - RUN_ID_MIN).length(), '0') + "-" +
-                                      std::to_string(end_range - RUN_ID_MIN).insert(0, 7 - std::to_string(end_range - RUN_ID_MIN).length(), '0') + ".csv";
+    std::cout << "[" << getCurrentTimestamp() << "] Execution Time: "
+              << elapsed.count() << " seconds (" << elapsed.count() * 1000 << " ms)" << std::endl;
 
-        fs::path output_file = output_dir / output_filename;
-        outfiles[i].open(output_file);
-        if (!outfiles[i].is_open()) {
-            std::cerr << "Error opening output file: " << output_file << "\n";
-            return 1;
-        }
-        outfiles[i] << header << "\n";  // Write header to each file
-    }
-
-    std::string line;
-    while (std::getline(infile, line)) {
-        std::stringstream ss(line);
-        std::string run_id_str, event_id_str;
-
-        if (!std::getline(ss, run_id_str, ',') || !std::getline(ss, event_id_str, ',')) {
-            continue;  // Skip malformed lines
-        }
-
-        // Clean numbers to remove spaces, \r, and other invalid characters
-        run_id_str = clean_number(run_id_str);
-        event_id_str = clean_number(event_id_str);
-
-        try {
-            int run_id = std::stoi(run_id_str);
-            int event_id = std::stoi(event_id_str);  // Ensure it's a valid integer
-            int part_index = get_part_index(run_id);
-
-            if (part_index >= 0 && part_index < NUM_PARTS) {
-                outfiles[part_index] << run_id << "," << event_id << "\n";  // Write to correct file
-            } else {
-                std::cerr << "Skipping row with out-of-range RunID: " << run_id << "\n";
-            }
-        } catch (const std::exception &e) {
-            std::cerr << "Skipping invalid row: " << line << " (Error: " << e.what() << ")\n";
-        }
-    }
-
-    // Close all files
-    infile.close();
-    for (auto &outfile : outfiles) {
-        outfile.close();
-    }
-
-    std::cout << "Splitting completed! Files saved in: " << output_dir << "\n";
     return 0;
 }

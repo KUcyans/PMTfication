@@ -1,33 +1,34 @@
 #!/bin/bash
 
-# Define variables
 CPP_FILE="Split22010.cpp"
 EXECUTABLE="Split22010"
 DATA_DIR="/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/clean_events_dict/22010/22010/reduced"
+MOVE_DIR="/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/clean_events_dict/22010/22010"  # Move target
 INPUT_FILE="${DATA_DIR}/clean_event_ids_0000000-0000999.csv"
+RENAMED_FILE="reduced_clean_event_ids_0000000-0000999.csv"
+OUTPUT_DIR="$DATA_DIR"  # Keep split files in the same directory as input
 
-# Check if the input file exists
-if [ ! -f "$INPUT_FILE" ]; then
-    echo "Error: Input file $INPUT_FILE not found!"
-    exit 1
-fi
+# Compile the C++ program
+g++ -o $EXECUTABLE $CPP_FILE -O2
 
-# Compile the C++ file
-echo "Compiling $CPP_FILE..."
-g++ -o "$EXECUTABLE" "$CPP_FILE" -std=c++17
-if [ $? -ne 0 ]; then
-    echo "Compilation failed!"
-    exit 1
-fi
+# Record start time
+START_TIME=$(date +"%Y-%m-%d %H:%M:%S")
+SECONDS=0
 
-# Execute the compiled program
-echo "Executing $EXECUTABLE..."
-./"$EXECUTABLE" "$INPUT_FILE"
+# Run the executable with input file and output directory as arguments
+echo "[$START_TIME] Running the script..."
+./$EXECUTABLE "$INPUT_FILE" "$OUTPUT_DIR"
 
-# Check if execution was successful
-if [ $? -eq 0 ]; then
-    echo "Splitting completed! Files saved in: $DATA_DIR"
+# Record end time
+END_TIME=$(date +"%Y-%m-%d %H:%M:%S")
+ELAPSED_TIME=$SECONDS
+
+echo "[$END_TIME] Execution Time: $ELAPSED_TIME seconds"
+
+# Rename and move the original CSV file one directory up
+if [ -f "$INPUT_FILE" ]; then
+    mv "$INPUT_FILE" "${MOVE_DIR}/${RENAMED_FILE}"
+    echo "Moved original file to: ${MOVE_DIR}/${RENAMED_FILE}"
 else
-    echo "Error occurred during execution!"
-    exit 1
+    echo "Warning: Input file not found, skipping rename and move."
 fi
