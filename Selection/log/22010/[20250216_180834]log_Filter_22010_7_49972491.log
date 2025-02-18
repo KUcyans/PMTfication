@@ -1,0 +1,27 @@
+Starting job at Sun Feb 16 06:08:34 PM CET 2025
+Running Filter_by_part.py for subdirectory 22010, part 7
+2025-02-16 18:08:35 - INFO - Event filtering process starts...
+2025-02-16 18:08:35 - INFO - Initialized PureNeutrinoEventFilter filter for 22010/7
+2025-02-16 18:08:36 - INFO - Loaded 10 event specifier files from /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/clean_events_dict/22010/22010/reduced
+2025-02-16 18:08:37 - INFO - Selected 0 CSV files covering event range [3394, 5020]
+2025-02-16 18:08:38 - WARNING - No matching CSV files found for 22010/7
+2025-02-16 18:08:38 - INFO - Loaded 0 valid (RunID, EventID) pairs from CSV files
+2025-02-16 18:08:40 - WARNING - No valid events in 22010/7. Skipping filtering.
+2025-02-16 18:08:40 - ERROR - An error occurred: 'PureNeutrinoEventFilter' object has no attribute 'valid_event_nos'
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 65, in <module>
+    main()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 61, in main
+    run()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 48, in run
+    filter_manager = EventFilterManager(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/EventFilterManager.py", line 19, in __init__
+    self.filter_obj = self._build_Filter_object()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/EventFilterManager.py", line 51, in _build_Filter_object
+    filter_object = self.build_CompositeEventFilter(single_filter)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/EventFilterManager.py", line 82, in build_CompositeEventFilter
+    valid_event_nos = eventFilter.get_valid_event_nos()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/EventFilter.py", line 36, in get_valid_event_nos
+    return self.valid_event_nos
+AttributeError: 'PureNeutrinoEventFilter' object has no attribute 'valid_event_nos'
+Job completed at Sun Feb 16 06:08:42 PM CET 2025

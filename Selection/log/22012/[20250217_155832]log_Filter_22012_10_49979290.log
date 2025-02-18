@@ -1,0 +1,34 @@
+Starting job at Mon Feb 17 03:58:32 PM CET 2025
+Running Filter_by_part.py for subdirectory 22012, part 10
+2025-02-17 15:58:32 - INFO - Event filtering process starts...
+2025-02-17 15:58:32 - INFO - Initialized PureNeutrinoEventFilter filter for 22012/10
+2025-02-17 15:58:33 - INFO - Loaded 14 event specifier files from /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/clean_events_dict/22012/22012/reduced
+2025-02-17 15:58:33 - INFO - Selected 2 CSV files covering event range [4958, 5597]
+2025-02-17 15:58:33 - INFO - Loaded 124239 valid (RunID, EventID) pairs from CSV files
+2025-02-17 15:58:33 - INFO - Extracted 22710 valid events based on pure neutrino events.
+2025-02-17 15:58:33 - INFO - Initialized CompositeEventFilter filter for 22012/10
+2025-02-17 15:58:33 - INFO - Initialized (PureNu)
+2025-02-17 15:58:33 - INFO - Starting filtering process for 22012/10
+2025-02-17 15:58:33 - INFO - Starting filtering process for 22012/10
+2025-02-17 15:58:34 - INFO - Recalculated 'offset' column based on 'N_doms' values within each 'shard_no' group.
+2025-02-17 15:58:34 - INFO - Filtered truth file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/truth_10.parquet
+2025-02-17 15:58:36 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/10/PMTfied_5.parquet
+2025-02-17 15:58:37 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/10/PMTfied_1.parquet
+2025-02-17 15:58:39 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/10/PMTfied_9.parquet
+2025-02-17 15:58:40 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/10/PMTfied_10.parquet
+2025-02-17 15:58:42 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/10/PMTfied_14.parquet
+2025-02-17 15:58:43 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/10/PMTfied_8.parquet
+2025-02-17 15:58:45 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/10/PMTfied_4.parquet
+2025-02-17 15:58:46 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/10/PMTfied_11.parquet
+2025-02-17 15:58:47 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/10/PMTfied_15.parquet
+2025-02-17 15:58:49 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/10/PMTfied_6.parquet
+2025-02-17 15:58:50 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/10/PMTfied_2.parquet
+2025-02-17 15:58:52 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/10/PMTfied_13.parquet
+2025-02-17 15:58:53 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/10/PMTfied_7.parquet
+2025-02-17 15:58:55 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/10/PMTfied_3.parquet
+2025-02-17 15:58:56 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/10/PMTfied_12.parquet
+2025-02-17 15:58:56 - INFO - Filtering process completed.
+2025-02-17 15:58:56 - INFO - Filtering process completed.
+2025-02-17 15:58:56 - INFO - Unified receipt generated: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/[Receipt]22012_10.json
+2025-02-17 15:58:56 - INFO - Filtering process completed.
+Job completed at Mon Feb 17 03:58:56 PM CET 2025

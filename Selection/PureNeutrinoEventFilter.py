@@ -19,10 +19,7 @@ class PureNeutrinoEventFilter(EventFilter):
 
     @override
     def _set_valid_event_nos(self):
-        source_truth_file = os.path.join(self.source_subdir, f"truth_{self.part_no}.parquet")
-        if not os.path.isfile(source_truth_file):
-            self.logger.error(f"Truth file not found: {source_truth_file}")
-        truth_table = pq.read_table(source_truth_file)
+        truth_table = pq.read_table(self.source_truth_file)
         relevant_csvs = self._get_relevant_csv_files(truth_table)
         if not relevant_csvs:
             self.logger.warning(f"No matching CSV files found for {self.subdir_no}/{self.part_no}")

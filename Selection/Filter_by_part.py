@@ -66,3 +66,6 @@ if __name__ == "__main__":
     except Exception as e:
         logging.error(f"An error occurred: {e}", exc_info=True)
         sys.exit(1)
+
+# nohup python3.9 Filter_by_part.py Snowstorm 22011 1 > log/22011/[$(date +"%Y%m%d_%H%M%S")]log_Filter_22011_1.log 2>&1 &
+# nohup python3.9 Filter_by_part.py Snowstorm 22011 1 > log/22011/[$(date +"%Y%m%d_%H%M%S")]log_Filter_22011_1.log 2>&1 &

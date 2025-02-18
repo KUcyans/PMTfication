@@ -1,0 +1,23 @@
+Starting job at Sun Feb 16 05:54:38 PM CET 2025
+Running Filter_by_part.py for subdirectory 22010, part 12
+2025-02-16 17:54:43 - INFO - Event filtering process starts...
+2025-02-16 17:54:43 - INFO - Initialized Muon13Filter filter for 22010/12
+2025-02-16 17:54:55 - INFO - Extracted 731970 valid events where MuonFilter_13==True.
+2025-02-16 17:54:55 - INFO - Initialized CompositeEventFilter filter for 22010/12
+2025-02-16 17:54:55 - INFO - Initialized (MuonLike)
+2025-02-16 17:54:55 - INFO - Starting filtering process for 22010/12
+2025-02-16 17:54:55 - INFO - Starting filtering process for 22010/12
+2025-02-16 17:55:25 - INFO - Recalculated 'offset' column based on filtered 'N_doms' values.
+2025-02-16 17:55:30 - INFO - Filtered truth file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22010/truth_12.parquet
+2025-02-16 17:55:40 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22010/12/PMTfied_4.parquet
+2025-02-16 17:55:51 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22010/12/PMTfied_5.parquet
+2025-02-16 17:56:01 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22010/12/PMTfied_1.parquet
+2025-02-16 17:56:06 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22010/12/PMTfied_7.parquet
+2025-02-16 17:56:16 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22010/12/PMTfied_3.parquet
+2025-02-16 17:56:26 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22010/12/PMTfied_6.parquet
+2025-02-16 17:56:36 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22010/12/PMTfied_2.parquet
+2025-02-16 17:56:37 - INFO - Filtering process completed.
+2025-02-16 17:56:37 - INFO - Filtering process completed.
+2025-02-16 17:56:37 - INFO - Unified receipt generated: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/MuonLike/22010/[Receipt]22010_12.json
+2025-02-16 17:56:37 - INFO - Filtering process completed.
+Job completed at Sun Feb 16 05:56:37 PM CET 2025

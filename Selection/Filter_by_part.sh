@@ -2,9 +2,9 @@
 #SBATCH --job-name=filter_part_%j
 #SBATCH --partition=icecube
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=24
-#SBATCH --mem=20G
-#SBATCH --time=48:00:00
+#SBATCH --cpus-per-task=32
+#SBATCH --mem=32G
+#SBATCH --time=01:00:00
 #SBATCH --signal=B:USR1@60 
 #SBATCH --output=/dev/null
 #SBATCH --error=/dev/null

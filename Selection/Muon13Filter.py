@@ -17,12 +17,8 @@ class Muon13Filter(EventFilter):
                         part_no=part_no)
     
     @override
-    def _set_valid_event_nos(self):
-        source_truth_file = os.path.join(self.source_subdir, f"truth_{self.part_no}.parquet")
-        if not os.path.isfile(source_truth_file):
-            self.logger.error(f"Truth file not found: {source_truth_file}")
-            return
-        truth_table = pq.read_table(source_truth_file)
+    def _set_valid_event_nos(self): 
+        truth_table = pq.read_table(self.source_truth_file)
         required_columns = {"MuonFilter_13", "N_doms", "event_no"}
         missing_columns = required_columns - set(truth_table.column_names)
         if missing_columns:

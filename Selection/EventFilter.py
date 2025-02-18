@@ -78,17 +78,41 @@ class EventFilter(abc.ABC):
             else:
                 self.logger.warning(f"Skipping {file}: No valid events found in PMTfied file.")
     
+    # def _recalculate_offset(self, truth_table: pa.Table) -> pa.Table:
+    #     if "N_doms" not in truth_table.column_names:
+    #         self.logger.error("Column 'N_doms' is missing from truth table. Cannot recalculate 'offset'.")
+    #         return truth_table
+        
+    #     truth_data = {col: truth_table.column(col).to_pylist() for col in truth_table.column_names}
+    #     truth_data['offset'] = pc.cumulative_sum(pa.array(truth_data['N_doms']))
+        
+    #     self.logger.info("Recalculated 'offset' column based on filtered 'N_doms' values.")
+    #     return pa.Table.from_pydict(truth_data)
+
     def _recalculate_offset(self, truth_table: pa.Table) -> pa.Table:
-        if "N_doms" not in truth_table.column_names:
-            self.logger.error("Column 'N_doms' is missing from truth table. Cannot recalculate 'offset'.")
+        if "N_doms" not in truth_table.column_names or "shard_no" not in truth_table.column_names:
+            self.logger.error("Required columns 'N_doms' or 'shard_no' are missing from truth table. Cannot recalculate 'offset'.")
             return truth_table
-        
+
         truth_data = {col: truth_table.column(col).to_pylist() for col in truth_table.column_names}
-        truth_data['offset'] = pc.cumulative_sum(pa.array(truth_data['N_doms']))
-        
-        self.logger.info("Recalculated 'offset' column based on filtered 'N_doms' values.")
+
+        shard_no = pa.array(truth_data["shard_no"])
+        n_doms = pa.array(truth_data["N_doms"])
+
+        offsets = []
+        unique_shards = pc.unique(shard_no).to_pylist()
+
+        for shard in unique_shards:
+            mask = pc.equal(shard_no, shard)
+            filtered_n_doms = pc.if_else(mask, n_doms, pa.scalar(0, n_doms.type))  # Keep only values of the shard, set others to 0
+            cumulative = pc.cumulative_sum(filtered_n_doms)
+            offsets.append(pc.if_else(mask, cumulative, None))
+
+        truth_data["offset"] = pc.coalesce(*offsets)
+
+        self.logger.info("Recalculated 'offset' column based on 'N_doms' values within each 'shard_no' group.")
         return pa.Table.from_pydict(truth_data)
-    
+
     def get_receipt_info(self):
         if not os.path.isfile(self.source_truth_file):
             self.logger.error(f"Truth file not found: {self.source_truth_file}")

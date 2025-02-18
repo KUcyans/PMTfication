@@ -1,0 +1,34 @@
+Starting job at Mon Feb 17 03:59:00 PM CET 2025
+Running Filter_by_part.py for subdirectory 22012, part 26
+2025-02-17 15:59:01 - INFO - Event filtering process starts...
+2025-02-17 15:59:01 - INFO - Initialized PureNeutrinoEventFilter filter for 22012/26
+2025-02-17 15:59:01 - INFO - Loaded 14 event specifier files from /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/clean_events_dict/22012/22012/reduced
+2025-02-17 15:59:01 - INFO - Selected 1 CSV files covering event range [13875, 14507]
+2025-02-17 15:59:01 - INFO - Loaded 61529 valid (RunID, EventID) pairs from CSV files
+2025-02-17 15:59:01 - INFO - Extracted 3683 valid events based on pure neutrino events.
+2025-02-17 15:59:01 - INFO - Initialized CompositeEventFilter filter for 22012/26
+2025-02-17 15:59:01 - INFO - Initialized (PureNu)
+2025-02-17 15:59:01 - INFO - Starting filtering process for 22012/26
+2025-02-17 15:59:01 - INFO - Starting filtering process for 22012/26
+2025-02-17 15:59:02 - INFO - Recalculated 'offset' column based on 'N_doms' values within each 'shard_no' group.
+2025-02-17 15:59:02 - INFO - Filtered truth file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/truth_26.parquet
+2025-02-17 15:59:02 - WARNING - Skipping PMTfied_7.parquet: No valid events found in PMTfied file.
+2025-02-17 15:59:04 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/26/PMTfied_3.parquet
+2025-02-17 15:59:04 - WARNING - Skipping PMTfied_15.parquet: No valid events found in PMTfied file.
+2025-02-17 15:59:05 - WARNING - Skipping PMTfied_11.parquet: No valid events found in PMTfied file.
+2025-02-17 15:59:06 - WARNING - Skipping PMTfied_6.parquet: No valid events found in PMTfied file.
+2025-02-17 15:59:07 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/26/PMTfied_2.parquet
+2025-02-17 15:59:08 - WARNING - Skipping PMTfied_14.parquet: No valid events found in PMTfied file.
+2025-02-17 15:59:09 - WARNING - Skipping PMTfied_10.parquet: No valid events found in PMTfied file.
+2025-02-17 15:59:10 - WARNING - Skipping PMTfied_8.parquet: No valid events found in PMTfied file.
+2025-02-17 15:59:11 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/26/PMTfied_4.parquet
+2025-02-17 15:59:11 - WARNING - Skipping PMTfied_12.parquet: No valid events found in PMTfied file.
+2025-02-17 15:59:12 - WARNING - Skipping PMTfied_5.parquet: No valid events found in PMTfied file.
+2025-02-17 15:59:14 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/26/PMTfied_1.parquet
+2025-02-17 15:59:14 - WARNING - Skipping PMTfied_9.parquet: No valid events found in PMTfied file.
+2025-02-17 15:59:15 - WARNING - Skipping PMTfied_13.parquet: No valid events found in PMTfied file.
+2025-02-17 15:59:15 - INFO - Filtering process completed.
+2025-02-17 15:59:15 - INFO - Filtering process completed.
+2025-02-17 15:59:15 - INFO - Unified receipt generated: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/PureNu/22012/[Receipt]22012_26.json
+2025-02-17 15:59:15 - INFO - Filtering process completed.
+Job completed at Mon Feb 17 03:59:15 PM CET 2025
