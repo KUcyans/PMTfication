@@ -1,0 +1,51 @@
+nohup: ignoring input
+2025-02-22 21:42:48 - INFO - PMTfication starts...
+2025-02-22 21:42:48 - INFO - The number of files in the subdirectory: 2
+2025-02-22 21:42:48 - INFO - The number of files in the subdirectory: 2
+2025-02-22 21:42:48 - INFO - Using up to 1 workers.
+2025-02-22 21:42:48 - INFO - PMTfying Snowstorm...
+2025-02-22 21:42:48 - INFO - Found 2 database files in subdirectory 99999.
+
+Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2025-02-22 21:42:48 - INFO - Processing shard 1 of part 98 in subdirectory 99999.
+2025-02-22 21:42:51 - INFO - Processing shard 2 of part 98 in subdirectory 99999.
+2025-02-22 21:42:55 - INFO - Processing shard 3 of part 98 in subdirectory 99999.
+2025-02-22 21:43:00 - INFO - Processing shard 4 of part 98 in subdirectory 99999.
+2025-02-22 21:43:04 - INFO - Processing shard 5 of part 98 in subdirectory 99999.
+2025-02-22 21:43:09 - INFO - Processing shard 6 of part 98 in subdirectory 99999.
+2025-02-22 21:43:14 - INFO - Processing shard 7 of part 98 in subdirectory 99999.
+2025-02-22 21:43:17 - INFO - Processing shard 8 of part 98 in subdirectory 99999.
+2025-02-22 21:43:19 - INFO - Finished processing database file: merged_part_98.db
+
+Processing 99999:  50%|█████     | 1/2 [00:30<00:30, 30.86s/it]2025-02-22 21:43:19 - INFO - Processing shard 1 of part 99 in subdirectory 99999.
+2025-02-22 21:43:24 - INFO - Processing shard 2 of part 99 in subdirectory 99999.
+2025-02-22 21:43:27 - INFO - Processing shard 3 of part 99 in subdirectory 99999.
+2025-02-22 21:43:32 - INFO - Processing shard 4 of part 99 in subdirectory 99999.
+2025-02-22 21:43:35 - INFO - Processing shard 5 of part 99 in subdirectory 99999.
+2025-02-22 21:43:39 - INFO - Processing shard 6 of part 99 in subdirectory 99999.
+2025-02-22 21:43:43 - INFO - Processing shard 7 of part 99 in subdirectory 99999.
+2025-02-22 21:43:48 - INFO - Processing shard 8 of part 99 in subdirectory 99999.
+2025-02-22 21:43:51 - INFO - Finished processing database file: merged_part_99.db
+
+Processing 99999: 100%|██████████| 2/2 [01:03<00:00, 31.63s/it]
+Processing 99999: 100%|██████████| 2/2 [01:03<00:00, 31.51s/it]
+2025-02-22 21:43:51 - INFO - PMTfication for Snowstorm completed.
+2025-02-22 21:43:51 - INFO - PMTfying Corsika...
+2025-02-22 21:43:51 - INFO - Found 2 database files in subdirectory 9999999-9999999.
+
+Processing 9999999-9999999:   0%|          | 0/2 [00:00<?, ?it/s]2025-02-22 21:43:51 - INFO - Processing shard 1 of part 96 in subdirectory 9999999-9999999.
+2025-02-22 21:43:55 - INFO - Processing shard 2 of part 96 in subdirectory 9999999-9999999.
+2025-02-22 21:43:57 - INFO - Processing shard 3 of part 96 in subdirectory 9999999-9999999.
+2025-02-22 21:44:00 - INFO - Processing shard 4 of part 96 in subdirectory 9999999-9999999.
+2025-02-22 21:44:04 - INFO - Processing shard 5 of part 96 in subdirectory 9999999-9999999.
+2025-02-22 21:44:07 - INFO - Processing shard 6 of part 96 in subdirectory 9999999-9999999.
+2025-02-22 21:44:07 - INFO - Finished processing database file: merged_part_96.db
+
+Processing 9999999-9999999:  50%|█████     | 1/2 [00:16<00:16, 16.18s/it]2025-02-22 21:44:07 - INFO - Processing shard 1 of part 97 in subdirectory 9999999-9999999.
+2025-02-22 21:44:11 - INFO - Processing shard 2 of part 97 in subdirectory 9999999-9999999.
+2025-02-22 21:44:13 - INFO - Processing shard 3 of part 97 in subdirectory 9999999-9999999.
+2025-02-22 21:44:13 - INFO - Finished processing database file: merged_part_97.db
+
+Processing 9999999-9999999: 100%|██████████| 2/2 [00:21<00:00, 10.03s/it]
+Processing 9999999-9999999: 100%|██████████| 2/2 [00:21<00:00, 10.95s/it]
+2025-02-22 21:44:13 - INFO - PMTfication for Corsika completed.
+2025-02-22 21:44:13 - INFO - PMTfication completed.

@@ -1,0 +1,110 @@
+nohup: ignoring input
+2025-02-21 19:14:11 - INFO - PMTfication starts...
+2025-02-21 19:14:11 - INFO - The number of files in the subdirectory: 2
+2025-02-21 19:14:11 - INFO - The number of files in the subdirectory: 2
+2025-02-21 19:14:11 - INFO - Using up to 1 workers.
+2025-02-21 19:14:12 - INFO - PMTfying Snowstorm...
+2025-02-21 19:14:12 - INFO - Found 2 database files in subdirectory 99999.
+Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2025-02-21 19:14:12 - INFO - Processing shard 1 of part 98 in subdirectory 99999.
+2025-02-21 19:14:22 - ERROR - Error processing file merged_part_98.db: _create_trailing_pa_table() missing 2 required positional arguments: 'schema' and 'nan_replacement'
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfication/PMTfier.py", line 214, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfication/PMTfier.py", line 191, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfication/PMTfier.py", line 178, in pmtfy_shard
+    pa_truth_shard = truth_maker(int(self.subdir_tag), part_no, shard_no, event_batch)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfication/PMT_truth_maker.py", line 201, in __call__
+    MCWeightDict_table = self._get_MCWeightDict_pa_shard(receipt_pa, event_no_subset)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfication/PMT_truth_maker.py", line 288, in _get_MCWeightDict_pa_shard
+    table = self._create_trailing_pa_table(rows, columns)
+TypeError: _create_trailing_pa_table() missing 2 required positional arguments: 'schema' and 'nan_replacement'
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfication/PMTfier.py", line 246, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+TypeError: _create_trailing_pa_table() missing 2 required positional arguments: 'schema' and 'nan_replacement'
+Processing 99999:  50%|█████     | 1/2 [00:10<00:10, 10.08s/it]2025-02-21 19:14:22 - INFO - Processing shard 1 of part 99 in subdirectory 99999.
+2025-02-21 19:14:31 - ERROR - Error processing file merged_part_99.db: _create_trailing_pa_table() missing 2 required positional arguments: 'schema' and 'nan_replacement'
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 246, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfication/PMTfier.py", line 214, in pmtfy_part
+    consolidated_truth = self._divide_and_conquer_part(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfication/PMTfier.py", line 191, in _divide_and_conquer_part
+    pa_truth_shard = self.pmtfy_shard(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfication/PMTfier.py", line 178, in pmtfy_shard
+    pa_truth_shard = truth_maker(int(self.subdir_tag), part_no, shard_no, event_batch)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfication/PMT_truth_maker.py", line 201, in __call__
+    MCWeightDict_table = self._get_MCWeightDict_pa_shard(receipt_pa, event_no_subset)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfication/PMT_truth_maker.py", line 288, in _get_MCWeightDict_pa_shard
+    table = self._create_trailing_pa_table(rows, columns)
+TypeError: _create_trailing_pa_table() missing 2 required positional arguments: 'schema' and 'nan_replacement'
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfication/PMTfier.py", line 246, in pmtfy_subdir_parallel
+    future.result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+TypeError: _create_trailing_pa_table() missing 2 required positional arguments: 'schema' and 'nan_replacement'
+Processing 99999: 100%|██████████| 2/2 [00:19<00:00,  9.45s/it]Processing 99999: 100%|██████████| 2/2 [00:19<00:00,  9.55s/it]
+2025-02-21 19:14:31 - INFO - PMTfication for Snowstorm completed.
+2025-02-21 19:14:31 - INFO - PMTfying Corsika...
+2025-02-21 19:14:31 - INFO - Found 2 database files in subdirectory 9999999-9999999.
+Processing 9999999-9999999:   0%|          | 0/2 [00:00<?, ?it/s]2025-02-21 19:14:31 - INFO - Processing shard 1 of part 96 in subdirectory 9999999-9999999.
+Processing 9999999-9999999:   0%|          | 0/2 [00:30<?, ?it/s]
+2025-02-21 19:15:03 - INFO - Processing shard 1 of part 97 in subdirectory 9999999-9999999.
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfication/PMTfier.py", line 243, in pmtfy_subdir_parallel
+    for future in tqdm(as_completed(futures), desc=f"Processing {self.source_subdirectory}", total=len(file_parts)):
+  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/tqdm/std.py", line 1181, in __iter__
+    for obj in iterable:
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 245, in as_completed
+    waiter.event.wait(wait_timeout)
+  File "/usr/lib64/python3.9/threading.py", line 581, in wait
+    signaled = self._cond.wait(timeout)
+  File "/usr/lib64/python3.9/threading.py", line 312, in wait
+    waiter.acquire()
+KeyboardInterrupt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfication/PMTfy_sample.py", line 78, in <module>
+    main()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfication/PMTfy_sample.py", line 70, in main
+    pmtfier_corsika.pmtfy_subdir_parallel(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfication/PMTfier.py", line 249, in pmtfy_subdir_parallel
+    logging.error(f"Error processing file {filename}: {str(e)}", exc_info=True)
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 637, in __exit__
+    self.shutdown(wait=True)
+  File "/usr/lib64/python3.9/concurrent/futures/process.py", line 767, in shutdown
+    self._executor_manager_thread.join()
+  File "/usr/lib64/python3.9/threading.py", line 1060, in join
+    self._wait_for_tstate_lock()
+  File "/usr/lib64/python3.9/threading.py", line 1080, in _wait_for_tstate_lock
+    if lock.acquire(block, timeout):
+KeyboardInterrupt
+Error in atexit._run_exitfuncs:
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/multiprocessing/popen_fork.py", line 27, in poll
+    pid, sts = os.waitpid(self.pid, flag)
+KeyboardInterrupt

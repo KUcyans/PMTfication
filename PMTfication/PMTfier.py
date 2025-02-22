@@ -33,6 +33,7 @@ class PMTfier:
         self.truth_table_name = self._get_truth_table_name_db()
         self.HighestEInIceParticle_table_name = "GNHighestEInIceParticle" # table name for the highest energy in-ice particle
         self.HE_dauther_table_name = "GNHighestEDaughter" # table name for the highest energy daughter particle
+        self.MC_weight_dict_table_name = "MCWeightDict" # table name for the MC weight dictionary
         
     def _get_table_event_count(self, conn: sql.Connection, table: str) -> int:
         cursor = conn.cursor()
@@ -204,11 +205,12 @@ class PMTfier:
         con_source = sql.connect(source_part_file)
         
         # truth maker is part-wise as con_source is part-wise 
-        truth_maker = PMTTruthMaker(con_source, 
-                                    self.source_table, 
-                                    self.truth_table_name, 
-                                    self.HighestEInIceParticle_table_name,
-                                    self.HE_dauther_table_name)
+        truth_maker = PMTTruthMaker(con_source = con_source, 
+                                    source_table = self.source_table, 
+                                    truth_table_name = self.truth_table_name, 
+                                    HighestEInIceParticle_table_name = self.HighestEInIceParticle_table_name,
+                                    HE_dauther_table_name = self.HE_dauther_table_name,
+                                    MC_weight_dict_table_name = self.MC_weight_dict_table_name)
         consolidated_truth = self._divide_and_conquer_part(
             con_source=con_source,
             part_no=part_no,

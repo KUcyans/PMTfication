@@ -16,7 +16,7 @@ LOG_DIR="log/${SUBDIR}"
 mkdir -p "${LOG_DIR}"
 
 timestamp=$(date +"%Y%m%d_%H%M%S")
-logfile="${LOG_DIR}/[${timestamp}]log_PMTfy_${SUBDIR}_${PART}_${SLURM_JOB_ID}.log"
+logfile="${LOG_DIR}/[${timestamp}]PMTfy_${SUBDIR}_${PART}_${SLURM_JOB_ID}.log"
 
 exec > /dev/null 2> "${logfile}"
 
