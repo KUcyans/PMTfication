@@ -1,0 +1,36 @@
+Starting job at Mon Feb 24 01:50:59 PM CET 2025
+Running Filter_by_part.py for subdirectory 22010, part 10
+2025-02-24 13:51:00 - INFO - Event filtering process starts...
+2025-02-24 13:51:00 - INFO - Initialized PureNeutrinoEventFilter filter for 22010/10
+2025-02-24 13:51:02 - INFO - Loaded 7 event specifier files from /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/clean_events_dict/22010/22010/reduced
+2025-02-24 13:51:04 - INFO - Selected 2 CSV files covering event range [5114, 6740]
+2025-02-24 13:51:35 - INFO - Loaded 20940378 valid (RunID, EventID) pairs from CSV files
+2025-02-24 13:51:44 - INFO - Extracted 2793217 valid events based on pure neutrino events.
+2025-02-24 13:51:50 - INFO - Initialized CCFilter filter for 22010/10
+2025-02-24 13:51:54 - INFO - Extracted 3750924 valid events which are CC interactions.
+2025-02-24 13:51:54 - INFO - Initialized ContainmentFilter filter for 22010/10
+2025-02-24 13:51:57 - INFO - Extracted 1710431 valid events within the specified containment region.
+2025-02-24 13:51:58 - INFO - Initialized CompositeEventFilter filter for 22010/10
+2025-02-24 13:51:58 - INFO - Initialized (CC_CRclean_Contained)
+2025-02-24 13:51:58 - INFO - Starting filtering process for 22010/10
+2025-02-24 13:51:58 - INFO - Starting filtering process for 22010/10
+2025-02-24 13:53:19 - INFO - Recalculated 'offset' column based on 'N_doms' values within each 'shard_no' group.
+2025-02-24 13:53:31 - INFO - Filtered truth file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/truth_10.parquet
+2025-02-24 13:53:31 - ERROR - An error occurred: 'Field "event_no" does not exist in schema'
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 69, in <module>
+    main()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 65, in main
+    run()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 59, in run
+    filter_manager()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/EventFilterManager.py", line 23, in __call__
+    self.filter_obj()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/EventFilter.py", line 32, in __call__
+    self._write_filtered_shards()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/EventFilter.py", line 71, in _write_filtered_shards
+    pmt_event_nos = pmt_table.column("event_no").to_pylist()
+  File "pyarrow/table.pxi", line 1779, in pyarrow.lib._Tabular.column
+  File "pyarrow/table.pxi", line 1715, in pyarrow.lib._Tabular._ensure_integer_index
+KeyError: 'Field "event_no" does not exist in schema'
+Job completed at Mon Feb 24 01:53:32 PM CET 2025

@@ -142,6 +142,7 @@ class TruthEntity:
         'TrueActiveLengthBefore': (pa.float32(), -1),
         'TypeWeight': (pa.float32(), -1),
     }
+    # the length of the MCWeightDict is 52
 
     SCHEMAS = {
         'TRUTH': TRUTH,

@@ -15,7 +15,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Iterate over subdirectories 22010 to 22018
-for SUBDIR in {22010..22010}; do
+for SUBDIR in {22011..22011}; do
     INPUT_DIR="${BASE_DIR}/${SUBDIR}/${SUBDIR}"
     OUTPUT_DIR="${INPUT_DIR}/reduced"
 

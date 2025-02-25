@@ -1,7 +1,6 @@
 import pyarrow.parquet as pq
 import pyarrow.compute as pc
 import pyarrow as pa
-import os
 
 from EventFilter import EventFilter, override
 

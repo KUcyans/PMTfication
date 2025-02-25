@@ -1,0 +1,26 @@
+2025-02-23 07:01:31 - INFO - PMTfication by part starts...
+2025-02-23 07:01:31 - INFO - Processing file: merged_part_10.db
+2025-02-23 07:01:31 - INFO - Using up to 40 workers.
+2025-02-23 07:01:32 - INFO - Processing shard 1 of part 10 in subdirectory 22010.
+2025-02-23 07:25:20 - INFO - Processing shard 2 of part 10 in subdirectory 22010.
+2025-02-23 07:36:37 - INFO - Processing shard 3 of part 10 in subdirectory 22010.
+2025-02-23 07:47:52 - INFO - Processing shard 4 of part 10 in subdirectory 22010.
+2025-02-23 08:01:00 - INFO - Processing shard 5 of part 10 in subdirectory 22010.
+2025-02-23 08:43:19 - INFO - Processing shard 6 of part 10 in subdirectory 22010.
+2025-02-23 08:55:11 - INFO - Processing shard 7 of part 10 in subdirectory 22010.
+2025-02-23 09:06:32 - INFO - Processing shard 8 of part 10 in subdirectory 22010.
+2025-02-23 09:19:51 - INFO - Processing shard 9 of part 10 in subdirectory 22010.
+2025-02-23 10:06:38 - INFO - Processing shard 10 of part 10 in subdirectory 22010.
+2025-02-23 10:18:21 - INFO - Processing shard 11 of part 10 in subdirectory 22010.
+2025-02-23 10:57:51 - INFO - Processing shard 12 of part 10 in subdirectory 22010.
+2025-02-23 11:25:21 - INFO - Processing shard 13 of part 10 in subdirectory 22010.
+2025-02-23 11:43:44 - INFO - Processing shard 14 of part 10 in subdirectory 22010.
+2025-02-23 11:55:00 - INFO - Processing shard 15 of part 10 in subdirectory 22010.
+2025-02-23 12:06:15 - INFO - Processing shard 16 of part 10 in subdirectory 22010.
+2025-02-23 13:02:26 - INFO - Processing shard 17 of part 10 in subdirectory 22010.
+2025-02-23 14:09:01 - INFO - Processing shard 18 of part 10 in subdirectory 22010.
+2025-02-23 14:36:32 - INFO - Processing shard 19 of part 10 in subdirectory 22010.
+2025-02-23 14:47:42 - INFO - Processing shard 20 of part 10 in subdirectory 22010.
+2025-02-23 14:58:57 - INFO - Processing shard 21 of part 10 in subdirectory 22010.
+2025-02-23 15:11:58 - INFO - Processing shard 22 of part 10 in subdirectory 22010.
+2025-02-23 15:14:36 - INFO - PMTfication completed.

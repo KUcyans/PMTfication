@@ -1,0 +1,31 @@
+nohup: ignoring input
+2025-02-24 13:40:02 - INFO - Event filtering process starts...
+2025-02-24 13:40:02 - INFO - Initialized PureNeutrinoEventFilter filter for 22012/1
+2025-02-24 13:40:03 - INFO - Loaded 14 event specifier files from /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/clean_events_dict/22012/22012/reduced
+2025-02-24 13:40:03 - INFO - Selected 1 CSV files covering event range [0, 806]
+2025-02-24 13:40:03 - INFO - Loaded 62220 valid (RunID, EventID) pairs from CSV files
+2025-02-24 13:40:03 - INFO - Extracted 22774 valid events based on pure neutrino events.
+2025-02-24 13:40:04 - INFO - Initialized CCFilter filter for 22012/1
+2025-02-24 13:40:04 - INFO - Extracted 26876 valid events which are CC interactions.
+2025-02-24 13:40:04 - INFO - Initialized ContainmentFilter filter for 22012/1
+2025-02-24 13:40:04 - ERROR - An error occurred: 'ContainmentFilter' object has no attribute 'xy_path'
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 69, in <module>
+    main()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 65, in main
+    run()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/Filter_by_part.py", line 52, in run
+    filter_manager = EventFilterManager(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/EventFilterManager.py", line 18, in __init__
+    self.filter_instances = self._instantiate_filters() # dict[str, EventFilter]
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/EventFilterManager.py", line 69, in _instantiate_filters
+    filter_instances[alias] = filter_class(
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/ContainmentFilter.py", line 15, in __init__
+    super().__init__(source_subdir=source_subdir,
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/EventFilter.py", line 27, in __init__
+    self._set_valid_event_nos()
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/EventFilter.py", line 146, in wrapper
+    return method(*args, **kwargs)
+  File "/lustre/hpc/icecube/cyan/factory/DOMification/Selection/ContainmentFilter.py", line 48, in _set_valid_event_nos
+    xy_mask = self.xy_path.contains_points(xy_points)
+AttributeError: 'ContainmentFilter' object has no attribute 'xy_path'

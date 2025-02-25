@@ -1,0 +1,26 @@
+2025-02-23 07:01:13 - INFO - PMTfication by part starts...
+2025-02-23 07:01:13 - INFO - Processing file: merged_part_9.db
+2025-02-23 07:01:13 - INFO - Using up to 40 workers.
+2025-02-23 07:01:27 - INFO - Processing shard 1 of part 9 in subdirectory 22010.
+2025-02-23 08:03:45 - INFO - Processing shard 2 of part 9 in subdirectory 22010.
+2025-02-23 08:53:33 - INFO - Processing shard 3 of part 9 in subdirectory 22010.
+2025-02-23 09:41:41 - INFO - Processing shard 4 of part 9 in subdirectory 22010.
+2025-02-23 11:02:01 - INFO - Processing shard 5 of part 9 in subdirectory 22010.
+2025-02-23 11:54:36 - INFO - Processing shard 6 of part 9 in subdirectory 22010.
+2025-02-23 13:03:59 - INFO - Processing shard 7 of part 9 in subdirectory 22010.
+2025-02-23 14:19:11 - INFO - Processing shard 8 of part 9 in subdirectory 22010.
+2025-02-23 15:42:56 - INFO - Processing shard 9 of part 9 in subdirectory 22010.
+2025-02-23 16:36:39 - INFO - Processing shard 10 of part 9 in subdirectory 22010.
+2025-02-23 17:45:43 - INFO - Processing shard 11 of part 9 in subdirectory 22010.
+2025-02-23 19:04:19 - INFO - Processing shard 12 of part 9 in subdirectory 22010.
+2025-02-23 19:59:07 - INFO - Processing shard 13 of part 9 in subdirectory 22010.
+2025-02-23 21:17:08 - INFO - Processing shard 14 of part 9 in subdirectory 22010.
+2025-02-23 22:30:18 - INFO - Processing shard 15 of part 9 in subdirectory 22010.
+2025-02-23 23:57:48 - INFO - Processing shard 16 of part 9 in subdirectory 22010.
+2025-02-24 01:25:04 - INFO - Processing shard 17 of part 9 in subdirectory 22010.
+2025-02-24 02:53:15 - INFO - Processing shard 18 of part 9 in subdirectory 22010.
+2025-02-24 04:26:58 - INFO - Processing shard 19 of part 9 in subdirectory 22010.
+2025-02-24 05:59:52 - INFO - Processing shard 20 of part 9 in subdirectory 22010.
+2025-02-24 07:34:48 - INFO - Processing shard 21 of part 9 in subdirectory 22010.
+2025-02-24 08:38:40 - INFO - Processing shard 22 of part 9 in subdirectory 22010.
+2025-02-24 09:33:08 - INFO - PMTfication completed.

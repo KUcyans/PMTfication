@@ -26,3 +26,18 @@ echo "Running PMTfier.py for subdirectory ${SUBDIR} part ${PART} with ${NEVENTS}
 python3.9 PMTfy_by_part.py "${SnowstormOrCorsika}" "${SUBDIR}" "${PART}" "${NEVENTS}"
 
 echo "Job completed at $(date)"
+
+EMAIL_SUBJECT="SLURM Job Notification: ${SLURM_JOB_NAME} (${SLURM_JOB_ID})"
+EMAIL_BODY="Job Details:\n\
+- Snowstorm or Corsika: ${SnowstormOrCorsika}\n\
+- Subdirectory: ${SUBDIR}\n\
+- Part: ${PART}\n\
+- Events per shard: ${NEVENTS}\n\
+- Job Name: ${SLURM_JOB_NAME}\n\
+- Job ID: ${SLURM_JOB_ID}\n\
+- Partition: ${SLURM_JOB_PARTITION}\n\
+- Status: ${SLURM_JOB_STATUS}\n\
+- Completed At: $(date)\n\n\
+Log Snippet:\n$(tail -n 20 "${logfile}")"
+
+echo -e "${EMAIL_BODY}" | mailx -s "${EMAIL_SUBJECT}" cyan.jo@proton.me

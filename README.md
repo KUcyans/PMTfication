@@ -46,32 +46,41 @@ For a single DOM($j$), a given event($k$), the charge-weighted average position 
 
 
 1. First, the total charge accumulated in the DOM($j$) in the event($k$) is calculated as follows:
+
 $$
 Q_{jk} = \sum_{i=1}^{n_{jk}} q_{ijk}
 $$
+
 $i$ denotes individual pulses, $n_{jk}$ is the total number of pulses in the DOM($j$) in the event($k$).  
 
 2. Secondly, the total charge accumulated in all the DOMs involved in the event($k$) is calculated as follows:
+
 $$
 Q_{k} = \sum_{j=1}^{N_k} Q_{jk}
 $$  
+
 $N_k$ is the total number of DOMs involved in the event($k$).s
 
 3. Next — come back to the DOM($j$) in the event($k$) level to calculate the charge-weighted average of the position
+
 $$
 \bar{x_{k}} = \frac{\sum_{j=1}^{N_k} \sum_{i=1}^{n_{jk}} x_{ijk} \, q_{ijk}}{Q_{k}}
 $$
+
 again, $i$ denotes individual pulses, $n_{jk}$ is the total number of pulses in the DOM($j$) in the event($k$).
 
 4. Finally, the relative position for DOM($j$), event($k$): 
+
 $$ 
 x_{rel, jk} = x_{jk} - \bar{x_{k}}
 $$
 
 5. To summarise, the relative position of the DOM($j$) in the event($k$) is calculated by subtracting the charge-weighted average position of the DOM in the event from the absolute position of the DOM in the event.
+
 $$
 \boxed{x_{rel, jk} = x_{jk} - \frac{\sum_{j=1}^{N_k} \sum_{i=1}^{n_{jk}} x_{ijk} \, q_{ijk}}{Q_{k}}}
 $$
+
 ![alt text](image.png)
 
 ### Q and T: implying the overall profile of the charge-time distribution

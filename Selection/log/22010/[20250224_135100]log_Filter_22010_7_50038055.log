@@ -1,0 +1,45 @@
+Starting job at Mon Feb 24 01:51:00 PM CET 2025
+Running Filter_by_part.py for subdirectory 22010, part 7
+2025-02-24 13:51:01 - INFO - Event filtering process starts...
+2025-02-24 13:51:01 - INFO - Initialized PureNeutrinoEventFilter filter for 22010/7
+2025-02-24 13:51:02 - INFO - Loaded 7 event specifier files from /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/clean_events_dict/22010/22010/reduced
+2025-02-24 13:51:05 - INFO - Selected 3 CSV files covering event range [3394, 5020]
+2025-02-24 13:51:55 - INFO - Loaded 35903402 valid (RunID, EventID) pairs from CSV files
+2025-02-24 13:52:04 - INFO - Extracted 2795098 valid events based on pure neutrino events.
+2025-02-24 13:52:16 - INFO - Initialized CCFilter filter for 22010/7
+2025-02-24 13:52:20 - INFO - Extracted 3757505 valid events which are CC interactions.
+2025-02-24 13:52:20 - INFO - Initialized ContainmentFilter filter for 22010/7
+2025-02-24 13:52:23 - INFO - Extracted 1713183 valid events within the specified containment region.
+2025-02-24 13:52:24 - INFO - Initialized CompositeEventFilter filter for 22010/7
+2025-02-24 13:52:24 - INFO - Initialized (CC_CRclean_Contained)
+2025-02-24 13:52:24 - INFO - Starting filtering process for 22010/7
+2025-02-24 13:52:24 - INFO - Starting filtering process for 22010/7
+2025-02-24 13:53:46 - INFO - Recalculated 'offset' column based on 'N_doms' values within each 'shard_no' group.
+2025-02-24 13:53:58 - INFO - Filtered truth file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/truth_7.parquet
+2025-02-24 13:54:04 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_20.parquet
+2025-02-24 13:54:10 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_12.parquet
+2025-02-24 13:54:16 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_16.parquet
+2025-02-24 13:54:22 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_6.parquet
+2025-02-24 13:54:28 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_2.parquet
+2025-02-24 13:54:34 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_13.parquet
+2025-02-24 13:54:40 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_17.parquet
+2025-02-24 13:54:46 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_7.parquet
+2025-02-24 13:54:52 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_3.parquet
+2025-02-24 13:54:58 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_21.parquet
+2025-02-24 13:55:04 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_19.parquet
+2025-02-24 13:55:10 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_11.parquet
+2025-02-24 13:55:16 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_15.parquet
+2025-02-24 13:55:22 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_9.parquet
+2025-02-24 13:55:28 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_5.parquet
+2025-02-24 13:55:34 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_1.parquet
+2025-02-24 13:55:39 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_22.parquet
+2025-02-24 13:55:45 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_10.parquet
+2025-02-24 13:55:51 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_14.parquet
+2025-02-24 13:55:57 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_18.parquet
+2025-02-24 13:56:03 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_4.parquet
+2025-02-24 13:56:09 - INFO - Filtered PMTfied file saved to: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/7/PMTfied_8.parquet
+2025-02-24 13:56:09 - INFO - Filtering process completed.
+2025-02-24 13:56:09 - INFO - Filtering process completed.
+2025-02-24 13:56:09 - INFO - Unified receipt generated: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/22010/[Receipt]22010_7.json
+2025-02-24 13:56:09 - INFO - Filtering process completed.
+Job completed at Mon Feb 24 01:56:09 PM CET 2025

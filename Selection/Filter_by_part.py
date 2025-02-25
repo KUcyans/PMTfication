@@ -4,14 +4,18 @@ import logging
 import time
 import os
 
+from EventFilterManager import EventFilterManager
 from PureNeutrinoEventFilter import PureNeutrinoEventFilter
 from Muon13Filter import Muon13Filter
-from EventFilterManager import EventFilterManager
+from CCFilter import CCFilter
+from ContainmentFilter import ContainmentFilter
 
 # Available filter classes
 FILTER_CLASSES = {
-    "PureNu": PureNeutrinoEventFilter,
-    "MuonLike": Muon13Filter,
+    "CRclean": PureNeutrinoEventFilter,
+    # "MuonLike": Muon13Filter,
+    "CC": CCFilter,
+    "Contained": ContainmentFilter
 }
 
 def run():
@@ -67,5 +71,6 @@ if __name__ == "__main__":
         logging.error(f"An error occurred: {e}", exc_info=True)
         sys.exit(1)
 
+# nohup python3.9 Filter_by_part.py Snowstorm 22010 1 > log/22010/[$(date +"%Y%m%d_%H%M%S")]log_Filter_22010_1.log 2>&1 &
 # nohup python3.9 Filter_by_part.py Snowstorm 22011 1 > log/22011/[$(date +"%Y%m%d_%H%M%S")]log_Filter_22011_1.log 2>&1 &
-# nohup python3.9 Filter_by_part.py Snowstorm 22011 1 > log/22011/[$(date +"%Y%m%d_%H%M%S")]log_Filter_22011_1.log 2>&1 &
+# nohup python3.9 Filter_by_part.py Snowstorm 22012 1 > log/22012/[$(date +"%Y%m%d_%H%M%S")]log_Filter_22012_1.log 2>&1 &
