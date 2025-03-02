@@ -15,7 +15,7 @@ FILTER_CLASSES = {
     "CRclean": PureNeutrinoEventFilter,
     # "MuonLike": Muon13Filter,
     "CC": CCFilter,
-    "Contained": ContainmentFilter
+    # "Contained": ContainmentFilter
 }
 
 def run():
