@@ -1,3 +1,4 @@
+[![Apache Licensed](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)  
 # DOM-wise Summarisation for IceCube Monte Carlo Data
 > python files a user runs: [PMTfy_by_part.py(recommended)](https://github.com/KUcyans/PMTfication/blob/main/PMTfy_by_part.py) of `PMTfy_by_subdir.py`.
 This is an algorithm to shrink pulse map data from IceCube Neutrino Observatory in an elegant way. It reduces the pulsemap series to one row per DOM position in a single event while keeping essential information such as charge and time profiles.
