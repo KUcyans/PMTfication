@@ -148,23 +148,24 @@ class EventPeeker():
         return fig, ax
 
     def plot_DOM_heatmap_for_this_event(self, pmt_event_df: pd.DataFrame, shard_no:int, energy:int, Q_cut:int = -1, elev=40, azim=105):
-        position_file = "/groups/icecube/cyan/factory/DOMification/dom_ref_pos/unique_string_dom_completed.csv"
-        position_df = pd.read_csv(position_file)
+        ref_position_file = "/groups/icecube/cyan/factory/DOMification/dom_ref_pos/unique_string_dom_completed.csv"
+        ref_position_df = pd.read_csv(ref_position_file)
 
         # Normalise the event DataFrame
         pseudo_normalised_df = self.get_normalised_dom_features(pmt_event_df, Q_cut)
-        pseudo_normalised_df = self.add_string_column_to_event_df(pseudo_normalised_df, position_df)
+        pseudo_normalised_df = self.add_string_column_to_event_df(pseudo_normalised_df, ref_position_df)
         
         # Create figure and 3D axis
         fig, ax = plt.subplots(figsize=(18, 13), subplot_kw={'projection': '3d'})
         # **Plot reference DOM positions as small grey dots (background)**
         ax.scatter(
-            position_df["dom_x"], position_df["dom_y"], position_df["dom_z"],
+            ref_position_df["dom_x"], ref_position_df["dom_y"], ref_position_df["dom_z"],
             color=getColour(1), marker=".", s=10, label="Reference DOMs", zorder=1
         )
 
         # ✅ Apply Qtotal cutoff **before** computing statistics
-        major_axis_length, minor_axis_length, eigenvectors, centre, border_xy = self.calculate_horizontal_PCA(pseudo_normalised_df)
+        border_xy = self.calculate_horizontal_boundary(pseudo_normalised_df)
+        major_axis_length, minor_axis_length, eigenvectors, centre = self.calculate_horizontal_PCA(border_xy)
         mean_z_stretch, max_z_stretch, mean_z_positions, max_z_positions = self.calculate_vertical_stretch(pseudo_normalised_df)
         xy_end1, xy_end2, max_extent_2d = self.compute_max_extent(border_xy)
         # Extract relevant columns
@@ -328,13 +329,16 @@ class EventPeeker():
 
         return normalised_df
     
-    def calculate_horizontal_PCA(self, strings_df: pd.DataFrame):
-        xy_points = strings_df[['dom_x', 'dom_y']].to_numpy()
+    def calculate_horizontal_boundary(self, pmt_event_df: pd.DataFrame):
+        xy_points = pmt_event_df[['dom_x', 'dom_y']].to_numpy()
 
         # Extract the outermost boundary points using Convex Hull
         hull = ConvexHull(xy_points)
         boundary_points = xy_points[hull.vertices]  
+        return boundary_points
 
+    def calculate_horizontal_PCA(self, boundary_points: np.ndarray):
+        # Compute the mean (centre) of the shape
         centre = np.mean(boundary_points, axis=0)
 
         # Perform PCA to find the principal axes
@@ -348,7 +352,7 @@ class EventPeeker():
         # Compute major and minor axis lengths (sqrt of eigenvalues)
         major_axis_length, minor_axis_length = np.sqrt(eigenvalues)
 
-        return major_axis_length, minor_axis_length, eigenvectors, centre, boundary_points
+        return major_axis_length, minor_axis_length, eigenvectors, centre
 
     def compute_max_extent(self, boundary_points):
         dist_matrix = squareform(pdist(boundary_points))  # Compute all pairwise distances
@@ -373,23 +377,44 @@ class EventPeeker():
 
 
     
-    def add_string_column_to_event_df(self, event_df: pd.DataFrame, position_df: pd.DataFrame, tolerance=1.0):
-        event_df = event_df.copy()  # Work on a copy to avoid modifying the original DataFrame
+    # def add_string_column_to_event_df(self, event_df: pd.DataFrame, position_df: pd.DataFrame, tolerance=1.0):
+    #     event_df = event_df.copy()  # Work on a copy to avoid modifying the original DataFrame
 
-        # Create a new 'string' column and initialize it with NaN
-        event_df['string'] = np.nan
+    #     # Create a new 'string' column and initialize it with NaN
+    #     event_df['string'] = np.nan
 
-        # Loop through each DOM in the event_df and find the closest match in position_df
-        for idx, row in event_df.iterrows():
-            # Calculate distances in x, y (we ignore z here, as it's not relevant for string determination)
-            distances = np.sqrt((position_df['dom_x'] - row['dom_x'])**2 + (position_df['dom_y'] - row['dom_y'])**2)
+    #     # Loop through each DOM in the event_df and find the closest match in position_df
+    #     for idx, row in event_df.iterrows():
+    #         # Calculate distances in x, y (we ignore z here, as it's not relevant for string determination)
+    #         distances = np.sqrt((position_df['dom_x'] - row['dom_x'])**2 + (position_df['dom_y'] - row['dom_y'])**2)
             
-            # Find the minimum distance, and check if it is within the tolerance
-            min_distance_idx = distances.idxmin()
-            if distances[min_distance_idx] <= tolerance:
-                # Assign the string number from the reference position
-                event_df.at[idx, 'string'] = position_df.at[min_distance_idx, 'string']
+    #         # Find the minimum distance, and check if it is within the tolerance
+    #         min_distance_idx = distances.idxmin()
+    #         if distances[min_distance_idx] <= tolerance:
+    #             # Assign the string number from the reference position
+    #             event_df.at[idx, 'string'] = position_df.at[min_distance_idx, 'string']
         
+    #     return event_df
+    
+    def add_string_column_to_event_df(self, event_df: pd.DataFrame, ref_position_df: pd.DataFrame, tolerance=2.0):
+        event_df = event_df.copy()
+        
+        # Convert to smaller dtypes
+        event_df['string'] = np.nan
+        ref_position_df[['dom_x', 'dom_y']] = ref_position_df[['dom_x', 'dom_y']].astype(np.float32)
+        ref_position_df['string'] = ref_position_df['string'].astype(np.int16)
+
+        # Vectorised distance calculation
+        x_diff = np.square(ref_position_df['dom_x'].values[:, None] - event_df['dom_x'].values)
+        y_diff = np.square(ref_position_df['dom_y'].values[:, None] - event_df['dom_y'].values)
+        
+        distances = np.sqrt(x_diff + y_diff)  # Shape: (num_ref_positions, num_events)
+        min_indices = np.argmin(distances, axis=0)  # Get index of closest reference DOM
+        
+        # Apply tolerance mask
+        within_tolerance = np.min(distances, axis=0) <= tolerance
+        event_df.loc[within_tolerance, 'string'] = ref_position_df.iloc[min_indices[within_tolerance]]['string'].values
+
         return event_df
 
     
@@ -408,12 +433,12 @@ class EventPeeker():
     
 if __name__ == "__main__":
     root_dir_noCR_CC_IN = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/"
-    # N_dom_cut_e_TeV = 1225
-    # N_dom_cut_mu_TeV = 1250
+    # N_dom_cut_e_TeV   = 1225
+    # N_dom_cut_mu_TeV  = 1250
     # N_dom_cut_tau_TeV = 1100
-    N_dom_cut_e_TeV = 3000
-    N_dom_cut_mu_TeV = 3000
-    N_dom_cut_tau_TeV = 3000
+    N_dom_cut_e_TeV   = 2000
+    N_dom_cut_mu_TeV  = 2000
+    N_dom_cut_tau_TeV = 2000
     pdf_dir = "/lustre/hpc/icecube/cyan/factory/DOMification/EventPeek/"
     
     # Energy range and flavour instances
