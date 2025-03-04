@@ -13,7 +13,7 @@ from ContainmentFilter import ContainmentFilter
 # Available filter classes
 FILTER_CLASSES = {
     "CRclean": PureNeutrinoEventFilter,
-    # "MuonLike": Muon13Filter,
+    "MuonLike": Muon13Filter,
     "CC": CCFilter,
     # "Contained": ContainmentFilter
 }

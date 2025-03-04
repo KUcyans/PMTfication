@@ -126,48 +126,52 @@ def get_extent_stretch_shard(pmt_event_df: pd.DataFrame, Q_cut: int):
 
     return max_extent_2d, max_z_stretch
 
+
 def plot_dist_extent(extents_e: np.ndarray, 
                      extents_mu: np.ndarray,
                      extents_tau: np.ndarray,
                      title: str):
     Nbins, binwidth, bins, counts, bin_centers = getHistoParam(extents_mu, binwidth = 50, isLog=False, isDensity = False)
     fig, ax = plt.subplots(figsize=(13, 9))
-    ax.hist(extents_e, bins=bins, color=getColour(2), histtype='step', label=r'$\nu_e$', linewidth=2, hatch='/')
-    ax.hist(extents_mu, bins=bins, color=getColour(0), histtype='step', label=r'$\nu_\mu$', linewidth=2, hatch='\\')
-    ax.hist(extents_tau, bins=bins, color=getColour(1), histtype='step', label=r'$\nu_\tau$', linewidth=2, hatch='--')
+    ax.hist(extents_e, bins=bins, color=getColour(2), histtype='step', label=r'$\nu_e$', linewidth=3, hatch='/')
+    ax.hist(extents_mu, bins=bins, color=getColour(0), histtype='step', label=r'$\nu_\mu$', linewidth=3, hatch='\\')
+    ax.hist(extents_tau, bins=bins, color=getColour(1), histtype='step', label=r'$\nu_\tau$', linewidth=2, hatch='-')
 
     ax.legend()
     ax.set_xlabel(r'Extent [m]')
     ax.set_ylabel('Counts')
     ax.set_title(fr"{title}")
     
-    d = {'N events': len(extents_e),
+    d = {'N events': len(extents_e) + len(extents_mu) + len(extents_tau),
          'binwidth': f"{binwidth:.1f}",
          'Nbins': Nbins}
     
     d_e = {r'$\nu_e$': '',
+           'N_events': len(extents_e),
            'max': f"{np.max(extents_e):.2f}",
            'min': f"{np.min(extents_e):.2f}",
-        'mean': f"{np.mean(extents_e):.2f}",
-        'median': f"{np.median(extents_e):.2f}",
-        'std': f"{np.std(extents_e):.2f}"}
+            'mean': f"{np.mean(extents_e):.2f}",
+            'median': f"{np.median(extents_e):.2f}",
+            'std': f"{np.std(extents_e):.2f}"}
     d_mu = {r'$\nu_\mu$': '',
-                'max': f"{np.max(extents_mu):.2f}",
-                'min': f"{np.min(extents_mu):.2f}",
-        'mean': f"{np.mean(extents_mu):.2f}",
-        'median': f"{np.median(extents_mu):.2f}",
-        'std': f"{np.std(extents_mu):.2f}"}
+            'N_events': len(extents_mu),
+            'max': f"{np.max(extents_mu):.2f}",
+            'min': f"{np.min(extents_mu):.2f}",
+            'mean': f"{np.mean(extents_mu):.2f}",
+            'median': f"{np.median(extents_mu):.2f}",
+            'std': f"{np.std(extents_mu):.2f}"}
     d_tau = {r'$\nu_\tau$': '',
-        'max': f"{np.max(extents_tau):.2f}",
-        'min': f"{np.min(extents_tau):.2f}",
-        'mean': f"{np.mean(extents_tau):.2f}",
-        'median': f"{np.median(extents_tau):.2f}",
-        'std': f"{np.std(extents_tau):.2f}"}
+            'N_events': len(extents_tau),
+            'max': f"{np.max(extents_tau):.2f}",
+            'min': f"{np.min(extents_tau):.2f}",
+            'mean': f"{np.mean(extents_tau):.2f}",
+            'median': f"{np.median(extents_tau):.2f}",
+            'std': f"{np.std(extents_tau):.2f}"}
 
-    add_text_to_ax(0.75, 0.95, nice_string_output(d), ax, fontsize=10, color='black')
-    add_text_to_ax(0.02, 0.95, nice_string_output(d_e), ax, fontsize=10, color='black')
-    add_text_to_ax(0.22, 0.95, nice_string_output(d_mu), ax, fontsize=10, color='black')
-    add_text_to_ax(0.42, 0.95, nice_string_output(d_tau), ax, fontsize=10, color='black')
+    add_text_to_ax(0.70, 0.97, nice_string_output(d), ax, fontsize=10, color='black')
+    add_text_to_ax(0.70, 0.85, nice_string_output(d_e), ax, fontsize=10, color='black')
+    add_text_to_ax(0.70, 0.70, nice_string_output(d_mu), ax, fontsize=10, color='black')
+    add_text_to_ax(0.70, 0.55, nice_string_output(d_tau), ax, fontsize=10, color='black')
     return fig, ax
 
 
@@ -175,44 +179,47 @@ def plot_dist_stretch(stretches_e: np.ndarray,
                       stretches_mu: np.ndarray,
                       stretches_tau: np.ndarray,
                       title: str):
-    Nbins, binwidth, bins, counts, bin_centers = getHistoParam(stretches_mu, binwidth = 20, isLog=False, isDensity = False)
+    Nbins, binwidth, bins, counts, bin_centers = getHistoParam(stretches_mu, binwidth = 50, isLog=False, isDensity = False)
     fig, ax = plt.subplots(figsize=(13, 9))
-    ax.hist(stretches_e, bins=bins, color=getColour(2), histtype='step', label=r'$\nu_e$', linewidth=2)
-    ax.hist(stretches_mu, bins=bins, color=getColour(0), histtype='step', label=r'$\nu_\mu$', linewidth=2)
-    ax.hist(stretches_tau, bins=bins, color=getColour(1), histtype='step', label=r'$\nu_\tau$', linewidth=2)
+    ax.hist(stretches_e, bins=bins, color=getColour(2), histtype='step', label=r'$\nu_e$', linewidth=3, hatch='/')
+    ax.hist(stretches_mu, bins=bins, color=getColour(0), histtype='step', label=r'$\nu_\mu$', linewidth=3, hatch='\\')
+    ax.hist(stretches_tau, bins=bins, color=getColour(1), histtype='step', label=r'$\nu_\tau$', linewidth=2, hatch='-')
 
     ax.legend()
     ax.set_xlabel(r'Stretch [m]')
     ax.set_ylabel('Counts')
     ax.set_title(fr"{title}")
     
-    d = {'N events': len(stretches_e),
+    d = {'N events': len(stretches_e) + len(stretches_mu) + len(stretches_tau),
          'binwidth': f"{binwidth:.1f}",
          'Nbins': Nbins}
     
     d_e = {r'$\nu_e$': '',
-           'max': f"{np.max(stretches_e):.2f}",
-           'min': f"{np.min(stretches_e):.2f}",
-           'mean': f"{np.mean(stretches_e):.2f}",
-        'median': f"{np.median(stretches_e):.2f}",
-        'std': f"{np.std(stretches_e):.2f}"}
+            'N_events': len(stretches_e),
+            'max': f"{np.max(stretches_e):.2f}",
+            'min': f"{np.min(stretches_e):.2f}",
+            'mean': f"{np.mean(stretches_e):.2f}",
+            'median': f"{np.median(stretches_e):.2f}",
+            'std': f"{np.std(stretches_e):.2f}"}
     d_mu = {r'$\nu_\mu$': '',
-                'max': f"{np.max(stretches_mu):.2f}",
-                'min': f"{np.min(stretches_mu):.2f}",
-        'mean': f"{np.mean(stretches_mu):.2f}",
-        'median': f"{np.median(stretches_mu):.2f}",
-        'std': f"{np.std(stretches_mu):.2f}"}
+            'N_events': len(stretches_mu),
+            'max': f"{np.max(stretches_mu):.2f}",
+            'min': f"{np.min(stretches_mu):.2f}",
+            'mean': f"{np.mean(stretches_mu):.2f}",
+            'median': f"{np.median(stretches_mu):.2f}",
+            'std': f"{np.std(stretches_mu):.2f}"}
     d_tau = {r'$\nu_\tau$': '',
-        'max': f"{np.max(stretches_tau):.2f}",
-        'min': f"{np.min(stretches_tau):.2f}",
-        'mean': f"{np.mean(stretches_tau):.2f}",
-        'median': f"{np.median(stretches_tau):.2f}",
-        'std': f"{np.std(stretches_tau):.2f}"}
+            'N_events': len(stretches_tau),
+            'max': f"{np.max(stretches_tau):.2f}",
+            'min': f"{np.min(stretches_tau):.2f}",
+            'mean': f"{np.mean(stretches_tau):.2f}",
+            'median': f"{np.median(stretches_tau):.2f}",
+            'std': f"{np.std(stretches_tau):.2f}"}
 
-    add_text_to_ax(0.75, 0.95, nice_string_output(d), ax, fontsize=10, color='black')
-    add_text_to_ax(0.02, 0.95, nice_string_output(d_e), ax, fontsize=10, color='black')
-    add_text_to_ax(0.22, 0.95, nice_string_output(d_mu), ax, fontsize=10, color='black')
-    add_text_to_ax(0.42, 0.95, nice_string_output(d_tau), ax, fontsize=10, color='black')
+    add_text_to_ax(0.70, 0.97, nice_string_output(d), ax, fontsize=10, color='black')
+    add_text_to_ax(0.70, 0.85, nice_string_output(d_e), ax, fontsize=10, color='black')
+    add_text_to_ax(0.70, 0.70, nice_string_output(d_mu), ax, fontsize=10, color='black')
+    add_text_to_ax(0.70, 0.55, nice_string_output(d_tau), ax, fontsize=10, color='black')
     return fig, ax
 
 
@@ -222,89 +229,94 @@ def plot_max_extent_stretch(max_e: np.ndarray,
                             title: str):
     Nbins, binwidth, bins, counts, bin_centers = getHistoParam(max_mu, binwidth = 50, isLog=False, isDensity = False)
     fig, ax = plt.subplots(figsize=(13, 9))
-    ax.hist(max_e, bins=bins, color=getColour(2), histtype='step', label=r'$\nu_e$', linewidth=2)
-    ax.hist(max_mu, bins=bins, color=getColour(0), histtype='step', label=r'$\nu_\mu$', linewidth=2)
-    ax.hist(max_tau, bins=bins, color=getColour(1), histtype='step', label=r'$\nu_\tau$', linewidth=2)
+    ax.hist(max_e, bins=bins, color=getColour(2), histtype='step', label=r'$\nu_e$', linewidth=3, hatch='/')
+    ax.hist(max_mu, bins=bins, color=getColour(0), histtype='step', label=r'$\nu_\mu$', linewidth=3, hatch='\\')
+    ax.hist(max_tau, bins=bins, color=getColour(1), histtype='step', label=r'$\nu_\tau$', linewidth=2, hatch='-')
     
     ax.legend()
-    ax.set_xlabel(r'Max Extent/Stretch [m]')
+    ax.set_xlabel(r'Extent or Stretch [m]')
     ax.set_ylabel('Counts')
     ax.set_title(fr"{title}")
     
-    d = {'N events': len(max_e),
+    d = {'N events': len(max_e) + len(max_mu) + len(max_tau),
             'binwidth': f"{binwidth:.1f}",
             'Nbins': Nbins}
     
     d_e = {r'$\nu_e$': '',
+              'N_events': len(max_e),
               'max': f"{np.max(max_e):.2f}",
               'min': f"{np.min(max_e):.2f}",
               'mean': f"{np.mean(max_e):.2f}",
-          'median': f"{np.median(max_e):.2f}",
-          'std': f"{np.std(max_e):.2f}"}
+            'median': f"{np.median(max_e):.2f}",
+            'std': f"{np.std(max_e):.2f}"}
     d_mu = {r'$\nu_\mu$': '',
-
-                'max': f"{np.max(max_mu):.2f}",
-                'min': f"{np.min(max_mu):.2f}",
-          'mean': f"{np.mean(max_mu):.2f}",
-          'median': f"{np.median(max_mu):.2f}",
-          'std': f"{np.std(max_mu):.2f}"}
+            'N_events': len(max_mu),
+            'max': f"{np.max(max_mu):.2f}",
+            'min': f"{np.min(max_mu):.2f}",
+            'mean': f"{np.mean(max_mu):.2f}",
+            'median': f"{np.median(max_mu):.2f}",
+            'std': f"{np.std(max_mu):.2f}"}
     d_tau = {r'$\nu_\tau$': '',
+            'N_events': len(max_tau),
             'max': f"{np.max(max_tau):.2f}",
             'min': f"{np.min(max_tau):.2f}",
             'mean': f"{np.mean(max_tau):.2f}",
             'median': f"{np.median(max_tau):.2f}",
             'std': f"{np.std(max_tau):.2f}"}
     
-    add_text_to_ax(0.75, 0.95, nice_string_output(d), ax, fontsize=10, color='black')
-    add_text_to_ax(0.02, 0.95, nice_string_output(d_e), ax, fontsize=10, color='black')
-    add_text_to_ax(0.22, 0.95, nice_string_output(d_mu), ax, fontsize=10, color='black')
-    add_text_to_ax(0.42, 0.95, nice_string_output(d_tau), ax, fontsize=10, color='black')
+    add_text_to_ax(0.70, 0.97, nice_string_output(d), ax, fontsize=10, color='black')
+    add_text_to_ax(0.70, 0.85, nice_string_output(d_e), ax, fontsize=10, color='black')
+    add_text_to_ax(0.70, 0.70, nice_string_output(d_mu), ax, fontsize=10, color='black')
+    add_text_to_ax(0.70, 0.55, nice_string_output(d_tau), ax, fontsize=10, color='black')
     return fig, ax
+
 
 def plot_dist_product(products_e: np.ndarray,
                         products_mu: np.ndarray,
                         products_tau: np.ndarray,
                         title: str):
-    Nbins, binwidth, bins, counts, bin_centers = getHistoParam(products_mu, binwidth = 50, isLog=False, isDensity = False)
+    Nbins, binwidth, bins, counts, bin_centers = getHistoParam(products_mu, binwidth = 10000, isLog=False, isDensity = False)
     fig, ax = plt.subplots(figsize=(13, 9))
-    ax.hist(products_e, bins=bins, color=getColour(2), histtype='step', label=r'$\nu_e$', linewidth=2)
-    ax.hist(products_mu, bins=bins, color=getColour(0), histtype='step', label=r'$\nu_\mu$', linewidth=2)
-
-    ax.hist(products_tau, bins=bins, color=getColour(1), histtype='step', label=r'$\nu_\tau$', linewidth=2)
+    ax.hist(products_e, bins=bins, color=getColour(2), histtype='step', label=r'$\nu_e$', linewidth=3, hatch='/')
+    ax.hist(products_mu, bins=bins, color=getColour(0), histtype='step', label=r'$\nu_\mu$', linewidth=3, hatch='\\')
+    ax.hist(products_tau, bins=bins, color=getColour(1), histtype='step', label=r'$\nu_\tau$', linewidth=2, hatch='-')
     ax.legend()
     ax.set_xlabel(r'Product [m$^2$]')
     ax.set_ylabel('Counts')
     ax.set_title(fr"{title}")
     
-    d = {'N events': len(products_e),
+    d = {'N events': len(products_e) + len(products_mu) + len(products_tau),
             'binwidth': f"{binwidth:.1f}",
             'Nbins': Nbins}
     
     d_e = {r'$\nu_e$': '',
-                'max': f"{np.max(products_e):.2f}",
-                'min': f"{np.min(products_e):.2f}",
-                'mean': f"{np.mean(products_e):.2f}",
+           'N_events': len(products_e),
+            'max': f"{np.max(products_e):.2f}",
+            'min': f"{np.min(products_e):.2f}",
+            'mean': f"{np.mean(products_e):.2f}",
             'median': f"{np.median(products_e):.2f}",
             'std': f"{np.std(products_e):.2f}"}
     
     d_mu = {r'$\nu_\mu$': '',
-                'max': f"{np.max(products_mu):.2f}",
-                'min': f"{np.min(products_mu):.2f}",
+            'N_events': len(products_mu),
+            'max': f"{np.max(products_mu):.2f}",
+            'min': f"{np.min(products_mu):.2f}",
             'mean': f"{np.mean(products_mu):.2f}",
             'median': f"{np.median(products_mu):.2f}",
             'std': f"{np.std(products_mu):.2f}"}
     
     d_tau = {r'$\nu_\tau$': '',
-                'max': f"{np.max(products_tau):.2f}",
-                'min': f"{np.min(products_tau):.2f}",
+            'N_events': len(products_tau),
+            'max': f"{np.max(products_tau):.2f}",
+            'min': f"{np.min(products_tau):.2f}",
             'mean': f"{np.mean(products_tau):.2f}",
             'median': f"{np.median(products_tau):.2f}",
             'std': f"{np.std(products_tau):.2f}"}
     
-    add_text_to_ax(0.75, 0.95, nice_string_output(d), ax, fontsize=10, color='black')
-    add_text_to_ax(0.02, 0.95, nice_string_output(d_e), ax, fontsize=10, color='black')
-    add_text_to_ax(0.22, 0.95, nice_string_output(d_mu), ax, fontsize=10, color='black')
-    add_text_to_ax(0.42, 0.95, nice_string_output(d_tau), ax, fontsize=10, color='black')
+    add_text_to_ax(0.70, 0.97, nice_string_output(d), ax, fontsize=10, color='black')
+    add_text_to_ax(0.70, 0.85, nice_string_output(d_e), ax, fontsize=10, color='black')
+    add_text_to_ax(0.70, 0.70, nice_string_output(d_mu), ax, fontsize=10, color='black')
+    add_text_to_ax(0.70, 0.55, nice_string_output(d_tau), ax, fontsize=10, color='black')
     return fig, ax
     
 
@@ -313,7 +325,7 @@ def collect_extent_stretch_shards_from_different_flavours(root_before_subdir: st
     stretch_data = {Flavour.E: [], Flavour.MU: [], Flavour.TAU: []}
     max_extent_strecth_data = {Flavour.E: [], Flavour.MU: [], Flavour.TAU: []}
     product_data = {Flavour.E: [], Flavour.MU: [], Flavour.TAU: []}
-    figs = []
+    
     for flavour in [Flavour.E, Flavour.MU, Flavour.TAU]:
         subdir = os.path.join(root_before_subdir, EnergyRange.get_subdir(er, flavour))
         pmt_file = os.path.join(subdir, str(part), f"PMTfied_{int(shard)}.parquet")
@@ -335,13 +347,6 @@ def collect_extent_stretch_shards_from_different_flavours(root_before_subdir: st
     
     return extents_e, extents_mu, extents_tau, stretches_e, stretches_mu, stretches_tau, max_extent_strecth_data, product_data
 
-    # fig_extent, _ = plot_dist_extent(extents_e, extents_mu, extents_tau, f"Max Extent Distribution for {er.latex}  ($Q_{{\\text{{adjusted}}}}$ > {Q_cut})")
-    # fig_stretch, _ = plot_dist_stretch(stretches_e, stretches_mu, stretches_tau, f"Max Stretch Distribution for {er.latex} ($Q_{{\\text{{adjusted}}}}$ > {Q_cut})")
-    # fig_max_extent_stretch, _ = plot_max_extent_stretch(max_extent_strecth_data[Flavour.E], max_extent_strecth_data[Flavour.MU], max_extent_strecth_data[Flavour.TAU], f"Max Extent/Stretch Distribution for {er.latex} ($Q_{{\\text{{adjusted}}}}$ > {Q_cut})")
-    # fig_product, _ = plot_dist_product(product_data[Flavour.E], product_data[Flavour.MU], product_data[Flavour.TAU], f"Product Distribution for {er.latex} ($Q_{{\\text{{adjusted}}}}$ > {Q_cut})")
-    
-    # figs.extend([fig_extent, fig_stretch, fig_max_extent_stretch, fig_product])
-    # return figs
 
 def collect_extent_stretch_part_from_different_flavours(root_before_subdir: str, 
                                                          er: EnergyRange, 
@@ -369,6 +374,7 @@ def collect_extent_stretch_part_from_different_flavours(root_before_subdir: str,
 
             pmt_df = pq.read_table(pmt_file).to_pandas()
             pmt_df_grouped = list(pmt_df.groupby("event_no"))
+            # pmt_df_grouped = pmt_df_grouped[:100]  # DEBUG: Limit to 1000 events for faster processing
 
             for i, (event_no, event_df) in tqdm(enumerate(pmt_df_grouped), total=len(pmt_df_grouped), 
                                                  desc=f"Processing {flavour.alias} events (Shard {shard})", 
@@ -408,7 +414,7 @@ def collect_extent_stretch_part_from_different_flavours(root_before_subdir: str,
     fig_max_extent_stretch, _ = plot_max_extent_stretch(max_e_s_e, max_e_s_mu, max_e_s_tau,
                                                      f"Max (Extent, Stretch) Distribution for {er.latex} ($Q_{{\\text{{adjusted}}}}$ > {Q_cut})")
     fig_product, _ = plot_dist_product(product_e, product_mu, product_tau,
-                                      f"Product Distribution for {er.latex} ($Q_{{\\text{{adjusted}}}}$ > {Q_cut})")
+                                      f"(Max Extent)x(Max Stretch) Distribution for {er.latex} ($Q_{{\\text{{adjusted}}}}$ > {Q_cut})")
 
     figs.extend([fig_extent, fig_stretch, fig_max_extent_stretch, fig_product])
     return figs
