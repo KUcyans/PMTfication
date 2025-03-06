@@ -23,7 +23,7 @@ exec > /dev/null 2> "${logfile}"
 echo "Starting job at $(date)"
 echo "Running PMTfier.py for subdirectory ${SUBDIR} part ${PART} with ${NEVENTS} events per shard"
 
-python3.9 PMTfy_by_part.py "${SnowstormOrCorsika}" "${SUBDIR}" "${PART}" "${NEVENTS}"
+python3.9 -u PMTfy_by_part.py "${SnowstormOrCorsika}" "${SUBDIR}" "${PART}" "${NEVENTS}"
 
 echo "Job completed at $(date)"
 

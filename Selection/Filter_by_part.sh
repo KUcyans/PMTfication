@@ -33,7 +33,7 @@ echo "Starting job at $(date)"
 echo "Running Filter_by_part.py for subdirectory ${SUBDIR}, part ${PART}"
 
 # Run the filtering script with multiple filters
-python3.9 Filter_by_part.py "${SnowstormOrCorsika}" "${SUBDIR}" "${PART}"
+python3.9 -u Filter_by_part.py "${SnowstormOrCorsika}" "${SUBDIR}" "${PART}"
 
 echo "Job completed at $(date)"
 

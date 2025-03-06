@@ -23,6 +23,6 @@ echo "Starting job at $(date)"
 echo "Creating PDFs"
 
 # Run the EventPeeker Python script with the necessary arguments
-nohup python3.9 EventPeeker.py
+python3.9 -u EventPeeker.py
 
 echo "Job completed at $(date)"
