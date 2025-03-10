@@ -71,12 +71,12 @@ class EventPeeker():
                 # Process and generate plots for each part
                 interesting_events = self.get_interesting_events(truth_file = os.path.join(subdir_path, file), N_doms_cut=N_doms_cut)
                 energy_range = EnergyRange.get_energy_range(subdir).latex
-                title_for_energy_spectrum = f"${flavour.latex}$,  {energy_range}   (part {part})"
+                # title_for_energy_spectrum = f"${flavour.latex}$,  {energy_range}   (part {part})"
                 
-                # Get energy distribution plot
-                fig, ax = self.get_energy_distribution_from_truth_file(os.path.join(subdir_path, file), title=title_for_energy_spectrum)
-                pdf.savefig(fig)
-                plt.close(fig)
+                # # Get energy distribution plot
+                # # fig, ax = self.get_energy_distribution_from_truth_file(os.path.join(subdir_path, file), title=title_for_energy_spectrum)
+                # # pdf.savefig(fig)
+                # # plt.close(fig)
                 
                 for event_no, shard_no, energy in interesting_events.values:
                     pmt_shard_df = pq.read_table(os.path.join(subdir_path, str(part), f"PMTfied_{int(shard_no)}.parquet")).to_pandas()
@@ -739,9 +739,9 @@ if __name__ == "__main__":
     # Define the configuration for energy ranges and corresponding N_dom_cut values
     energy_config = {
         EnergyRange.ER_10_TEV_1_PEV: {
-            Flavour.E: 1250,
-            Flavour.MU: 1350,
-            Flavour.TAU: 1200,
+            Flavour.E: 1275,
+            Flavour.MU: 1325,
+            Flavour.TAU: 1275,
             "Q_cut": -1
         },
         EnergyRange.ER_1_PEV_100_PEV: {

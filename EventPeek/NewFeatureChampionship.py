@@ -195,31 +195,6 @@ def compute_outer_mass_fraction(string_df: pd.DataFrame, num_bins=10):
     outer_mass_fraction = outer_mass / (total_mass + eps)
     return outer_mass_fraction
 
-def compute_outer_mass_fraction(string_df: pd.DataFrame, num_bins=10):
-    if string_df.shape[0] < 3:
-        return np.nan  # Not enough points
-    eps = 1e-8
-    points = string_df[['dom_x', 'dom_y']].to_numpy()
-    weights = string_df['Qtotal'].to_numpy()
-    if np.all(np.isnan(weights)) or np.all(weights == 0):
-        # print("⚠️ Warning: All weights are zero or NaN. Returning NaN.")
-        return np.nan
-    centroid = np.average(points, axis=0, weights=weights)
-    distances = np.linalg.norm(points - centroid, axis=1)
-    if np.all(distances == 0):  # All points are identical
-        # print("⚠️ Warning: All points are at the same position. Returning NaN.")
-        return np.nan
-    max_dist = np.nanmax(distances)
-    bins = np.linspace(0, max_dist, num_bins + 1)
-    mass_distribution, _ = np.histogram(distances, bins=bins, weights=weights)
-    outer_mass = np.sum(mass_distribution[num_bins // 2:])  # Sum outer half
-    total_mass = np.sum(mass_distribution)
-    if total_mass == 0:
-        # print("⚠️ Warning: Total mass is zero. Returning NaN.")
-        return np.nan
-    outer_mass_fraction = outer_mass / (total_mass + eps)
-    return outer_mass_fraction
-
 def compute_normalised_weighted_distance(string_df: pd.DataFrame):
     if string_df.shape[0] < 3:
         return np.nan

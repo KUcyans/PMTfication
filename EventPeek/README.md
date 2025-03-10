@@ -49,3 +49,6 @@ $$ f = \frac{max(\frac{1}{d_1},\frac{1}{d_2})}{\frac{1}{d_1} + \frac{1}{d_2}}$$
    1. `product`: the product of the `extent_max` and `stretch_max`
    2. `hypotenuse`: the hypotenuse of the `extent_max` and `stretch_max`
    3. `max_extent_stretch`: max(`extent_max`, `stretch_max`)
+
+![alt text](image.png)
+![alt text](image-1.png)
