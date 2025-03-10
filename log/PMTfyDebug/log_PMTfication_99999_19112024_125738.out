@@ -1,10 +1,0 @@
-nohup: ignoring input
-2024-11-19 12:57:40 - INFO - PMTfication starts...
-2024-11-19 12:57:40 - INFO - The number of files in the subdirectory: 2
-2024-11-19 12:57:40 - INFO - Using up to 15 workers.
-2024-11-19 12:57:40 - INFO - Found 2 database files in subdirectory 99999.
-2024-11-19 12:57:40 - INFO - Using 2 workers for parallel processing.
-Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2024-11-19 12:57:58 - INFO - Finished processing database file: merged_part_98.db
-Processing 99999:  50%|█████     | 1/2 [00:17<00:17, 17.64s/it]2024-11-19 12:57:59 - INFO - Finished processing database file: merged_part_99.db
-Processing 99999: 100%|██████████| 2/2 [00:19<00:00,  8.41s/it]Processing 99999: 100%|██████████| 2/2 [00:19<00:00,  9.79s/it]
-2024-11-19 12:57:59 - INFO - PMTfication completed.

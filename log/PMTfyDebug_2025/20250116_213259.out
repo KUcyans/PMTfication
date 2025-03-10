@@ -1,25 +1,0 @@
-nohup: ignoring input
-2025-01-16 21:33:00 - INFO - PMTfication for a subdirectory starts...
-2025-01-16 21:33:00 - INFO - The number of files in the subdirectory: 2
-2025-01-16 21:33:00 - INFO - Using up to 1 workers.
-2025-01-16 21:33:00 - INFO - Found 2 database files in subdirectory 99999.
-Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2025-01-16 21:33:00 - INFO - Processing shard 1 of part 98 in subdirectory 99999.
-2025-01-16 21:33:02 - INFO - Processing shard 2 of part 98 in subdirectory 99999.
-2025-01-16 21:33:06 - INFO - Processing shard 3 of part 98 in subdirectory 99999.
-2025-01-16 21:33:11 - INFO - Processing shard 4 of part 98 in subdirectory 99999.
-2025-01-16 21:33:14 - INFO - Processing shard 5 of part 98 in subdirectory 99999.
-2025-01-16 21:33:19 - INFO - Processing shard 6 of part 98 in subdirectory 99999.
-2025-01-16 21:33:24 - INFO - Processing shard 7 of part 98 in subdirectory 99999.
-2025-01-16 21:33:28 - INFO - Processing shard 8 of part 98 in subdirectory 99999.
-2025-01-16 21:33:29 - INFO - Finished processing database file: merged_part_98.db
-Processing 99999:  50%|█████     | 1/2 [00:29<00:29, 29.43s/it]2025-01-16 21:33:29 - INFO - Processing shard 1 of part 99 in subdirectory 99999.
-2025-01-16 21:33:35 - INFO - Processing shard 2 of part 99 in subdirectory 99999.
-2025-01-16 21:33:37 - INFO - Processing shard 3 of part 99 in subdirectory 99999.
-2025-01-16 21:33:42 - INFO - Processing shard 4 of part 99 in subdirectory 99999.
-2025-01-16 21:33:45 - INFO - Processing shard 5 of part 99 in subdirectory 99999.
-2025-01-16 21:33:49 - INFO - Processing shard 6 of part 99 in subdirectory 99999.
-2025-01-16 21:33:53 - INFO - Processing shard 7 of part 99 in subdirectory 99999.
-2025-01-16 21:33:58 - INFO - Processing shard 8 of part 99 in subdirectory 99999.
-2025-01-16 21:34:01 - INFO - Finished processing database file: merged_part_99.db
-Processing 99999: 100%|██████████| 2/2 [01:00<00:00, 30.65s/it]Processing 99999: 100%|██████████| 2/2 [01:00<00:00, 30.47s/it]
-2025-01-16 21:34:01 - INFO - PMTfication completed.

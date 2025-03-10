@@ -1,5 +1,0 @@
-nohup: ignoring input
-  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPMT.py", line 30
-    logging.info(f"Figures saved to {self.output_pdf}_raw.pdf")s
-                                                               ^
-SyntaxError: invalid syntax

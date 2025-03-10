@@ -1,36 +1,0 @@
-nohup: ignoring input
-2024-11-29 11:44:18 - INFO - Reading PMT file PMTfied_1.parquet
-2024-11-29 11:44:18 - INFO - Saving PDF to ./StatView/[29112024_114418]StatView_pmt_22010_1_1.pdf
-/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
-  result = getattr(ufunc, method)(*inputs, **kwargs)
-/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
-  result = getattr(ufunc, method)(*inputs, **kwargs)
-/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
-  result = getattr(ufunc, method)(*inputs, **kwargs)
-/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
-  result = getattr(ufunc, method)(*inputs, **kwargs)
-/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
-  result = getattr(ufunc, method)(*inputs, **kwargs)
-/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
-  result = getattr(ufunc, method)(*inputs, **kwargs)
-Plotting figures:   0%|          | 0/8 [00:00<?, ?it/s]2024-11-29 11:44:40 - INFO - Plotting histogram for DOM x distribution
-Plotting figures:  12%|█▎        | 1/8 [00:01<00:10,  1.54s/it]2024-11-29 11:44:42 - INFO - Plotting histogram for DOM y distribution
-Plotting figures:  25%|██▌       | 2/8 [00:02<00:08,  1.49s/it]2024-11-29 11:44:43 - INFO - Plotting histogram for DOM z distribution
-Plotting figures:  38%|███▊      | 3/8 [00:04<00:07,  1.57s/it]2024-11-29 11:44:45 - INFO - Plotting histogram for Distribution of first 5 charges
-Plotting figures:  50%|█████     | 4/8 [00:07<00:08,  2.11s/it]2024-11-29 11:44:48 - INFO - Plotting histogram for Accumulated charge distribution
-Plotting figures:  62%|██████▎   | 5/8 [00:09<00:06,  2.21s/it]2024-11-29 11:44:50 - INFO - Plotting histogram for Distribution of first 5 pulse times
-Plotting figures:  75%|███████▌  | 6/8 [00:13<00:05,  2.67s/it]2024-11-29 11:44:54 - INFO - Plotting histogram for T10 and T50 distribution
-Plotting figures:  88%|████████▊ | 7/8 [00:15<00:02,  2.29s/it]2024-11-29 11:44:55 - INFO - Plotting histogram for sigma_T distribution
-Plotting figures: 100%|██████████| 8/8 [00:16<00:00,  1.93s/it]Plotting figures: 100%|██████████| 8/8 [00:16<00:00,  2.03s/it]
-2024-11-29 11:44:56 - INFO - Figures saved to ./StatView/[29112024_114418]StatView_pmt_22010_1_1_raw.pdf
-Plotting figures:   0%|          | 0/8 [00:00<?, ?it/s]2024-11-29 11:44:57 - INFO - Plotting histogram for DOM x distribution
-Plotting figures:  12%|█▎        | 1/8 [00:01<00:09,  1.40s/it]2024-11-29 11:44:58 - INFO - Plotting histogram for DOM y distribution
-Plotting figures:  25%|██▌       | 2/8 [00:02<00:08,  1.40s/it]2024-11-29 11:44:59 - INFO - Plotting histogram for DOM z distribution
-Plotting figures:  38%|███▊      | 3/8 [00:04<00:07,  1.57s/it]2024-11-29 11:45:01 - INFO - Plotting histogram for Distribution of first 5 charges
-Plotting figures:  50%|█████     | 4/8 [00:07<00:08,  2.13s/it]2024-11-29 11:45:04 - INFO - Plotting histogram for Accumulated charge distribution
-Plotting figures:  62%|██████▎   | 5/8 [00:09<00:06,  2.22s/it]2024-11-29 11:45:06 - INFO - Plotting histogram for Distribution of first 5 pulse times
-Plotting figures:  75%|███████▌  | 6/8 [00:13<00:05,  2.66s/it]2024-11-29 11:45:10 - INFO - Plotting histogram for T10 and T50 distribution
-Plotting figures:  88%|████████▊ | 7/8 [00:14<00:02,  2.27s/it]2024-11-29 11:45:11 - INFO - Plotting histogram for sigma_T distribution
-Plotting figures: 100%|██████████| 8/8 [00:15<00:00,  1.87s/it]Plotting figures: 100%|██████████| 8/8 [00:15<00:00,  1.99s/it]
-2024-11-29 11:45:12 - INFO - Figures saved to ./StatView/[29112024_114418]StatView_pmt_22010_1_1_processed.pdf
-2024-11-29 11:45:12 - INFO - Finished

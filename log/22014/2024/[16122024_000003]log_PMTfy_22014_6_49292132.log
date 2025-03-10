@@ -1,6 +1,0 @@
-2024-12-16 00:00:06 - INFO - PMTfication by part starts...
-2024-12-16 00:00:06 - INFO - Processing file: merged_part_6.db
-2024-12-16 00:00:06 - INFO - Using up to 40 workers.
-2024-12-16 00:00:28 - INFO - Processing shard 1 of part 6 in subdirectory 22014.
-2024-12-16 00:12:06 - INFO - Processing shard 2 of part 6 in subdirectory 22014.
-2024-12-16 00:22:07 - INFO - PMTfication completed.

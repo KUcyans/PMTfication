@@ -1,26 +1,0 @@
-nohup: ignoring input
-2024-12-10 12:56:00 - INFO - PMTfication starts...
-2024-12-10 12:56:00 - INFO - The number of files in the subdirectory: 2
-2024-12-10 12:56:00 - INFO - The number of files in the subdirectory: 2
-2024-12-10 12:56:00 - INFO - Using up to 1 workers.
-2024-12-10 12:56:00 - INFO - PMTfying Corsika...
-2024-12-10 12:56:00 - INFO - Found 2 database files in subdirectory 9999999-9999999.
-source_root: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/sqlite_pulses/Corsika/
-source_subdirectory: 9999999-9999999
-source_table: SRTInIcePulses
-dest_root: /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Corsika/
-N_events_per_shard: 10
-Processing 9999999-9999999:   0%|          | 0/2 [00:00<?, ?it/s]2024-12-10 12:56:00 - INFO - Processing shard 1 of part 96 in subdirectory 9999999-9999999.
-2024-12-10 12:56:35 - INFO - Processing shard 2 of part 96 in subdirectory 9999999-9999999.
-2024-12-10 12:56:38 - INFO - Processing shard 3 of part 96 in subdirectory 9999999-9999999.
-2024-12-10 12:56:41 - INFO - Processing shard 4 of part 96 in subdirectory 9999999-9999999.
-2024-12-10 12:56:45 - INFO - Processing shard 5 of part 96 in subdirectory 9999999-9999999.
-2024-12-10 12:56:48 - INFO - Processing shard 6 of part 96 in subdirectory 9999999-9999999.
-2024-12-10 12:56:49 - INFO - Finished processing database file: merged_part_96.db
-Processing 9999999-9999999:  50%|█████     | 1/2 [00:49<00:49, 49.09s/it]2024-12-10 12:56:50 - INFO - Processing shard 1 of part 97 in subdirectory 9999999-9999999.
-2024-12-10 12:56:56 - INFO - Processing shard 2 of part 97 in subdirectory 9999999-9999999.
-2024-12-10 12:56:58 - INFO - Processing shard 3 of part 97 in subdirectory 9999999-9999999.
-2024-12-10 12:56:58 - INFO - Finished processing database file: merged_part_97.db
-Processing 9999999-9999999: 100%|██████████| 2/2 [00:58<00:00, 25.68s/it]Processing 9999999-9999999: 100%|██████████| 2/2 [00:58<00:00, 29.19s/it]
-2024-12-10 12:56:58 - INFO - PMTfication for Corsika completed.
-2024-12-10 12:56:58 - INFO - PMTfication completed.

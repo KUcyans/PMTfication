@@ -1,26 +1,0 @@
-nohup: ignoring input
-2024-11-06 18:18:49 - INFO - PMTfication starts...
-2024-11-06 18:18:49 - INFO - The number of files in the subdirectory: 2
-2024-11-06 18:18:49 - INFO - Found 2 database files in subdirectory 99999.
-Processing 99999:   0%|          | 0/2 [00:00<?, ?it/s]2024-11-06 18:18:49 - INFO - Starting processing for database file: merged_part_98.db
-2024-11-06 18:19:03 - INFO - Finished processing for database file: merged_part_98.db
-Processing 99999:  50%|█████     | 1/2 [00:14<00:14, 14.28s/it]2024-11-06 18:19:03 - INFO - Starting processing for database file: merged_part_99.db
-2024-11-06 18:19:19 - INFO - Finished processing for database file: merged_part_99.db
-Processing 99999: 100%|██████████| 2/2 [00:29<00:00, 14.98s/it]Processing 99999: 100%|██████████| 2/2 [00:29<00:00, 14.88s/it]
-2024-11-06 18:19:19 - INFO - PMTfication completed.
-Saving shard 1 to /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/99999/98/PMTfied_1.parquet
-Saving shard 2 to /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/99999/98/PMTfied_2.parquet
-Saving shard 3 to /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/99999/98/PMTfied_3.parquet
-Saving shard 4 to /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/99999/98/PMTfied_4.parquet
-Saving shard 5 to /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/99999/98/PMTfied_5.parquet
-Saving shard 6 to /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/99999/98/PMTfied_6.parquet
-Saving shard 7 to /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/99999/98/PMTfied_7.parquet
-Saving shard 8 to /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/99999/98/PMTfied_8.parquet
-Saving shard 1 to /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/99999/99/PMTfied_1.parquet
-Saving shard 2 to /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/99999/99/PMTfied_2.parquet
-Saving shard 3 to /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/99999/99/PMTfied_3.parquet
-Saving shard 4 to /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/99999/99/PMTfied_4.parquet
-Saving shard 5 to /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/99999/99/PMTfied_5.parquet
-Saving shard 6 to /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/99999/99/PMTfied_6.parquet
-Saving shard 7 to /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/99999/99/PMTfied_7.parquet
-Saving shard 8 to /lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/Snowstorm/99999/99/PMTfied_8.parquet

@@ -1,5 +1,0 @@
-nohup: ignoring input
-Traceback (most recent call last):
-  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPMT.py", line 397, in <module>
-    file_dir = f"{snowstorm_dir}/{args.subdir}/{args.part}/PMTfied_{args.shard}.parquet"
-NameError: name 'snowstorm_dir' is not defined

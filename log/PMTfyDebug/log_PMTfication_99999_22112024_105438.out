@@ -1,5 +1,0 @@
-nohup: ignoring input
-  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 149
-    pa_pmtfied = summariser()
-    ^
-SyntaxError: invalid syntax

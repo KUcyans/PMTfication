@@ -1,8 +1,0 @@
-nohup: ignoring input
-Total number of events in SRTInIcePulses: 29565
-Reading 2000 events from SRTInIcePulses...
-Total number of events in truth: 29565
-Reading 2000 events from truth...
-Generating plots:   0%|          | 0/16 [00:00<?, ?it/s]Generating plots:   6%|▋         | 1/16 [00:20<05:02, 20.18s/it]Generating plots:  12%|█▎        | 2/16 [00:22<02:11,  9.40s/it]Generating plots:  19%|█▉        | 3/16 [01:45<09:21, 43.23s/it]Generating plots:  25%|██▌       | 4/16 [01:47<05:25, 27.09s/it]Generating plots:  31%|███▏      | 5/16 [03:30<09:56, 54.25s/it]Generating plots:  38%|███▊      | 6/16 [03:32<06:06, 36.66s/it]Generating plots:  44%|████▍     | 7/16 [03:33<03:45, 25.04s/it]Generating plots:  50%|█████     | 8/16 [03:35<02:19, 17.43s/it]Generating plots:  56%|█████▋    | 9/16 [03:36<01:26, 12.38s/it]Generating plots:  62%|██████▎   | 10/16 [03:36<00:51,  8.61s/it]Generating plots:  69%|██████▉   | 11/16 [03:36<00:30,  6.01s/it]Generating plots:  75%|███████▌  | 12/16 [03:36<00:16,  4.22s/it]Generating plots:  81%|████████▏ | 13/16 [03:36<00:08,  2.97s/it]Generating plots:  88%|████████▊ | 14/16 [03:36<00:04,  2.10s/it]Generating plots: 100%|██████████| 16/16 [03:37<00:00,  1.18s/it]Generating plots: 100%|██████████| 16/16 [03:37<00:00, 13.57s/it]
-All plots have been saved in plots_StaatView_22012_21_first_2000.pdf.pdf
-Time taken to complete: 593.86 seconds

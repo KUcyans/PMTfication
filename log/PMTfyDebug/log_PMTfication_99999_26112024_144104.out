@@ -1,9 +1,0 @@
-nohup: ignoring input
-Traceback (most recent call last):
-  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMTfier.py", line 22, in <module>
-    from PMT_summariser import PMTSummariser
-  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_summariser.py", line 9, in <module>
-    class PMTSummariser:
-  File "/lustre/hpc/icecube/cyan/factory/DOMification/PMT_summariser.py", line 291, in PMTSummariser
-    s
-NameError: name 's' is not defined

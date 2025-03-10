@@ -1,20 +1,0 @@
-nohup: ignoring input
-Total number of events in SRTInIcePulses: 29825
-Reading 2000 events from SRTInIcePulses...
-Total number of events in truth: 29825
-Reading 2000 events from truth...
-Generating plots:   0%|          | 0/16 [00:00<?, ?it/s]Generating plots:   6%|▋         | 1/16 [00:24<06:06, 24.40s/it]Generating plots:  12%|█▎        | 2/16 [00:26<02:36, 11.17s/it]Generating plots:  12%|█▎        | 2/16 [00:47<05:32, 23.76s/it]
-Traceback (most recent call last):
-  File "/lustre/hpc/icecube/cyan/factory/DOMification/PulseMapStatViewer.py", line 399, in <module>
-    elapsed_time = end_time - start_time
-  File "/lustre/hpc/icecube/cyan/factory/DOMification/PulseMapStatViewer.py", line 23, in __init__
-    self._saveFigures(self.df_features, self.df_truth, output_pdf)
-  File "/lustre/hpc/icecube/cyan/factory/DOMification/PulseMapStatViewer.py", line 82, in _saveFigures
-    fig, ax = plot_func()  # Call the plotting function to generate the figure
-  File "/lustre/hpc/icecube/cyan/factory/DOMification/PulseMapStatViewer.py", line 63, in <lambda>
-    lambda: self._plotNpulsesPerDOM(df_features, file),
-  File "/lustre/hpc/icecube/cyan/factory/DOMification/PulseMapStatViewer.py", line 154, in _plotNpulsesPerDOM
-    ax.set_ylabel('#')
-  File "/groups/icecube/cyan/Utils/PlotUtils.py", line 79, in getHistoParam
-    start_bin = np.floor(data.min())
-TypeError: must be real number, not dict_values

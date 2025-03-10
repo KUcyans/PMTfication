@@ -1,20 +1,0 @@
-nohup: ignoring input
-Total number of events in SRTInIcePulses: 29825
-Reading 2000 events from SRTInIcePulses...
-Total number of events in truth: 29825
-Reading 2000 events from truth...
-Generating plots:   0%|          | 0/16 [00:00<?, ?it/s]Generating plots:   6%|▋         | 1/16 [00:20<05:05, 20.37s/it]Generating plots:  12%|█▎        | 2/16 [00:22<02:12,  9.48s/it]Generating plots:  12%|█▎        | 2/16 [00:27<03:14, 13.93s/it]
-Traceback (most recent call last):
-  File "/lustre/hpc/icecube/cyan/factory/DOMification/PulseMapStatViewer.py", line 401, in <module>
-    # Instantiate and run the viewer
-  File "/lustre/hpc/icecube/cyan/factory/DOMification/PulseMapStatViewer.py", line 23, in __init__
-    self._saveFigures(self.df_features, self.df_truth, output_pdf)
-  File "/lustre/hpc/icecube/cyan/factory/DOMification/PulseMapStatViewer.py", line 82, in _saveFigures
-    fig, ax = plot_func()  # Call the plotting function to generate the figure
-  File "/lustre/hpc/icecube/cyan/factory/DOMification/PulseMapStatViewer.py", line 63, in <lambda>
-    lambda: self._plotNpulsesPerDOM(df_features, file),
-  File "/lustre/hpc/icecube/cyan/factory/DOMification/PulseMapStatViewer.py", line 147, in _plotNpulsesPerDOM
-    if dom_df['dom_x'] < DUST:
-  File "/groups/icecube/cyan/.local/lib/python3.9/site-packages/pandas/core/generic.py", line 1577, in __nonzero__
-    raise ValueError(
-ValueError: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().

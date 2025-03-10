@@ -1,5 +1,0 @@
-nohup: ignoring input
-Traceback (most recent call last):
-  File "/lustre/hpc/icecube/cyan/factory/DOMification/StatViewerPMT.py", line 408, in <module>
-    logging.info(f"Reading PMT file {os.path.basename(file_dir)}")
-NameError: name 'os' is not defined
