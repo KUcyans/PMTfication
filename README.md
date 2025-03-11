@@ -113,6 +113,7 @@ $$
 2. [PMT_ref_pos_adder](https://github.com/KUcyans/PMTfication/blob/main/PMT_ref_pos_adder.py)
    1. currently uses .csv file but it could be replaced with a GeoCalib file. (Leave the csv file as default option)  
 3. [PMT_summariser](https://github.com/KUcyans/PMTfication/blob/main/PMT_summariser.py)
+![alt text](image-3.png)
    1. [Feasibility check needed before instigation]change the list structure to np.array if possible.
    2. Possible parallelisation or threading of the for loops
 4. [PMTfier](https://github.com/KUcyans/PMTfication/blob/main/PMTfier.py)
