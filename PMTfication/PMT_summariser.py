@@ -91,103 +91,78 @@ class PMTSummariser:
         processed_data = []
 
         for event_no, strings_doms_pulses in events_doms_pulses.items():
-            avg_dom_position = self._get_Q_weighted_DOM_position(strings_doms_pulses) # one per event
-            for string, doms_pulses in strings_doms_pulses.items():    
+            avg_dom_position = self._get_Q_weighted_DOM_position(strings_doms_pulses)  # one per event
+            for string, doms_pulses in strings_doms_pulses.items():
                 for dom_no, pulses in doms_pulses.items():
                     dom_data = self._process_DOM(pulses, avg_dom_position)
-                    processed_data.append([event_no] + dom_data)
-        
-        # deep copy to avoid overwriting 
-        arrays = {key: value[:] for key, value in PMTSummariser._DEFAULT_ARRAYS.items()}  
-        for dom_data in processed_data:
-            for idx, field_name in enumerate(PMTSummariser._SCHEMA.names):
-                arrays[field_name].append(dom_data[idx])
+                    processed_data.append(np.hstack(([event_no], dom_data)))  # Convert to NumPy row
 
-        pa_arrays = {key: pa.array(value) for key, value in arrays.items()}
+        # Convert list of arrays into a single NumPy array (efficient bulk processing)
+        processed_data = np.vstack(processed_data) if processed_data else np.empty((0, len(PMTSummariser._SCHEMA.names)), dtype=np.float32)
+
+        # Build PyArrow Table
+        pa_arrays = {field: pa.array(processed_data[:, idx]) for idx, field in enumerate(PMTSummariser._SCHEMA.names)}
         return pa.Table.from_pydict(pa_arrays, schema=PMTSummariser._SCHEMA)
-    
-    def _build_events_doms_pulses(self, rows: List[tuple]) -> defaultdict[int, defaultdict[int, defaultdict[int, List[tuple]]]]:
+
+
+    def _build_events_doms_pulses(self, rows: List[tuple]) -> defaultdict[int, defaultdict[int, defaultdict[int, np.ndarray]]]:
+        """ 
+        Convert the nested dictionary structure but ensure `pulses` are stored as NumPy arrays.
+        """
         events_doms_pulses = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
+
+        # Step 1: Populate lists
         for row in rows:
             event_no = row[self.event_no_idx]
             string = row[self.dom_string_idx]
             dom_number = row[self.dom_number_idx]
             events_doms_pulses[event_no][string][dom_number].append(row)
-        return events_doms_pulses
-    
-    """
-    TODO consider changing the lowest level of the data structure to np.ndarray
-    def _build_events_doms_pulses(self, rows: List[tuple]) -> defaultdict[int, defaultdict[int, defaultdict[int, np.ndarray]]]:
-        events_doms_pulses = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: np.empty((0, len(rows[0])), dtype=float))))
 
-        for row in rows:
-            event_no = row[self.event_no_idx]
-            string = row[self.dom_string_idx]
-            dom_number = row[self.dom_number_idx]
-
-            row_array = np.array(row, dtype=float)
-            events_doms_pulses[event_no][string][dom_number] = np.vstack((
-                events_doms_pulses[event_no][string][dom_number], 
-                row_array
-            ))
+        # Step 2: Convert lists to NumPy arrays for fast numerical processing
+        for event_no, string_dict in events_doms_pulses.items():
+            for string, dom_dict in string_dict.items():
+                for dom_no, pulse_list in dom_dict.items():
+                    events_doms_pulses[event_no][string][dom_no] = np.array(pulse_list, dtype=np.float32)
 
         return events_doms_pulses
-    """
-    
-    def _get_Q_weighted_DOM_position(self, 
-                                     strings_doms_pulses: Dict[int, 
-                                                               Dict[int, 
-                                                                    List[List[float]]]]) -> np.ndarray:
-        total_weighted_position = np.zeros(3)
-        Q_event = 0
-        
+
+
+    def _get_Q_weighted_DOM_position(self, strings_doms_pulses: Dict[int, Dict[int, np.ndarray]]) -> np.ndarray:
+        total_weighted_position = np.zeros(3, dtype=np.float32)
+        Q_event = 0.0
         for doms_pulses in strings_doms_pulses.values():
             for pulses in doms_pulses.values():
-                for pulse in pulses:
-                    q = pulse[self.dom_charge_idx]
-                    total_weighted_position += np.array(
-                        [pulse[self.dom_x_idx], 
-                        pulse[self.dom_y_idx], 
-                        pulse[self.dom_z_idx]]) * q
-                    Q_event += q
-        
-        avg_dom_position_event = total_weighted_position / Q_event
-        return avg_dom_position_event
+                q = pulses[:, self.dom_charge_idx]
+                total_weighted_position += np.sum(pulses[:, [self.dom_x_idx, self.dom_y_idx, self.dom_z_idx]] * q[:, None], axis=0)
+                Q_event += np.sum(q)
+        return total_weighted_position / Q_event if Q_event > 0 else np.zeros(3, dtype=np.float32)
     
-    def _process_DOM(self, 
-                    pulses: List[List[float]], 
-                    avg_dom_position: np.ndarray) -> List[float]:
-        # dom_string = self._get_DOM_string(pulses)
-        # dom_number = self._get_DOM_number(pulses)
-        # charge = [pulse[self.dom_charge_idx] for pulse in pulses]
+    def _process_DOM(self, pulses: np.ndarray, avg_dom_position: np.ndarray) -> np.ndarray:
         dom_position = self._get_DOM_position(pulses)
         rel_dom_pos = self._get_relative_DOM_position(dom_position, avg_dom_position)
-        
+
         pmt_area = self._get_pmt_area(pulses)
         rde = self._get_rde(pulses)
         saturation_status = self._get_saturation_status(pulses)
         bad_dom_status = self._get_bad_dom_status(pulses)
         bright_dom_status = self._get_bright_dom_status(pulses)
-        
+
         first_charge_readout = self._get_first_charge_readout(pulses)
         accumulated_charge_after_nc = self._get_accumulated_charge_after_ns(pulses)
         first_pulse_time = self._get_first_pulse_time(pulses)
         first_hlc = self._get_first_hlc(pulses)
         elapsed_time_until_charge_fraction = self._get_elapsed_time_until_charge_fraction(pulses)
         standard_deviation = self._get_time_standard_deviation(pulses)
-        
-        data_dom = (
-                    dom_position.tolist()                
-                    + rel_dom_pos.tolist()               
-                    + [pmt_area, rde, saturation_status, bad_dom_status, bright_dom_status]
-                    + first_charge_readout.tolist()
-                    + accumulated_charge_after_nc.tolist()
-                    + first_hlc.tolist()
-                    + first_pulse_time.tolist()
-                    + elapsed_time_until_charge_fraction.tolist()
-                    + [standard_deviation]
-                    )
-        return data_dom
+
+        # Using np.hstack to avoid tolist() and keep NumPy efficiency
+        return np.hstack((
+            dom_position, rel_dom_pos,
+            [pmt_area, rde, saturation_status, bad_dom_status, bright_dom_status],
+            first_charge_readout, accumulated_charge_after_nc, first_hlc,
+            first_pulse_time, elapsed_time_until_charge_fraction,
+            [standard_deviation]
+        )).astype(np.float32)
+
     
     def _get_relative_DOM_position(self,
                                 dom_position: np.ndarray,
@@ -195,139 +170,110 @@ class PMTSummariser:
         rel_position = dom_position - avg_dom_position
         return rel_position
     
-    def _get_DOM_position(self, pulses_dom: List[List[float]]) -> np.ndarray:
-        position = np.array([
-            pulses_dom[0][self.dom_x_idx],
-            pulses_dom[0][self.dom_y_idx],
-            pulses_dom[0][self.dom_z_idx]
-        ])
-        return position
+    def _get_DOM_position(self, pulses: np.ndarray) -> np.ndarray:
+        return pulses[0, [self.dom_x_idx, self.dom_y_idx, self.dom_z_idx]]
 
     def _get_DOM_string(self,
-                        pulses_dom: List[List[float]]) -> int:
-        return pulses_dom[0][self.dom_string_idx]
+                        pulses: np.ndarray) -> int:
+        return pulses[0, self.dom_string_idx]
     
     def _get_DOM_number(self,
-                        pulses_dom: List[List[float]]) -> int:
-        return pulses_dom[0][self.dom_number_idx]
+                        pulses: np.ndarray) -> int:
+        return pulses[0, self.dom_number_idx]
     
     def _get_pmt_area(self,
-                    pulses_dom: List[List[float]]) -> float:
-        return pulses_dom[0][self.pmt_area_idx]
+                    pulses: np.ndarray) -> float:
+        return pulses[0, self.pmt_area_idx]
     
-    def _get_rde(self, 
-                pulses_dom: List[List[float]]) -> float:
-        return pulses_dom[0][self.rde_idx]
+    def _get_rde(self,
+                pulses: np.ndarray) -> float:
+        return pulses[0, self.rde_idx]
     
-    def _get_saturation_status(
-                self,
-                pulses_dom: List[List[float]]) -> int:
-        return pulses_dom[0][self.saturation_status_idx]
+    def _get_saturation_status(self,
+                            pulses: np.ndarray) -> int:
+        return pulses[0, self.saturation_status_idx]
     
-    def _get_bad_dom_status(
-                self,
-                pulses_dom: List[List[float]]) -> int:
-        return pulses_dom[0][self.bad_dom_status_idx]
+    def _get_bad_dom_status(self,
+                        pulses: np.ndarray) -> int:
+        return pulses[0, self.bad_dom_status_idx]
     
-    def _get_bright_dom_status(
-                self,
-                pulses_dom: List[List[float]]) -> int:
-        return pulses_dom[0][self.bright_dom_status_idx]
+    def _get_bright_dom_status(self,
+                            pulses: np.ndarray) -> int:
+        return pulses[0, self.bright_dom_status_idx]
     
-    def _get_first_hlc(self,
-                    pulses_dom: List[List[float]]) -> np.ndarray:
-        
+    def _get_first_hlc(self, pulses: np.ndarray) -> np.ndarray:
         _fillIncomplete = -1
-        if len(pulses_dom) < self.n_pulse_collect:
-            hlc = [pulse[self.dom_hlc_idx] for pulse in pulses_dom]
-            hlc.extend([_fillIncomplete] * (self.n_pulse_collect - len(hlc)))
-            hlc = np.array(hlc, dtype=int)
+        if pulses.shape[0] < self.n_pulse_collect:
+            hlc = np.pad(pulses[:, self.dom_hlc_idx], 
+                        (0, self.n_pulse_collect - pulses.shape[0]), 
+                        constant_values=_fillIncomplete)
         else:
-            hlc = np.array([pulse[self.dom_hlc_idx] for pulse in pulses_dom[:self.n_pulse_collect]], dtype=int)
-        
-        return hlc
+            hlc = pulses[:self.n_pulse_collect, self.dom_hlc_idx]
+        return hlc.astype(np.int32)
+
+    def _get_first_charge_readout(self, pulses: np.ndarray) -> np.ndarray:
+        _fillIncomplete = -1
+        if pulses.shape[0] < self.n_pulse_collect:
+            charge_readouts = np.pad(
+                pulses[:, self.dom_charge_idx],
+                (0, self.n_pulse_collect - pulses.shape[0]), 
+                constant_values=_fillIncomplete
+            )
+        else:
+            charge_readouts = pulses[:self.n_pulse_collect, self.dom_charge_idx]
+
+        return charge_readouts.astype(np.float32)
+
+    def _get_accumulated_charge_after_ns(self, pulses: np.ndarray, interval1=25, interval2=75) -> np.ndarray:
+        _fillIncomplete = -1
+        if pulses.shape[0] < 1:
+            return np.full(3, _fillIncomplete, dtype=np.float32)
+
+        t_0 = pulses[0, self.dom_time_idx]
+        time_offsets = pulses[:, self.dom_time_idx] - t_0
+        charges = pulses[:, self.dom_charge_idx]
+
+        Qinterval1 = np.sum(charges[time_offsets < interval1])
+        Qinterval2 = np.sum(charges[time_offsets < interval2])
+        Qtotal = np.sum(charges)
+
+        return np.array([Qinterval1, Qinterval2, Qtotal], dtype=np.float32)
+
     
-    def _get_first_charge_readout(self,
-                                pulses: List[List[float]]) -> np.ndarray:
-        # HACK consider changing the fill values
+    def _get_first_pulse_time(self, pulses: np.ndarray) -> np.ndarray:
         _fillIncomplete = -1
-
-        if len(pulses) < self.n_pulse_collect:
-            charge_readouts = np.array([pulse[self.dom_charge_idx] for pulse in pulses], dtype=float)
-            charge_readouts = np.pad(charge_readouts, (0, self.n_pulse_collect - len(charge_readouts)), constant_values=_fillIncomplete)
+        if pulses.shape[0] < self.n_pulse_collect:
+            pulse_times = np.pad(pulses[:, self.dom_time_idx], 
+                                (0, self.n_pulse_collect - pulses.shape[0]), 
+                                constant_values=_fillIncomplete)
         else:
-            charge_readouts = np.array([pulse[self.dom_charge_idx] for pulse in pulses[:self.n_pulse_collect]], dtype=float)
-
-        return charge_readouts
+            pulse_times = pulses[:self.n_pulse_collect, self.dom_time_idx]
+        return pulse_times.astype(np.float32)
     
-    def _get_accumulated_charge_after_ns(self,
-                                        pulses: List[List[float]], 
-                                        interval1=25, 
-                                        interval2=75) -> np.ndarray:
-        # HACK consider changing the fill values
+    def _get_elapsed_time_until_charge_fraction(self, pulses: np.ndarray, percentile1=10, percentile2=50) -> np.ndarray:
         _fillIncomplete = -1
+        if pulses.shape[0] < 2:
+            return np.full(2, _fillIncomplete, dtype=np.float32)
 
-        if not pulses or len(pulses) < 1:
-            accumulated_charges = np.full(3, _fillIncomplete, dtype=float)
-        else:
-            t_0 = pulses[0][self.dom_time_idx]
-            times = np.array([pulse[self.dom_time_idx] for pulse in pulses], dtype=float)
-            charges = np.array([pulse[self.dom_charge_idx] for pulse in pulses], dtype=float)
-            
-            time_offsets = times - t_0
-            Qinterval1 = np.sum(charges[time_offsets < interval1])
-            Qinterval2 = np.sum(charges[time_offsets < interval2])
-            Qtotal = np.sum(charges)
+        charges = pulses[:, self.dom_charge_idx]
+        times = pulses[:, self.dom_time_idx]
+        Qtotal = np.sum(charges)
+        cumulated_charge = np.cumsum(charges)
 
-            accumulated_charges = np.array([Qinterval1, Qinterval2, Qtotal], dtype=float)
+        # Use np.searchsorted() to avoid index errors
+        idx1 = np.searchsorted(cumulated_charge, percentile1 / 100 * Qtotal, side="right")
+        idx2 = np.searchsorted(cumulated_charge, percentile2 / 100 * Qtotal, side="right")
 
-        return accumulated_charges
-    
-    def _get_first_pulse_time(self, 
-                            pulses_dom: List[List[float]]) -> np.ndarray:
+        T_1 = times[idx1] - times[0] if idx1 < pulses.shape[0] else _fillIncomplete
+        T_2 = times[idx2] - times[0] if idx2 < pulses.shape[0] else _fillIncomplete
+
+        return np.array([T_1, T_2], dtype=np.float32)
+
+
+    def _get_time_standard_deviation(self, pulses: np.ndarray) -> float:
         _fillIncomplete = -1
+        return np.std(pulses[:, self.dom_time_idx]) if pulses.shape[0] > 1 else _fillIncomplete
 
-        if len(pulses_dom) < self.n_pulse_collect:
-            pulse_times = np.array([pulse[self.dom_time_idx] for pulse in pulses_dom])
-            pulse_times = np.pad(pulse_times, (0, self.n_pulse_collect - len(pulse_times)), constant_values=_fillIncomplete)
-        else:
-            pulse_times = np.array([pulse[self.dom_time_idx] for pulse in pulses_dom[:self.n_pulse_collect]], dtype=float)
-
-        return pulse_times
-        
-    def _get_elapsed_time_until_charge_fraction(self,
-                                                pulses_dom: List[List[float]], 
-                                                percentile1 = 10, 
-                                                percentile2 = 50,
-                                                ) -> np.ndarray:
-        # HACK consider changing the fill values
-        _fillIncomplete = -1
-
-        if len(pulses_dom) < 2:
-            times = np.full(2, _fillIncomplete, dtype=float)
-        else:
-            charges = np.array([pulse[self.dom_charge_idx] for pulse in pulses_dom], dtype=float)
-            times = np.array([pulse[self.dom_time_idx] for pulse in pulses_dom], dtype=float)
-            Qtotal = np.sum(charges)
-            cumulated_charge = np.cumsum(charges)
-            t_0 = times[0]
-            T_1 = times[np.argmax(cumulated_charge > percentile1 / 100 * Qtotal)] - t_0
-            T_2 = times[np.argmax(cumulated_charge > percentile2 / 100 * Qtotal)] - t_0
-            times = np.array([T_1, T_2], dtype=float)
-
-        return times
-    
-    def _get_time_standard_deviation(self,
-                                    pulses_dom: List[List[float]]) -> float:
-        # HACK consider changing the fill values
-        _fillIncomplete = -1
-        
-        pulse_times = np.array([pulse[self.dom_time_idx] for pulse in pulses_dom])
-        if len(pulse_times) < 2:
-            sigmaT = _fillIncomplete
-        else:
-            sigmaT = np.std(pulse_times)
-        return sigmaT
     
     def _build_schema(self) -> pa.Schema:
         base_schema = [
@@ -381,4 +327,4 @@ class PMTSummariser:
     def _build_empty_arrays(cls) -> Dict[str, List[float]]:
         if cls._SCHEMA is None:
             raise ValueError("Schema must be defined before building empty arrays.")
-        return {field.name: [] for field in cls._SCHEMA}
+        return {field: [] for field in cls._SCHEMA.names}

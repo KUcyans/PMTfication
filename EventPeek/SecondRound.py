@@ -31,13 +31,6 @@ from Enum.Flavour import Flavour
 from Enum.EnergyRange import EnergyRange
 from EventPeek.PseudoNormaliser import PseudoNormaliser
 
-def get_interesting_events(truth_file:str, N_doms_cut = 1250):
-    truth_df = pq.read_table(truth_file).to_pandas()
-    N_doms = truth_df["N_doms"]
-    
-    interesting_event_no = truth_df[["event_no", "shard_no", "energy"]][N_doms > N_doms_cut]
-    return interesting_event_no
-
 def get_normalised_dom_features(pmt_event_df: pd.DataFrame, Q_cut: float = -1) -> pd.DataFrame:
     selected_columns = ["dom_x", "dom_y", "dom_z", "Qtotal", "t1"]
     event_np = pmt_event_df[selected_columns].to_numpy()
@@ -80,10 +73,8 @@ def calculate_horizontal_boundary(pmt_event_df: pd.DataFrame):
     
 def calculate_horizontal_PCA(boundary_points: np.ndarray):
     if boundary_points.shape[0] < 2:
-        # print("⚠️ Warning: Not enough points for PCA. Returning NaNs.")
         return np.nan, np.nan, np.nan, np.nan  # ✅ Safe return to prevent crashing
     if np.all(boundary_points == boundary_points[0]):  # All points identical
-        # print("⚠️ Warning: All points are identical. Returning NaNs.")
         return np.nan, np.nan, np.nan, np.nan
     centre = np.mean(boundary_points, axis=0)
     pca = PCA(n_components=2)
@@ -162,30 +153,34 @@ def get_composite_cosine_scores(extent_end1: np.ndarray,
     
     abs_diff = np.abs(cosine_major_power - cosine_minor_power)
 
-    gaussian_combined = np.exp(-cosine_major_power - cosine_minor_power)
+    gaussian_sum = np.exp(-cosine_major_power) + np.exp(-cosine_minor_power)
 
     # Quadratic sum for isotropy detection
     quadratic_diff_sum = (cosine_major_power - 0.5) ** 2 + (cosine_minor_power - 0.5) ** 2
 
-    return abs_diff, gaussian_combined, quadratic_diff_sum
+    return abs_diff, gaussian_sum, quadratic_diff_sum
 
 
-def get_rookies(pmt_event_df: pd.DataFrame, ref_position_df: pd.DataFrame, Q_cut = 0):
+def get_rookies(pmt_event_df: pd.DataFrame, ref_position_df: pd.DataFrame, Q_cut: float):
     pmt_event_df = add_string_column_to_event_df(pmt_event_df, ref_position_df)
     pseudo_normalised_df = get_normalised_dom_features(pmt_event_df, Q_cut)
     pseudo_normalised_df = add_string_column_to_event_df(pseudo_normalised_df, ref_position_df)
     border_xy = calculate_horizontal_boundary(pseudo_normalised_df)
     if border_xy.shape[0] < 3:
         return np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan
+    
     major_PCA, minor_PCA, eigenvectors, centre_PCA = calculate_horizontal_PCA(border_xy)
     eccentricity_PCA = np.sqrt(1 - (minor_PCA / major_PCA)**2)
     aspect_contrast_PCA = (major_PCA - minor_PCA) / (major_PCA + minor_PCA)
+    
     xy_end1, xy_end2, extent_max = compute_max_extent(border_xy)
-    cos_squared_extent_PCA_major = get_cos_power_extent_PCA_major(xy_end1, xy_end2, extent_max, eigenvectors, major_PCA, 4)
-    abs_diff, gaussian_combined, quadratic_diff_sum = get_composite_cosine_scores(xy_end1, xy_end2, extent_max, eigenvectors, major_PCA, minor_PCA)
+    power = 6
+    cos_power_extent_PCA_major = get_cos_power_extent_PCA_major(xy_end1, xy_end2, extent_max, eigenvectors, major_PCA, power)
+    abs_diff, gaussian_sum, quadratic_diff_sum = get_composite_cosine_scores(xy_end1, xy_end2, extent_max, eigenvectors, major_PCA, minor_PCA, power)
+    
     stretch_mean, stretch_max, max_z_positions, stretch_hiqr = calculate_vertical_stretch(pseudo_normalised_df)
     hypotenuse = np.sqrt(extent_max**2 + stretch_max**2)
-    metrics = (hypotenuse, major_PCA, minor_PCA, eccentricity_PCA, aspect_contrast_PCA, cos_squared_extent_PCA_major, abs_diff, gaussian_combined, quadratic_diff_sum)
+    metrics = (hypotenuse, major_PCA, minor_PCA, eccentricity_PCA, aspect_contrast_PCA, cos_power_extent_PCA_major, abs_diff, gaussian_sum, quadratic_diff_sum)
     return metrics
 
 
@@ -240,36 +235,30 @@ def plot_distribution(data_dict, title, xlabel, ylabel, binwidth, isLog=False, i
 def collect_event_metrics(root_before_subdir: str, er: EnergyRange, part: int, Q_cut: int, num_shards_dict: dict):
     metrics = {key: {Flavour.E: [], Flavour.MU: [], Flavour.TAU: []} for key in [
         "hypotenuse", "major_PCA", "minor_PCA", "eccentricity_PCA", "aspect_contrast_PCA",
-        "cos_power_extent_PCA_major", "abs_diff", "gaussian_combined", "quadratic_diff_sum"
+        "cos_power_extent_PCA_major", "abs_diff", "gaussian_sum", "quadratic_diff_sum"
     ]}
 
     ref_position_file = "/groups/icecube/cyan/factory/DOMification/dom_ref_pos/unique_string_dom_completed.csv"
     ref_position_df = pd.read_csv(ref_position_file)
 
-    total_shards_processed = 0  # Count processed shards
-    total_events_processed = 0  # Count processed events
-
     for flavour in [Flavour.E, Flavour.MU, Flavour.TAU]:
         subdir = os.path.join(root_before_subdir, EnergyRange.get_subdir(er, flavour))
-        num_shards = num_shards_dict.get(flavour, 10)
+        num_shards = num_shards_dict.get(flavour, 1)
 
-        for shard_no in range(1, num_shards + 1):
+        for shard_no in tqdm(range(1, num_shards + 1), desc=f"Processing {flavour.alias} shards", unit="shard"):
             pmt_file = os.path.join(subdir, str(part), f"PMTfied_{shard_no}.parquet")
-            if not os.path.exists(pmt_file):
-                continue
-
-            total_shards_processed += 1
-            pmt_event_df = pq.read_table(pmt_file).to_pandas()
-            if pmt_event_df.empty:
-                continue
-            # pmt_event_df = pmt_event_df[:1000]
-            total_events_processed += len(pmt_event_df)
-            event_metrics = get_rookies(pmt_event_df, ref_position_df, Q_cut)
+            pmt_df = pq.read_table(pmt_file, memory_map=True).to_pandas()
             
-            # Store collected metrics
-            metric_keys = list(metrics.keys())  
-            for i, key in enumerate(metric_keys):
-                metrics[key][flavour].append(event_metrics[i])
+            # pmt_df = pmt_df[:1000]
+            pmt_df_grouped = list(pmt_df.groupby("event_no"))
+            
+            for event_no, pmt_event_df in pmt_df_grouped:
+                event_metrics = get_rookies(pmt_event_df, ref_position_df, Q_cut)
+                
+                # Store collected metrics
+                metric_keys = list(metrics.keys())  
+                for i, key in enumerate(metric_keys):
+                    metrics[key][flavour].append(event_metrics[i])
 
     return metrics
 
@@ -281,10 +270,10 @@ def plot_all_metrics(metrics):
         {"key": "minor_PCA", "title": "Minor PCA Distribution (XY)", "xlabel": "Minor PCA (XY) [m]", "ylabel": "Counts", "binwidth": 25},
         {"key": "eccentricity_PCA", "title": "Eccentricity PCA (XY)", "xlabel": "Eccentricity", "ylabel": "Counts", "binwidth": 0.05, "isLog": False, "isDicLeft": True},
         {"key": "aspect_contrast_PCA", "title": "Aspect Contrast PCA (XY)", "xlabel": "Aspect Contrast", "ylabel": "Counts", "binwidth": 0.05},
-        {"key": "cos_power_extent_PCA_major", "title": "Cos^4(θ) PCA (XY)", "xlabel": "Cos^4(θ)", "ylabel": "Counts", "binwidth": 0.05},
-        {"key": "abs_diff", "title": "Absolute Difference PCA (XY)", "xlabel": "Abs Difference", "ylabel": "Counts", "binwidth": 0.05},
-        {"key": "gaussian_combined", "title": "Gaussian Combined PCA (XY)", "xlabel": "Gaussian Combined", "ylabel": "Counts", "binwidth": 0.05},
-        {"key": "quadratic_diff_sum", "title": "Quadratic Difference Sum PCA (XY)", "xlabel": "Quadratic Difference Sum", "ylabel": "Counts", "binwidth": 0.05},
+        {"key": "cos_power_extent_PCA_major", "title": "Cos^n(θ) PCA (XY)", "xlabel": "Cos^n(θ)", "ylabel": "Counts", "binwidth": 0.05, "isLog": False, "isDicLeft": True},
+        {"key": "abs_diff", "title": "Absolute Difference PCA (XY)", "xlabel": "Abs Difference", "ylabel": "Counts", "binwidth": 0.05, "isLog": False, "isDicLeft": True},
+        {"key": "gaussian_sum", "title": "Gaussian Sum PCA (XY)", "xlabel": "Gaussian Sum", "ylabel": "Counts", "binwidth": 0.025},
+        {"key": "quadratic_diff_sum", "title": "Quadratic Difference Sum PCA (XY)", "xlabel": "Quadratic Difference Sum", "ylabel": "Counts", "binwidth": 0.025, "isLog": False, "isDicLeft": True} 
     ]
 
     for param in plot_params:
@@ -326,7 +315,7 @@ def run_for_your_life():
 
     er = EnergyRange.ER_10_TEV_1_PEV
     # Q_cuts = [-10, -1, 0]
-    Q_cuts = [10]
+    Q_cuts = [0]
     part = 1
     num_shards_dict = {
         Flavour.E: 1,   # num shards for nu e(4)
@@ -334,8 +323,7 @@ def run_for_your_life():
         Flavour.TAU: 1   # num shards for nu tau(4)
     }
 
-    # Add tqdm for tracking different Q_cut values
-    for Q_cut in tqdm(Q_cuts, desc="Processing different Q_cuts", unit="cut"):
+    for Q_cut in Q_cuts:
         print(f"Processing {er.string} energy range with Q_cut={Q_cut}")
         start_time = time.time()
         metric = collect_event_metrics(root_dir_noCR_CC_IN, er, part, Q_cut, num_shards_dict)
@@ -345,7 +333,7 @@ def run_for_your_life():
             print(f"⚠️ Warning: No figures generated for {er.string} with Q >{Q_cut}. Skipping PDF saving.")
             continue  # Skip saving to avoid empty PDFs
 
-        output_pdf_file = f"SecondRound_{er.string}_Q>{Q_cut}_part{part}.pdf"
+        output_pdf_file = f"SecondRound_{er.string}_Q>{Q_cut}_part{part}_g.pdf"
         save_figs_to_pdf(figs, output_pdf_dir, output_pdf_file)
 
         print(f"Finished processing {er.string} with Q>{Q_cut} in {time.time() - start_time:.2f} seconds")

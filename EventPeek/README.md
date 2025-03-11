@@ -52,3 +52,15 @@ $$ f = \frac{max(\frac{1}{d_1},\frac{1}{d_2})}{\frac{1}{d_1} + \frac{1}{d_2}}$$
 
 ![alt text](image.png)
 ![alt text](image-1.png)
+
+    gaussian_combined = np.exp(-cosine_major_power) + np.exp(-cosine_minor_power)
+
+    # Quadratic sum for isotropy detection
+    quadratic_diff_sum = (cosine_major_power - 0.5) ** 2 + (cosine_minor_power - 0.5) ** 2
+
+## 11032025 variant Cosine based features
+> $\theta$ is the angle between an axis of the PCA of the boundary points and the max extent vector
+1. cosine power = $cos^n\theta_{major}$ 
+2. abs_diff_cosine_power = $|cos^n\theta_{major} - cos^n\theta_{minor}|$
+3. gaussian_sum = $exp(-cos^n\theta_{major}) + exp(-cos^n\theta_{minor})$
+4. quadratic_diff_sum = $(cos^n\theta_{major} - 0.5)^2 + (cos^n\theta_{minor} - 0.5)^2$

@@ -81,4 +81,5 @@ if __name__ == "__main__":
         sys.exit(1)
         
     
-# nohup python3.9 PMTfy_sample.py 10 > log/debug/\[$(date +"%d%m%Y_%H%M%S")\]_PMTfy_99999_.log 2>&1 &
+# nohup python3.9 -u PMTfy_sample.py 10 > log/debug/\[$(date +"%d%m%Y_%H%M%S")\]_PMTfy_99999_.log 2>&1 &
+
