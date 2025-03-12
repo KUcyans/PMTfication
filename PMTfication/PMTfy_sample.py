@@ -16,7 +16,9 @@ def main():
     logging.info("PMTfication starts...")
     
     source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/sqlite_pulses/"
-    dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/"
+    # dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/"
+    dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_second_round/"
+
     source_table_name = 'SRTInIcePulses'
     
     snowstorm_source_dir = source_root + "Snowstorm/"
@@ -26,6 +28,8 @@ def main():
     
     parser = argparse.ArgumentParser(description="PMTfication of SQLite databases into Parquet files.")
     parser.add_argument("N_events_per_shard", type=int, help="Number of events per shard.")
+    parser.add_argument("--second_round", action="store_true", help="Enable second round of PMTfication.")
+
     args = parser.parse_args()
     
     snowstorm_sample_subdir = "99999"
@@ -47,19 +51,22 @@ def main():
     
     # PMTfication logic
     N_events_per_shard = args.N_events_per_shard
+    
     pmtfier_snowstorm = PMTfier(
         source_root=snowstorm_source_dir,
         source_subdirectory=snowstorm_sample_subdir,
         source_table=source_table_name,
         dest_root=snowstorm_dest_dir,
-        N_events_per_shard=N_events_per_shard)
+        N_events_per_shard=N_events_per_shard, 
+        is_second_round=args.second_round)
     
     pmtfier_corsika = PMTfier(
         source_root=corsika_source_dir,
         source_subdirectory=corsika_sample_subdir,
         source_table=source_table_name,
         dest_root=corsika_dest_dir,
-        N_events_per_shard=N_events_per_shard)
+        N_events_per_shard=N_events_per_shard,
+        is_second_round=args.second_round)
     
     logging.info("PMTfying Snowstorm...")
     pmtfier_snowstorm.pmtfy_subdir_parallel(
@@ -80,6 +87,11 @@ if __name__ == "__main__":
         logging.error(f"An error occurred: {e}", exc_info=True)
         sys.exit(1)
         
-    
-# nohup python3.9 -u PMTfy_sample.py 10 > log/debug/\[$(date +"%d%m%Y_%H%M%S")\]_PMTfy_99999_.log 2>&1 &
+# for the original PMTfication
+# nohup python3.9 -u PMTfy_sample.py 10 > log/debug/\[$(date +"%%Y%m%d_%H%M%S")\]PMTfy_99999_.log 2>&1 &
+
+# for second round
+# nohup python3.9 -u PMTfy_sample.py 10 --second_round > log/debug/[$(date +"%Y%m%d_%H%M%S")]SecondRun_99999_.log 2>&1 &
+
+
 

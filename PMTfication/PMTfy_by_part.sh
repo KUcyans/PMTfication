@@ -12,7 +12,6 @@
 #SBATCH --error=/dev/null
 
 LOG_DIR="log/${SUBDIR}"
-
 mkdir -p "${LOG_DIR}"
 
 timestamp=$(date +"%Y%m%d_%H%M%S")
@@ -23,7 +22,14 @@ exec > /dev/null 2> "${logfile}"
 echo "Starting job at $(date)"
 echo "Running PMTfier.py for subdirectory ${SUBDIR} part ${PART} with ${NEVENTS} events per shard"
 
-python3.9 -u PMTfy_by_part.py "${SnowstormOrCorsika}" "${SUBDIR}" "${PART}" "${NEVENTS}"
+# Add --second_round if enabled
+SECOND_ROUND_FLAG=""
+if [[ "${SECOND_ROUND}" == "true" ]]; then
+    SECOND_ROUND_FLAG="--second_round"
+    echo "Running in SECOND ROUND mode."
+fi
+
+python3.9 -u PMTfy_by_part.py "${SnowstormOrCorsika}" "${SUBDIR}" "${PART}" "${NEVENTS}" ${SECOND_ROUND_FLAG}
 
 echo "Job completed at $(date)"
 
@@ -36,7 +42,7 @@ EMAIL_BODY="Job Details:\n\
 - Job Name: ${SLURM_JOB_NAME}\n\
 - Job ID: ${SLURM_JOB_ID}\n\
 - Partition: ${SLURM_JOB_PARTITION}\n\
-- Status: ${SLURM_JOB_STATUS}\n\
+- Second Round: ${SECOND_ROUND}\n\
 - Completed At: $(date)\n\n\
 Log Snippet:\n$(tail -n 20 "${logfile}")"
 

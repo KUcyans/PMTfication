@@ -1,8 +1,11 @@
 import pyarrow as pa
 import numpy as np
 from collections import defaultdict
-from typing import List, Dict
+from typing import List, Dict, Tuple
 import sqlite3 as sql
+from scipy.spatial import ConvexHull
+from scipy.spatial.distance import cdist
+from sklearn.decomposition import PCA
 
 from PMT_ref_pos_adder import ReferencePositionAdder
 
@@ -27,12 +30,16 @@ class PMTSummariser:
                  con_source: sql.Connection, 
                  source_table: str, 
                  event_no_subset: List[int],
-                 n_pulse_collect: int = 5
+                 n_pulse_collect: int = 5,
+                 is_second_round: bool = False,
+                 Q_adj_cut_second_round: float = 0,
                  ) -> None:
         self.con_source = con_source
         self.source_table = source_table
         self.event_no_subset = event_no_subset
         self.n_pulse_collect = n_pulse_collect
+        self.is_second_round = is_second_round
+        self.Q_adj_cut_second_round = Q_adj_cut_second_round
 
         query = f"SELECT * FROM {self.source_table} LIMIT 1"
         cur_source = self.con_source.cursor()
@@ -92,9 +99,18 @@ class PMTSummariser:
 
         for event_no, strings_doms_pulses in events_doms_pulses.items():
             avg_dom_position = self._get_Q_weighted_DOM_position(strings_doms_pulses)  # one per event
+            
+            # Compute additional features only if is_second_round=True
+            if self.is_second_round:
+                eccentricity_PCA, aspect_contrast_PCA, hypotenuse = self._get_second_round_event_wise_features(strings_doms_pulses, self.Q_adj_cut_second_round)
+
             for string, doms_pulses in strings_doms_pulses.items():
                 for dom_no, pulses in doms_pulses.items():
-                    dom_data = self._process_DOM(pulses, avg_dom_position)
+                    if self.is_second_round:
+                        dom_data = self._process_DOM(pulses, avg_dom_position, eccentricity_PCA, aspect_contrast_PCA, hypotenuse)
+                    else:
+                        dom_data = self._process_DOM(pulses, avg_dom_position)
+
                     processed_data.append(np.hstack(([event_no], dom_data)))  # Convert to NumPy row
 
         # Convert list of arrays into a single NumPy array (efficient bulk processing)
@@ -104,21 +120,15 @@ class PMTSummariser:
         pa_arrays = {field: pa.array(processed_data[:, idx]) for idx, field in enumerate(PMTSummariser._SCHEMA.names)}
         return pa.Table.from_pydict(pa_arrays, schema=PMTSummariser._SCHEMA)
 
-
     def _build_events_doms_pulses(self, rows: List[tuple]) -> defaultdict[int, defaultdict[int, defaultdict[int, np.ndarray]]]:
-        """ 
-        Convert the nested dictionary structure but ensure `pulses` are stored as NumPy arrays.
-        """
         events_doms_pulses = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
 
-        # Step 1: Populate lists
         for row in rows:
             event_no = row[self.event_no_idx]
             string = row[self.dom_string_idx]
             dom_number = row[self.dom_number_idx]
             events_doms_pulses[event_no][string][dom_number].append(row)
 
-        # Step 2: Convert lists to NumPy arrays for fast numerical processing
         for event_no, string_dict in events_doms_pulses.items():
             for string, dom_dict in string_dict.items():
                 for dom_no, pulse_list in dom_dict.items():
@@ -136,8 +146,13 @@ class PMTSummariser:
                 total_weighted_position += np.sum(pulses[:, [self.dom_x_idx, self.dom_y_idx, self.dom_z_idx]] * q[:, None], axis=0)
                 Q_event += np.sum(q)
         return total_weighted_position / Q_event if Q_event > 0 else np.zeros(3, dtype=np.float32)
-    
-    def _process_DOM(self, pulses: np.ndarray, avg_dom_position: np.ndarray) -> np.ndarray:
+
+    def _process_DOM(self, pulses: np.ndarray, 
+                 avg_dom_position: np.ndarray,
+                 eccentricity_PCA: float = None,
+                 aspect_contrast_PCA: float = None,
+                 hypotenuse: float = None
+                    ) -> np.ndarray:
         dom_position = self._get_DOM_position(pulses)
         rel_dom_pos = self._get_relative_DOM_position(dom_position, avg_dom_position)
 
@@ -154,8 +169,7 @@ class PMTSummariser:
         elapsed_time_until_charge_fraction = self._get_elapsed_time_until_charge_fraction(pulses)
         standard_deviation = self._get_time_standard_deviation(pulses)
 
-        # Using np.hstack to avoid tolist() and keep NumPy efficiency
-        return np.hstack((
+        dom_data = np.hstack((
             dom_position, rel_dom_pos,
             [pmt_area, rde, saturation_status, bad_dom_status, bright_dom_status],
             first_charge_readout, accumulated_charge_after_nc, first_hlc,
@@ -163,7 +177,12 @@ class PMTSummariser:
             [standard_deviation]
         )).astype(np.float32)
 
-    
+        # Append extra features only when `is_second_round=True`
+        if self.is_second_round:
+            dom_data = np.hstack((dom_data, [eccentricity_PCA, aspect_contrast_PCA, hypotenuse]))
+
+        return dom_data
+
     def _get_relative_DOM_position(self,
                                 dom_position: np.ndarray,
                                 avg_dom_position: np.ndarray) -> np.ndarray:
@@ -313,18 +332,124 @@ class PMTSummariser:
             ('T50', pa.float32()),
             ('sigmaT', pa.float32())
         ]
-
-        return pa.schema(
-            base_schema + 
-            charge_columns + 
-            accumulated_charge_columns +
-            hlc_columns + 
-            time_columns + 
-            accumulated_time_columns
-        )
+        schema_fields = base_schema + charge_columns + accumulated_charge_columns + hlc_columns + time_columns + accumulated_time_columns
+        
+        if self.is_second_round:
+            schema_fields += [
+                ('eccentricity_PCA', pa.float32()),
+                ('aspect_contrast_PCA', pa.float32()),
+                ('hypotenuse', pa.float32())
+            ]
+        
+        return pa.schema(schema_fields)
     
     @classmethod
     def _build_empty_arrays(cls) -> Dict[str, List[float]]:
         if cls._SCHEMA is None:
             raise ValueError("Schema must be defined before building empty arrays.")
         return {field: [] for field in cls._SCHEMA.names}
+
+
+
+    ## ----------------- Second round features ----------------- ##
+    
+    
+    def _get_second_round_event_wise_features(self, 
+                            event_doms_pulses: Dict[int, Dict[int, np.ndarray]], 
+                            Q_adj_cut_second_round: float) -> Tuple[float, float, float]:
+        Q_threshold = 10 ** (Q_adj_cut_second_round + 2)
+        collected_data = []
+        
+        for doms_pulses in event_doms_pulses.values():
+            for pulses in doms_pulses.values():
+                Q_tot_dom = np.sum(pulses[:, self.dom_charge_idx])  
+                if Q_tot_dom >= Q_threshold:
+                    collected_data.append(pulses[0, [self.dom_string_idx, 
+                                                    self.dom_x_idx, 
+                                                    self.dom_y_idx, 
+                                                    self.dom_z_idx]])
+        if not collected_data:
+            eccentricity_PCA, aspect_contrast_PCA, hypotenuse = -1, -1, -1
+        else:
+            collected_data = np.array(collected_data, dtype=np.float32)
+            
+            xy_boundary = self._get_XY_boundary(collected_data)
+            max_Z_stretch = self._get_max_Z_stretch(collected_data)
+            major_PCA, minor_PCA = self._get_PCA(xy_boundary)  # ✅ Returns tuple
+            eccentricity_PCA = self._get_eccentricity(major_PCA, minor_PCA)
+            aspect_contrast_PCA = self._get_aspect_contrast(major_PCA, minor_PCA)
+            xy_extent = self._get_max_xy_extent(xy_boundary)
+            hypotenuse = self._get_hypotenuse(xy_extent, max_Z_stretch)
+            
+        return eccentricity_PCA, aspect_contrast_PCA, hypotenuse
+
+
+    def _get_XY_boundary(self, high_charge_doms: np.ndarray) -> np.ndarray:
+        if high_charge_doms.shape[0] == 0:
+            return np.empty((0, 2), dtype=np.float32)  
+        
+        unique_strings, unique_indices = np.unique(high_charge_doms[:, 0], return_index=True)
+        xy_points = high_charge_doms[unique_indices, 1:3]  
+        
+        if xy_points.shape[0] >= 3:
+            try:
+                hull = ConvexHull(xy_points)
+                xy_points = xy_points[hull.vertices]
+            except Exception:
+                pass
+        return xy_points
+
+    def _get_max_xy_extent(self, xy_boundary: np.ndarray) -> float:
+        max_extent = -1
+        if xy_boundary.shape[0] >= 2:
+            try:
+                distances = cdist(xy_boundary, xy_boundary, metric='euclidean')  
+                max_extent = np.max(distances)
+            except Exception:
+                pass
+        return max_extent
+
+    def _get_PCA(self, xy_boundary: np.ndarray) -> Tuple[float, float]:
+        major_axis_length, minor_axis_length = -1, -1  
+        
+        if xy_boundary.shape[0] >= 2 and not np.all(xy_boundary == xy_boundary[0]):
+            try:
+                pca = PCA(n_components=2)
+                pca.fit(xy_boundary)
+                eigenvalues = pca.explained_variance_
+                major_axis_length, minor_axis_length = np.sqrt(eigenvalues)
+            except Exception:
+                pass  
+
+        return major_axis_length, minor_axis_length
+
+    def _get_eccentricity(self, major_axis_length: float, minor_axis_length: float) -> float:
+        eccentricity = -1
+        if major_axis_length > 0 and minor_axis_length > 0:
+            eccentricity = np.sqrt(1 - (minor_axis_length / major_axis_length) ** 2)
+        return eccentricity
+    
+    def _get_aspect_contrast(self, major_axis_length: float, minor_axis_length: float) -> float:
+        aspect_contrast = -1
+        if major_axis_length > 0 and minor_axis_length > 0:
+            aspect_contrast = (major_axis_length - minor_axis_length) / (major_axis_length + minor_axis_length)
+        return aspect_contrast
+    
+    def _get_hypotenuse(self, xy_extent: float, z_stretch: float) -> float:
+        hypotenuse = -1
+        if xy_extent > 0 and z_stretch > 0:
+            hypotenuse = np.sqrt(xy_extent ** 2 + z_stretch ** 2)
+        elif xy_extent > 0:  # 
+            hypotenuse = xy_extent
+        elif z_stretch > 0:
+            hypotenuse = z_stretch
+        return hypotenuse
+
+    def _get_max_Z_stretch(self, high_charge_doms: np.ndarray) -> float:
+        max_z_stretch = -1
+        if high_charge_doms.shape[0] > 0:
+            unique_strings = np.unique(high_charge_doms[:, 0])
+            for string in unique_strings:
+                z_values = high_charge_doms[high_charge_doms[:, 0] == string, 3]
+                max_z_stretch = max(max_z_stretch, np.max(z_values) - np.min(z_values))
+        return max_z_stretch

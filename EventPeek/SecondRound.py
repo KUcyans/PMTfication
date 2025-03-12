@@ -314,6 +314,7 @@ def run_for_your_life():
     output_pdf_dir = "/lustre/hpc/icecube/cyan/factory/DOMification/EventPeek/"
 
     er = EnergyRange.ER_10_TEV_1_PEV
+    # er = EnergyRange.ER_1_PEV_100_PEV
     # Q_cuts = [-10, -1, 0]
     Q_cuts = [0]
     part = 1
@@ -333,7 +334,7 @@ def run_for_your_life():
             print(f"⚠️ Warning: No figures generated for {er.string} with Q >{Q_cut}. Skipping PDF saving.")
             continue  # Skip saving to avoid empty PDFs
 
-        output_pdf_file = f"SecondRound_{er.string}_Q>{Q_cut}_part{part}_g.pdf"
+        output_pdf_file = f"SecondRound_{er.string}_Q>{Q_cut}_part{part}.pdf"
         save_figs_to_pdf(figs, output_pdf_dir, output_pdf_file)
 
         print(f"Finished processing {er.string} with Q>{Q_cut} in {time.time() - start_time:.2f} seconds")

@@ -114,12 +114,17 @@ $$
    1. currently uses .csv file but it could be replaced with a GeoCalib file. (Leave the csv file as default option)  
 3. [PMT_summariser](https://github.com/KUcyans/PMTfication/blob/main/PMT_summariser.py)
 ![alt text](image-3.png)
-   1. [Feasibility check needed before instigation]change the list structure to np.array if possible.
+   1. ~~[Feasibility check needed before instigation]~~change the list structure to np.array if possible.
+      1. numpy port completed, the innermost nest list is replaced with 2D numpy array 
+      2. `pulses`: np.array, has shape of (n_pulses, n_features)
+         * each row corresponds to a pulse
+         * each column corresponds to a feature: `dom_x`, `dom_y`, `dom_z`, `time`, `charge`...
    2. Possible parallelisation or threading of the for loops
-4. [PMTfier](https://github.com/KUcyans/PMTfication/blob/main/PMTfier.py)
+   3. 
+1. [PMTfier](https://github.com/KUcyans/PMTfication/blob/main/PMTfier.py)
    1. The current implementation is highly specific to the data stored structure that KU HEP has. There should be more general
    2. Replacing the functions with classes might facilitate the maintenance
-5. Filtering for Angular Reconstruction Tasks
+2. Filtering for Angular Reconstruction Tasks
    1. Impose three filters to improve the quality of muon-like cases
       1. ~~SRT filter: already imposed~~
       2. abandon events where 'MuonFilter_13' is false
