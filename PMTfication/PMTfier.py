@@ -15,6 +15,7 @@ from multiprocessing import cpu_count
 
 from PMT_summariser import PMTSummariser
 from PMT_truth_maker import PMTTruthMaker
+from PMT_truth_from_summary import PMTTruthFromSummary
 
 class PMTfier:
     def __init__(self, 
@@ -166,21 +167,28 @@ class PMTfier:
         
         # NOTE
         # PMTSummariser is the core class to be called for PMTfication
-        summariser  = PMTSummariser(
+        pa_pmtfied = PMTSummariser(
             con_source=con_source,
             source_table=self.source_table,
             event_no_subset=event_batch,
             is_second_round=self.is_second_round
-        )
-        pa_pmtfied = summariser()
+        )()
         pa_pmtfied = self._add_enhance_event_no(pa_pmtfied, part_no)
         dest_dir = os.path.join(self.dest_root, self.source_subdirectory, str(part_no))
         pmtfied_file = os.path.join(dest_dir, f"PMTfied_{shard_no}.parquet")
         pq.write_table(pa_pmtfied, pmtfied_file)
         
+        ##TODO custom truth columns to add
+        summary_derived_truth = PMTTruthFromSummary(pa_pmtfied)()
+        
         # NOTE
         # PMT truth table for this shard is created by PMTTruthMaker and returned
-        pa_truth_shard = truth_maker(int(self.subdir_tag), part_no, shard_no, event_batch)
+        pa_truth_shard = truth_maker(subdirectory_no=int(self.subdir_tag),
+                                     part_no=part_no,
+                                     shard_no=shard_no, 
+                                     event_no_subset=event_batch,
+                                     #summary_derived_truth_table = summary_derived_truth
+                                     )
         pa_truth_shard = self._add_enhance_event_no(pa_truth_shard, part_no)
         
         return pa_truth_shard
@@ -191,7 +199,8 @@ class PMTfier:
                             truth_maker: PMTTruthMaker) -> pa.Table:
         truth_shards = []
         
-        for shard_no, event_batch in enumerate(self._get_event_no_batches(con_source, self.source_table, self.N_events_per_shard), start=1):
+        event_no_batches = self._get_event_no_batches(con_source, self.source_table, self.N_events_per_shard)
+        for shard_no, event_batch in enumerate(event_no_batches, start=1):
             logging.info(f"Processing shard {shard_no} of part {part_no} in subdirectory {self.source_subdirectory}.")
             pa_truth_shard = self.pmtfy_shard(
                 con_source=con_source,

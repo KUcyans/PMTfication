@@ -24,9 +24,15 @@ class PMTTruthMaker:
         self._build_schema()
         self._build_nan_replacement()
 
-    def __call__(self, subdirectory_no: int, part_no: int, shard_no: int, event_no_subset: List[int]) -> pa.Table:
+    def __call__(self, 
+                 subdirectory_no: int, 
+                 part_no: int, 
+                 shard_no: int, 
+                 event_no_subset: List[int],
+                 ## TODO add feature from PMT_truth_from_feature.py 
+                 # summary_derived_truth_table : pa.Table
+                 ) -> pa.Table:
         receipt_pa = self._build_receipt_pa(subdirectory_no, part_no, shard_no, event_no_subset)
-        
         
         truth_table = self._get_pa_shard(
             receipt_pa=receipt_pa,
@@ -68,14 +74,16 @@ class PMTTruthMaker:
             build_query_func=self._build_MCWeightDict_query
         )
         
+        
         return self._merge_tables(truth_table = truth_table, 
                                 GNLabel_table = GNLabel_table, 
                                 HighestEInIceParticle_table = HighestEInIceParticle_table, 
                                 HE_daughter_table = HE_daughter_table,
                                 MCWeightDict_table = MCWeightDict_table,
+                                #TODO feature_derived_table = feature_derived_table,
                                 subdirectory_no = subdirectory_no, 
                                 part_no = part_no, 
-                                shard_no = shard_no)
+                                shard_no = shard_no, )
 
 
     def _build_receipt_pa(self, subdirectory_no: int, part_no: int, shard_no: int, event_no_subset: List[int]) -> pa.Table:
@@ -94,17 +102,20 @@ class PMTTruthMaker:
                   HighestEInIceParticle_table: pa.Table,
                   HE_daughter_table: pa.Table, 
                   MCWeightDict_table: pa.Table,
+                  feature_derived_table: pa.Table,
                   subdirectory_no: int, part_no: int, shard_no: int) -> pa.Table:
+        len_truth = len(truth_table)
         merged_data = {
             'event_no': truth_table['event_no'],
-            'subdirectory_no': pa.array([subdirectory_no] * len(truth_table)),
-            'part_no': pa.array([part_no] * len(truth_table)),
-            'shard_no': pa.array([shard_no] * len(truth_table)),
+            'subdirectory_no': pa.array([subdirectory_no] * len_truth),
+            'part_no': pa.array([part_no] * len_truth),
+            'shard_no': pa.array([shard_no] * len_truth),
             **{col: truth_table[col] for col in truth_table.column_names if col != 'event_no'},
             **{col_GN: GNLabel_table[col_GN] for col_GN in GNLabel_table.column_names if col_GN != 'event_no'},
             **{col_HE: HighestEInIceParticle_table[col_HE] for col_HE in HighestEInIceParticle_table.column_names if col_HE != 'event_no'},
             **{col_HE_daughter: HE_daughter_table[col_HE_daughter] for col_HE_daughter in HE_daughter_table.column_names if col_HE_daughter != ' event_no'},
             **{col_MCWeightDict: MCWeightDict_table[col_MCWeightDict] for col_MCWeightDict in MCWeightDict_table.column_names if col_MCWeightDict != 'event_no'},
+            ## TODO add feature from PMT_truth_from_feature.py
         }
         return pa.Table.from_pydict(merged_data, schema=self._MERGED_SCHEMA)
 
