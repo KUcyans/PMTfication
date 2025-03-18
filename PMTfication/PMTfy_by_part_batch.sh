@@ -6,11 +6,11 @@
 # NEVENTS: Number of events per shard
 # SECOND_ROUND: Flag for second round of PMTfication (true/false)
 
-SECOND_ROUND=true  # Change this to true for second round processing
+SECOND_ROUND=false  # Change this to true for second round processing
 
 conditions=(
     # "Snowstorm 22010 1 12 200000"         # 1-12
-    "Snowstorm 22011 1 10 20000"           # 1-10
+    # "Snowstorm 22011 1 10 20000"           # 1-10
     "Snowstorm 22012 1 27 2000"           # 1-27
     # "Snowstorm 22013 1 2 200000"          # 1-2
     "Snowstorm 22014 1 6 20000"           # 1-6

@@ -16,8 +16,8 @@ def main():
     logging.info("PMTfication starts...")
     
     source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/sqlite_pulses/"
-    # dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/"
-    dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_second_round/"
+    dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/"
+    # dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_second_round/"
 
     source_table_name = 'SRTInIcePulses'
     
@@ -88,7 +88,7 @@ if __name__ == "__main__":
         sys.exit(1)
         
 # for the original PMTfication
-# nohup python3.9 -u PMTfy_sample.py 10 > log/debug/\[$(date +"%%Y%m%d_%H%M%S")\]PMTfy_99999_.log 2>&1 &
+# nohup python3.9 -u PMTfy_sample.py 10 > log/debug/\[$(date +"%Y%m%d_%H%M%S")\]PMTfy_99999_.log 2>&1 &
 
 # for second round
 # nohup python3.9 -u PMTfy_sample.py 10 --second_round > log/debug/[$(date +"%Y%m%d_%H%M%S")]SecondRun_99999_.log 2>&1 &

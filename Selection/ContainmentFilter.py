@@ -30,26 +30,45 @@ class ContainmentFilter(EventFilter):
                         part_no=part_no)
 
     @override
+    # def _set_valid_event_nos(self): 
+    #     truth_table = pq.read_table(self.source_truth_file)
+        
+    #     required_columns = {"pos_x_GNHighestEDaughter", "pos_y_GNHighestEDaughter", 
+    #                         "pos_z_GNHighestEDaughter", "N_doms", "event_no"}
+    #     missing_columns = required_columns - set(truth_table.column_names)
+    #     if missing_columns:
+    #         self.logger.error(f"Missing required columns: {missing_columns}. Cannot proceed with filtering.")
+    #         return 
+
+    #     pos_x = truth_table.column("pos_x_GNHighestEDaughter").to_numpy()
+    #     pos_y = truth_table.column("pos_y_GNHighestEDaughter").to_numpy()
+    #     pos_z = truth_table.column("pos_z_GNHighestEDaughter").to_numpy()
+
+    #     xy_points = np.column_stack((pos_x, pos_y))
+    #     xy_mask = self.xy_path.contains_points(xy_points)
+
+    #     z_mask = (pos_z >= self.border_z[0]) & (pos_z <= self.border_z[1])
+
+    #     valid_indices = np.where(xy_mask & z_mask)[0]
+
+    #     if len(valid_indices) == 0:
+    #         self.logger.warning(f"No valid events found within containment region in {self.subdir_no}/{self.part_no}. Skipping filtering.")
+    #         return 
+
+    #     self.valid_event_nos = set(truth_table.take(valid_indices).column("event_no").to_pylist())
+    #     self.logger.info(f"Extracted {len(self.valid_event_nos)} valid events within the IceCube body.")
+    
     def _set_valid_event_nos(self): 
         truth_table = pq.read_table(self.source_truth_file)
         
-        required_columns = {"pos_x_GNHighestEDaughter", "pos_y_GNHighestEDaughter", 
-                            "pos_z_GNHighestEDaughter", "N_doms", "event_no"}
+        required_columns = {"isWithinIceCube", "N_doms", "event_no"}
         missing_columns = required_columns - set(truth_table.column_names)
         if missing_columns:
             self.logger.error(f"Missing required columns: {missing_columns}. Cannot proceed with filtering.")
             return 
 
-        pos_x = truth_table.column("pos_x_GNHighestEDaughter").to_numpy()
-        pos_y = truth_table.column("pos_y_GNHighestEDaughter").to_numpy()
-        pos_z = truth_table.column("pos_z_GNHighestEDaughter").to_numpy()
-
-        xy_points = np.column_stack((pos_x, pos_y))
-        xy_mask = self.xy_path.contains_points(xy_points)
-
-        z_mask = (pos_z >= self.border_z[0]) & (pos_z <= self.border_z[1])
-
-        valid_indices = np.where(xy_mask & z_mask)[0]
+        is_within_icecube = truth_table.column("isWithinIceCube").to_numpy()
+        valid_indices = np.where(is_within_icecube)[0]
 
         if len(valid_indices) == 0:
             self.logger.warning(f"No valid events found within containment region in {self.subdir_no}/{self.part_no}. Skipping filtering.")

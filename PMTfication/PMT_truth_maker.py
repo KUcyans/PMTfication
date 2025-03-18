@@ -4,6 +4,7 @@ import sqlite3 as sql
 from typing import List
 from pyarrow.compute import SetLookupOptions
 from PMT_truth_entity import TruthEntity
+from PMT_truth_from_truth import PMTTruthFromTruth
 
 class PMTTruthMaker:
     def __init__(self, 
@@ -29,8 +30,7 @@ class PMTTruthMaker:
                  part_no: int, 
                  shard_no: int, 
                  event_no_subset: List[int],
-                 ## TODO add feature from PMT_truth_from_feature.py 
-                 # summary_derived_truth_table : pa.Table
+                 summary_derived_truth_table : pa.Table
                  ) -> pa.Table:
         receipt_pa = self._build_receipt_pa(subdirectory_no, part_no, shard_no, event_no_subset)
         
@@ -74,17 +74,20 @@ class PMTTruthMaker:
             build_query_func=self._build_MCWeightDict_query
         )
         
-        
-        return self._merge_tables(truth_table = truth_table, 
+        merged_table = self._merge_tables(truth_table = truth_table, 
                                 GNLabel_table = GNLabel_table, 
                                 HighestEInIceParticle_table = HighestEInIceParticle_table, 
                                 HE_daughter_table = HE_daughter_table,
                                 MCWeightDict_table = MCWeightDict_table,
-                                #TODO feature_derived_table = feature_derived_table,
-                                subdirectory_no = subdirectory_no, 
-                                part_no = part_no, 
-                                shard_no = shard_no, )
-
+                                subdirectory_no = subdirectory_no, part_no = part_no, shard_no = shard_no)
+        
+        # join with summary_derived_truth_table
+        merged_table = merged_table.join(summary_derived_truth_table, keys=['event_no'], join_type='inner')
+        
+        # join with secondary truth columns
+        truth_derived_truth = PMTTruthFromTruth(merged_table)()
+        merged_table = merged_table.join(truth_derived_truth, keys=['event_no'], join_type='inner')
+        return merged_table
 
     def _build_receipt_pa(self, subdirectory_no: int, part_no: int, shard_no: int, event_no_subset: List[int]) -> pa.Table:
         receipt_data = {
@@ -102,7 +105,6 @@ class PMTTruthMaker:
                   HighestEInIceParticle_table: pa.Table,
                   HE_daughter_table: pa.Table, 
                   MCWeightDict_table: pa.Table,
-                  feature_derived_table: pa.Table,
                   subdirectory_no: int, part_no: int, shard_no: int) -> pa.Table:
         len_truth = len(truth_table)
         merged_data = {
@@ -115,9 +117,10 @@ class PMTTruthMaker:
             **{col_HE: HighestEInIceParticle_table[col_HE] for col_HE in HighestEInIceParticle_table.column_names if col_HE != 'event_no'},
             **{col_HE_daughter: HE_daughter_table[col_HE_daughter] for col_HE_daughter in HE_daughter_table.column_names if col_HE_daughter != ' event_no'},
             **{col_MCWeightDict: MCWeightDict_table[col_MCWeightDict] for col_MCWeightDict in MCWeightDict_table.column_names if col_MCWeightDict != 'event_no'},
-            ## TODO add feature from PMT_truth_from_feature.py
         }
-        return pa.Table.from_pydict(merged_data, schema=self._MERGED_SCHEMA)
+        merged_table = pa.Table.from_pydict(merged_data, schema=self._MERGED_SCHEMA)
+
+        return merged_table
 
     def _filter_rows(self, table: pa.Table, receipt_pa: pa.Table, event_no_column: str) -> pa.Table:
         event_no_column_truth_list = table[event_no_column].to_pylist()

@@ -18,12 +18,13 @@ class PMTTruthFromSummary:
         return self._build_truth_sub_pa()
 
     def _build_truth_sub_pa(self) -> pa.Table:
-        unique_events = pc.unique(self.pa_pmtfied_shard.column('event_no')).to_numpy()
+        unique_events = pc.unique(self.pa_pmtfied_shard.column('original_event_no')).to_numpy()
         max_distances = [self._get_max_interPMT_distance(event) for event in unique_events]
-        # dd new features here
+        # add new features here
 
         truth_table = pa.Table.from_arrays(
-            [pa.array(unique_events), pa.array(max_distances)],
+            [pa.array(unique_events, type=pa.int32()),
+             pa.array(max_distances, type=pa.float32())], # add new features here
             names=['event_no', 'max_interPMT_distance'] # add new features here
         )
 
@@ -33,7 +34,7 @@ class PMTTruthFromSummary:
         """
         Compute the maximum distance among (dom_x, dom_y, dom_z) for a given event.
         """
-        event_mask = pc.equal(self.pa_pmtfied_shard.column('event_no'), event_no)
+        event_mask = pc.equal(self.pa_pmtfied_shard.column('original_event_no'), event_no)
         event_table = self.pa_pmtfied_shard.filter(event_mask)
 
         # Extract (dom_x, dom_y, dom_z) coordinates

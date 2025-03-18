@@ -178,7 +178,6 @@ class PMTfier:
         pmtfied_file = os.path.join(dest_dir, f"PMTfied_{shard_no}.parquet")
         pq.write_table(pa_pmtfied, pmtfied_file)
         
-        ##TODO custom truth columns to add
         summary_derived_truth = PMTTruthFromSummary(pa_pmtfied)()
         
         # NOTE
@@ -187,8 +186,7 @@ class PMTfier:
                                      part_no=part_no,
                                      shard_no=shard_no, 
                                      event_no_subset=event_batch,
-                                     #summary_derived_truth_table = summary_derived_truth
-                                     )
+                                     summary_derived_truth_table = summary_derived_truth)
         pa_truth_shard = self._add_enhance_event_no(pa_truth_shard, part_no)
         
         return pa_truth_shard
