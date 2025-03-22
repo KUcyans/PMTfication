@@ -6,6 +6,7 @@ import argparse
 import logging
 
 from PMTfier import PMTfier
+from SummaryMode import SummaryMode
 
 def main():
     logging.basicConfig(
@@ -15,8 +16,18 @@ def main():
     )
     logging.info("PMTfication starts...")
     
+    parser = argparse.ArgumentParser(description="PMTfication of SQLite databases into Parquet files.")
+    parser.add_argument("N_events_per_shard", type=int, help="Number of events per shard.")
+    parser.add_argument("--summary_mode", type=int, choices=[0, 1, 2], default=0, help="Summary mode: 0=normal, 1=second, 2=late (default: 0)")
+    args = parser.parse_args()
+    
+    summary_mode = SummaryMode.from_index(args.summary_mode)
+    suffix = "" if summary_mode == SummaryMode.CLASSIC else f"_{summary_mode}"
+    dest_root_base = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied"
+    dest_root = dest_root_base + suffix + "/"
     source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/sqlite_pulses/"
-    dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/"
+    
+    # dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/"
     # dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_second_round/"
 
     source_table_name = 'SRTInIcePulses'
@@ -25,13 +36,7 @@ def main():
     snowstorm_dest_dir = dest_root + "Snowstorm/"
     corsika_source_dir = source_root + "Corsika/"
     corsika_dest_dir = dest_root + "Corsika/"
-    
-    parser = argparse.ArgumentParser(description="PMTfication of SQLite databases into Parquet files.")
-    parser.add_argument("N_events_per_shard", type=int, help="Number of events per shard.")
-    parser.add_argument("--second_round", action="store_true", help="Enable second round of PMTfication.")
 
-    args = parser.parse_args()
-    
     snowstorm_sample_subdir = "99999"
     corsika_sample_subdir = "9999999-9999999"
     subdirectory_path_snowstorm = os.path.join(snowstorm_source_dir, snowstorm_sample_subdir)
@@ -51,6 +56,7 @@ def main():
     
     # PMTfication logic
     N_events_per_shard = args.N_events_per_shard
+    summary_mode = SummaryMode.from_index(args.summary_mode)
     
     pmtfier_snowstorm = PMTfier(
         source_root=snowstorm_source_dir,
@@ -58,7 +64,7 @@ def main():
         source_table=source_table_name,
         dest_root=snowstorm_dest_dir,
         N_events_per_shard=N_events_per_shard, 
-        is_second_round=args.second_round)
+        summary_mode=summary_mode)
     
     pmtfier_corsika = PMTfier(
         source_root=corsika_source_dir,
@@ -66,7 +72,7 @@ def main():
         source_table=source_table_name,
         dest_root=corsika_dest_dir,
         N_events_per_shard=N_events_per_shard,
-        is_second_round=args.second_round)
+        summary_mode=summary_mode)
     
     logging.info("PMTfying Snowstorm...")
     pmtfier_snowstorm.pmtfy_subdir_parallel(
@@ -91,7 +97,11 @@ if __name__ == "__main__":
 # nohup python3.9 -u PMTfy_sample.py 10 > log/debug/\[$(date +"%Y%m%d_%H%M%S")\]PMTfy_99999_.log 2>&1 &
 
 # for second round
-# nohup python3.9 -u PMTfy_sample.py 10 --second_round > log/debug/[$(date +"%Y%m%d_%H%M%S")]SecondRun_99999_.log 2>&1 &
+# nohup python3.9 -u PMTfy_sample.py 10 --summary_mode 1 > log/debug/[$(date +"%Y%m%d_%H%M%S")]SecondRun_99999.log 2>&1 &
+
+# for third round
+# nohup python3.9 -u PMTfy_sample.py 10 --summary_mode 2 > log/debug/[$(date +"%Y%m%d_%H%M%S")]ThirdRun_99999.log 2>&1 &
+
 
 
 

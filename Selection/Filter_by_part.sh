@@ -1,9 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=filter_part_%j
 #SBATCH --partition=icecube
+#SBATCH --nodelist=node[187-190]
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=32
-#SBATCH --mem=60G
+#SBATCH --mem=100G
 #SBATCH --time=02:00:00
 #SBATCH --signal=B:USR1@60 
 #SBATCH --output=/dev/null

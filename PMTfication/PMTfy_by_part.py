@@ -4,6 +4,7 @@ from os import getenv
 import argparse
 import logging
 from PMTfier import PMTfier
+from SummaryMode import SummaryMode
 
 def main():
     logging.basicConfig(
@@ -25,13 +26,15 @@ def main():
     parser.add_argument("subdirectory_in_number", type=str, help="Name of the source subdirectory.")
     parser.add_argument("part_number", type=str, help="Part number.")
     parser.add_argument("N_events_per_shard", type=int, help="Number of events per shard.")
-    parser.add_argument("--second_round", action="store_true", help="Enable second round of PMTfication.")
+    parser.add_argument("--summary_mode", type=int, choices=[0, 1, 2], default=0, help="Summary mode: 0=normal, 1=second, 2=late (default: 0)")
 
     args = parser.parse_args()
 
     # Update source and destination directories
     source_root = os.path.join(source_root, args.Snowstorm_or_Corsika)
-    dest_root = os.path.join(dest_root_base + ("_second_round" if args.second_round else ""), args.Snowstorm_or_Corsika)
+    summary_mode = SummaryMode.from_index(args.summary_mode)
+    suffix = "" if summary_mode == SummaryMode.CLASSIC else f"_{summary_mode}"
+    dest_root = os.path.join(dest_root_base + suffix, args.Snowstorm_or_Corsika)
 
     subdirectory_path = os.path.join(source_root, args.subdirectory_in_number)
     source_file_path = os.path.join(subdirectory_path, f"merged_part_{args.part_number}.db")
@@ -53,7 +56,7 @@ def main():
         source_table=source_table_name,
         dest_root=dest_root,
         N_events_per_shard=N_events_per_shard,
-        is_second_round=args.second_round
+        summary_mode=summary_mode,
     ) 
     
     pmtfier.pmtfy_part(source_part_file=source_file_path)

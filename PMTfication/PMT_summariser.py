@@ -8,6 +8,16 @@ from scipy.spatial.distance import cdist
 from sklearn.decomposition import PCA
 
 from PMT_ref_pos_adder import ReferencePositionAdder
+from SummaryMode import SummaryMode
+# TODO IDEAS
+# T10, T50: time elapsed until 10% and 50% of the total charge is reached
+# sigmaT: standard deviation of the time of all pulses
+# Q25, Q75, Qtotal: accumulated charge after 25ns, 75ns, and total charge
+
+# t_qmax: time at the highest charge pulse
+# t_qmax_50: time at the highest charge pulse within t[:-50%]
+# T70, T90: time elapsed until 60% and 80% of the total charge is reached
+# Q_50t : accumulated charge until t_middle = (t[-1] - t[0]) / 2
 
 class PMTSummariser:
     """
@@ -30,15 +40,14 @@ class PMTSummariser:
                  con_source: sql.Connection, 
                  source_table: str, 
                  event_no_subset: List[int],
-                 n_pulse_collect: int = 5,
-                 is_second_round: bool = False,
+                 summary_mode: SummaryMode = SummaryMode.CLASSIC,
                  Q_adj_cut_second_round: float = 0,
                  ) -> None:
         self.con_source = con_source
         self.source_table = source_table
         self.event_no_subset = event_no_subset
-        self.n_pulse_collect = n_pulse_collect
-        self.is_second_round = is_second_round
+        self.summary_mode = summary_mode
+        self.n_pulse_collect = summary_mode.n_collect
         self.Q_adj_cut_second_round = Q_adj_cut_second_round
 
         query = f"SELECT * FROM {self.source_table} LIMIT 1"
@@ -97,19 +106,23 @@ class PMTSummariser:
         events_doms_pulses = self._build_events_doms_pulses(rows)
         processed_data = []
 
-        for event_no, strings_doms_pulses in events_doms_pulses.items():
+        for event_no, strings_doms_pulses in events_doms_pulses.items(): # event level loop
             avg_dom_position = self._get_Q_weighted_DOM_position(strings_doms_pulses)  # one per event
             
-            # Compute additional features only if is_second_round=True
-            if self.is_second_round:
+            # Compute additional features if needed
+            if self.summary_mode == SummaryMode.SECOND or self.summary_mode == SummaryMode.EQUINOX:
                 eccentricity_PCA, aspect_contrast_PCA, hypotenuse = self._get_second_round_event_wise_features(strings_doms_pulses, self.Q_adj_cut_second_round)
 
-            for string, doms_pulses in strings_doms_pulses.items():
-                for dom_no, pulses in doms_pulses.items():
-                    if self.is_second_round:
-                        dom_data = self._process_DOM(pulses, avg_dom_position, eccentricity_PCA, aspect_contrast_PCA, hypotenuse)
+            for string, doms_pulses in strings_doms_pulses.items(): # string level loop
+                for dom_no, pulses in doms_pulses.items(): # dom level loop
+                    if self.summary_mode == SummaryMode.SECOND or self.summary_mode == SummaryMode.EQUINOX:
+                        dom_data = self._process_DOM(pulses = pulses, 
+                                                    avg_dom_position = avg_dom_position, 
+                                                    eccentricity_PCA=eccentricity_PCA, 
+                                                    aspect_contrast_PCA=aspect_contrast_PCA, 
+                                                    hypotenuse=hypotenuse)
                     else:
-                        dom_data = self._process_DOM(pulses, avg_dom_position)
+                        dom_data = self._process_DOM(pulses = pulses, avg_dom_position= avg_dom_position)
 
                     processed_data.append(np.hstack(([event_no], dom_data)))  # Convert to NumPy row
 
@@ -151,8 +164,7 @@ class PMTSummariser:
                  avg_dom_position: np.ndarray,
                  eccentricity_PCA: float = None,
                  aspect_contrast_PCA: float = None,
-                 hypotenuse: float = None
-                    ) -> np.ndarray:
+                 hypotenuse: float = None) -> np.ndarray:
         dom_position = self._get_DOM_position(pulses)
         rel_dom_pos = self._get_relative_DOM_position(dom_position, avg_dom_position)
 
@@ -176,10 +188,19 @@ class PMTSummariser:
             first_pulse_time, elapsed_time_until_charge_fraction,
             [standard_deviation]
         )).astype(np.float32)
-
-        # Append extra features only when `is_second_round=True`
-        if self.is_second_round:
+        
+        # Append extra features depending on the summary mode
+        if self.summary_mode == SummaryMode.SECOND:
             dom_data = np.hstack((dom_data, [eccentricity_PCA, aspect_contrast_PCA, hypotenuse]))
+        elif self.summary_mode == SummaryMode.EQUINOX:
+            t_max_q = self._get_time_at_highest_charge_pulse(pulses)
+            t_max_q_late_half = self._get_time_at_highest_charge_pulse_in_the_second_half(pulses)
+            Q_halftime = self._get_accumulated_charge_in_the_first_half(pulses)
+            elapsed_time_until_charge_fraction_late = self._get_elapsed_time_until_charge_fraction(pulses, percentile1=70, percentile2=90)
+            dom_data = np.hstack((dom_data, 
+                                [t_max_q, t_max_q_late_half, Q_halftime], 
+                                elapsed_time_until_charge_fraction_late, 
+                                [eccentricity_PCA, aspect_contrast_PCA, hypotenuse]))
 
         return dom_data
 
@@ -293,6 +314,34 @@ class PMTSummariser:
         _fillIncomplete = -1
         return np.std(pulses[:, self.dom_time_idx]) if pulses.shape[0] > 1 else _fillIncomplete
 
+    # ---------the equinox additional features----------
+    def _get_time_at_highest_charge_pulse(self, pulses: np.ndarray) -> float:
+        _fillIncomplete = -1
+        if pulses.shape[0] < 1:
+            t_qmax = _fillIncomplete
+        else:
+            t_qmax = pulses[np.argmax(pulses[:, self.dom_charge_idx]), self.dom_time_idx]
+        return t_qmax
+    
+    def _get_time_at_highest_charge_pulse_in_the_second_half(self, pulses: np.ndarray) -> float:
+        _fillIncomplete = -1
+        if pulses.shape[0] < 6:
+            t_qmax_secondhalf = _fillIncomplete
+        else:
+            t_middle = (pulses[-1, self.dom_time_idx] + pulses[0, self.dom_time_idx]) / 2
+            second_half_mask = pulses[:, self.dom_time_idx] > t_middle
+            t_qmax_secondhalf =pulses[np.argmax(pulses[:, self.dom_charge_idx][second_half_mask]), self.dom_time_idx]
+        return t_qmax_secondhalf
+
+    def _get_accumulated_charge_in_the_first_half(self, pulses: np.ndarray) -> float:
+        _fillIncomplete = -1
+        if pulses.shape[0] < 2:
+            Q_halftime = _fillIncomplete
+        else:
+            t_middle = (pulses[-1, self.dom_time_idx] + pulses[0, self.dom_time_idx]) / 2
+            first_half_mask = pulses[:, self.dom_time_idx] < t_middle
+            Q_halftime = np.sum(pulses[:, self.dom_charge_idx][first_half_mask])
+        return Q_halftime
     
     def _build_schema(self) -> pa.Schema:
         base_schema = [
@@ -334,8 +383,19 @@ class PMTSummariser:
         ]
         schema_fields = base_schema + charge_columns + accumulated_charge_columns + hlc_columns + time_columns + accumulated_time_columns
         
-        if self.is_second_round:
+        if self.summary_mode == SummaryMode.SECOND:
             schema_fields += [
+                ('eccentricity_PCA', pa.float32()),
+                ('aspect_contrast_PCA', pa.float32()),
+                ('hypotenuse', pa.float32())
+            ]
+        elif self.summary_mode == SummaryMode.EQUINOX:
+            schema_fields += [
+                ('t_qmax', pa.float32()),
+                ('t_qmax_secondhalf', pa.float32()),
+                ('Q_halftime', pa.float32()),
+                ('T70', pa.float32()),
+                ('T90', pa.float32()),
                 ('eccentricity_PCA', pa.float32()),
                 ('aspect_contrast_PCA', pa.float32()),
                 ('hypotenuse', pa.float32())
@@ -350,10 +410,7 @@ class PMTSummariser:
         return {field: [] for field in cls._SCHEMA.names}
 
 
-
     ## ----------------- Second round features ----------------- ##
-    
-    
     def _get_second_round_event_wise_features(self, 
                             event_doms_pulses: Dict[int, Dict[int, np.ndarray]], 
                             Q_adj_cut_second_round: float) -> Tuple[float, float, float]:

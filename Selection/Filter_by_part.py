@@ -28,10 +28,10 @@ def run():
     logging.info("Event filtering process starts...")
 
     # Define root paths
-    # source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/"
-    source_second_round_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_second_round/"
-    # dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/"
-    dest_second_round_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered_second_round/"
+    source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/"
+    dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/"
+    # source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_second_round/"
+    # dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered_second_round/"
     
     # Command-line arguments
     parser = argparse.ArgumentParser(description="Event filtering of PMT-fied data.")
@@ -48,10 +48,8 @@ def run():
         logging.error("Subdirectory number and part number must be integers.")
         sys.exit(1)
 
-    # specific_source_dir = os.path.join(source_root, args.Snowstorm_or_Corsika)
-    # specific_dest_dir = os.path.join(dest_root, args.Snowstorm_or_Corsika)
-    specific_source_dir = os.path.join(source_second_round_root, args.Snowstorm_or_Corsika)
-    specific_dest_dir = os.path.join(dest_second_round_root, args.Snowstorm_or_Corsika)
+    specific_source_dir = os.path.join(source_root, args.Snowstorm_or_Corsika)
+    specific_dest_dir = os.path.join(dest_root, args.Snowstorm_or_Corsika)
     
     filter_manager = EventFilterManager(
         source_dir=specific_source_dir,

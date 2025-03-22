@@ -11,6 +11,9 @@
 #SBATCH --output=/dev/null
 #SBATCH --error=/dev/null
 
+# Summary mode index: 0=normal, 1=second, 2=late
+SUMMARY_MODE=${SUMMARY_MODE:-0}  # Default to 0 if not set
+
 LOG_DIR="log/${SUBDIR}"
 mkdir -p "${LOG_DIR}"
 
@@ -21,29 +24,23 @@ exec > /dev/null 2> "${logfile}"
 
 echo "Starting job at $(date)"
 echo "Running PMTfier.py for subdirectory ${SUBDIR} part ${PART} with ${NEVENTS} events per shard"
+echo "Summary mode index: ${SUMMARY_MODE}"
 
-# Add --second_round if enabled
-SECOND_ROUND_FLAG=""
-if [[ "${SECOND_ROUND}" == "true" ]]; then
-    SECOND_ROUND_FLAG="--second_round"
-    echo "Running in SECOND ROUND mode."
-fi
-
-python3.9 -u PMTfy_by_part.py "${SnowstormOrCorsika}" "${SUBDIR}" "${PART}" "${NEVENTS}" ${SECOND_ROUND_FLAG}
+python3.9 -u PMTfy_by_part.py "${SnowstormOrCorsika}" "${SUBDIR}" "${PART}" "${NEVENTS}" --summary_mode "${SUMMARY_MODE}"
 
 echo "Job completed at $(date)"
 
-EMAIL_SUBJECT="SLURM Job Notification: ${SLURM_JOB_NAME} (${SLURM_JOB_ID})"
-EMAIL_BODY="Job Details:\n\
-- Snowstorm or Corsika: ${SnowstormOrCorsika}\n\
-- Subdirectory: ${SUBDIR}\n\
-- Part: ${PART}\n\
-- Events per shard: ${NEVENTS}\n\
-- Job Name: ${SLURM_JOB_NAME}\n\
-- Job ID: ${SLURM_JOB_ID}\n\
-- Partition: ${SLURM_JOB_PARTITION}\n\
-- Second Round: ${SECOND_ROUND}\n\
-- Completed At: $(date)\n\n\
-Log Snippet:\n$(tail -n 20 "${logfile}")"
+# EMAIL_SUBJECT="SLURM Job Notification: ${SLURM_JOB_NAME} (${SLURM_JOB_ID})"
+# EMAIL_BODY="Job Details:\n\
+# - Snowstorm or Corsika: ${SnowstormOrCorsika}\n\
+# - Subdirectory: ${SUBDIR}\n\
+# - Part: ${PART}\n\
+# - Events per shard: ${NEVENTS}\n\
+# - Summary Mode: ${SUMMARY_MODE}\n\
+# - Job Name: ${SLURM_JOB_NAME}\n\
+# - Job ID: ${SLURM_JOB_ID}\n\
+# - Partition: ${SLURM_JOB_PARTITION}\n\
+# - Completed At: $(date)\n\n\
+# Log Snippet:\n$(tail -n 20 "${logfile}")"
 
-echo -e "${EMAIL_BODY}" | mailx -s "${EMAIL_SUBJECT}" cyan.jo@proton.me
+# echo -e "${EMAIL_BODY}" | mailx -s "${EMAIL_SUBJECT}" cyan.jo@proton.me

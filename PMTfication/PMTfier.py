@@ -16,6 +16,8 @@ from multiprocessing import cpu_count
 from PMT_summariser import PMTSummariser
 from PMT_truth_maker import PMTTruthMaker
 from PMT_truth_from_summary import PMTTruthFromSummary
+from SummaryMode import SummaryMode
+
 
 class PMTfier:
     def __init__(self, 
@@ -24,14 +26,14 @@ class PMTfier:
                 source_table: str,
                 dest_root: str, 
                 N_events_per_shard: int,
-                is_second_round: bool = False,
+                summary_mode: SummaryMode = SummaryMode.CLASSIC,
                 ) -> None:
         self.source_root = source_root
         self.source_table = source_table
         self.source_subdirectory = source_subdirectory
         self.dest_root = dest_root
         self.N_events_per_shard = N_events_per_shard
-        self.is_second_round = is_second_round
+        self.summary_mode = summary_mode
         
         self.signal_or_noise_name = os.path.basename(os.path.normpath(self.dest_root))
         self.subdir_tag = self._get_subdir_tag()
@@ -171,7 +173,7 @@ class PMTfier:
             con_source=con_source,
             source_table=self.source_table,
             event_no_subset=event_batch,
-            is_second_round=self.is_second_round
+            summary_mode=self.summary_mode
         )()
         pa_pmtfied = self._add_enhance_event_no(pa_pmtfied, part_no)
         dest_dir = os.path.join(self.dest_root, self.source_subdirectory, str(part_no))
