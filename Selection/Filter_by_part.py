@@ -9,13 +9,15 @@ from PureNeutrinoEventFilter import PureNeutrinoEventFilter
 from Muon13Filter import Muon13Filter
 from CCFilter import CCFilter
 from ContainmentFilter import ContainmentFilter
+from IntraTravelDistanceFilter import IntraTravelDistanceFilter
 
 # Available filter classes
 FILTER_CLASSES = {
     "CRclean": PureNeutrinoEventFilter,
     # "MuonLike": Muon13Filter,
     "CC": CCFilter,
-    "Contained": ContainmentFilter
+    # "Contained": ContainmentFilter
+    "IntraTravelDistance_250m": IntraTravelDistanceFilter
 }
 
 def run():
@@ -28,10 +30,12 @@ def run():
     logging.info("Event filtering process starts...")
 
     # Define root paths
-    source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/"
-    dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/"
+    # source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/"
+    # dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/"
     # source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_second_round/"
     # dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered_second_round/"
+    source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_third/"
+    dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered_third_round/"
     
     # Command-line arguments
     parser = argparse.ArgumentParser(description="Event filtering of PMT-fied data.")
