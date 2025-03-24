@@ -100,12 +100,12 @@ class PMTTruthMaker:
 
 
     def _merge_tables(self, 
-                  truth_table: pa.Table, 
-                  GNLabel_table: pa.Table,
-                  HighestEInIceParticle_table: pa.Table,
-                  HE_daughter_table: pa.Table, 
-                  MCWeightDict_table: pa.Table,
-                  subdirectory_no: int, part_no: int, shard_no: int) -> pa.Table:
+                truth_table: pa.Table, 
+                GNLabel_table: pa.Table,
+                HighestEInIceParticle_table: pa.Table,
+                HE_daughter_table: pa.Table, 
+                MCWeightDict_table: pa.Table,
+                subdirectory_no: int, part_no: int, shard_no: int) -> pa.Table:
         len_truth = len(truth_table)
 
         merged_data = {
@@ -116,19 +116,21 @@ class PMTTruthMaker:
             **{col: truth_table[col] for col in truth_table.column_names if col != 'event_no'},
         }
 
-        for table, exclude_prefix in [
-            (GNLabel_table, 'event_no'),
-            (HighestEInIceParticle_table, 'event_no'),
-            (HE_daughter_table, 'event_no'),
-            (MCWeightDict_table, 'event_no'),
-        ]:
+        def insert_or_pad(table: pa.Table, schema: pa.Schema, exclude_prefix: str):
             if len(table) == len_truth:
                 for col in table.column_names:
                     if col != exclude_prefix:
                         merged_data[col] = table[col]
+            else:
+                dummy_columns = self._build_empty_table_with_defaults(schema, len_truth, exclude_fields=[exclude_prefix])
+                merged_data.update(dummy_columns)
+
+        insert_or_pad(GNLabel_table, self._GNLabel_SCHEMA, 'GNLabel_event_no')
+        insert_or_pad(HighestEInIceParticle_table, self._HighestEInIceParticle_SCHEMA, 'HighestEInIceParticle_event_no')
+        insert_or_pad(HE_daughter_table, self._HE_DAUGHTER_SCHEMA, 'HE_daughter_event_no')
+        insert_or_pad(MCWeightDict_table, self._MCWeightDict_SCHEMA, 'MCWeightDict_event_no')
 
         return pa.Table.from_pydict(merged_data, schema=self._MERGED_SCHEMA)
-
 
     def _filter_rows(self, table: pa.Table, receipt_pa: pa.Table, event_no_column: str) -> pa.Table:
         event_no_column_truth_list = table[event_no_column].to_pylist()
@@ -327,3 +329,23 @@ class PMTTruthMaker:
                 return [], []  # Return empty result
             else:
                 raise
+    
+    def _build_empty_table_with_defaults(self, schema: pa.Schema, length: int, exclude_fields: List[str]) -> dict:
+        """
+        Builds a dictionary of default-filled arrays for a schema.
+        """
+        defaults = {}
+        nan_replacement = {
+            **self._nan_replacement_GNLabel,
+            **self._nan_replacement_HighestEInIceParticle,
+            **self._nan_replacement_HE_DAUGHTER,
+            **self._nan_replacement_MCWeightDict,
+        }
+        for field in schema:
+            if field.name in exclude_fields:
+                continue
+            replacement = nan_replacement.get(field.name)
+            if replacement is None:
+                replacement = float('nan') if pa.types.is_floating(field.type) else -1
+            defaults[field.name] = pa.array([replacement] * length, type=field.type)
+        return defaults
