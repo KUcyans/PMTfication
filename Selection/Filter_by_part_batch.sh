@@ -5,7 +5,7 @@
 conditions=(
     # "Snowstorm 22010 10 10"
     "Snowstorm 22011 1 10"
-    "Snowstorm 22012 1 27"
+    "Snowstorm 22012 1 26"
     # "Snowstorm 22013 1 2"
     "Snowstorm 22014 1 6"
     "Snowstorm 22015 1 12"

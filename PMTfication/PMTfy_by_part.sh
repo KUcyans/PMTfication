@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=pmtfication_%j
 #SBATCH --partition=icecube
+##SBATCH --nodelist=node[194-194] # node[187-191] or node[194-211]
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=40
 #SBATCH --mem=60G

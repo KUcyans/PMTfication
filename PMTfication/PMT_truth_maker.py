@@ -107,20 +107,28 @@ class PMTTruthMaker:
                   MCWeightDict_table: pa.Table,
                   subdirectory_no: int, part_no: int, shard_no: int) -> pa.Table:
         len_truth = len(truth_table)
+
         merged_data = {
             'event_no': truth_table['event_no'],
             'subdirectory_no': pa.array([subdirectory_no] * len_truth),
             'part_no': pa.array([part_no] * len_truth),
             'shard_no': pa.array([shard_no] * len_truth),
             **{col: truth_table[col] for col in truth_table.column_names if col != 'event_no'},
-            **{col_GN: GNLabel_table[col_GN] for col_GN in GNLabel_table.column_names if col_GN != 'event_no'},
-            **{col_HE: HighestEInIceParticle_table[col_HE] for col_HE in HighestEInIceParticle_table.column_names if col_HE != 'event_no'},
-            **{col_HE_daughter: HE_daughter_table[col_HE_daughter] for col_HE_daughter in HE_daughter_table.column_names if col_HE_daughter != ' event_no'},
-            **{col_MCWeightDict: MCWeightDict_table[col_MCWeightDict] for col_MCWeightDict in MCWeightDict_table.column_names if col_MCWeightDict != 'event_no'},
         }
-        merged_table = pa.Table.from_pydict(merged_data, schema=self._MERGED_SCHEMA)
 
-        return merged_table
+        for table, exclude_prefix in [
+            (GNLabel_table, 'event_no'),
+            (HighestEInIceParticle_table, 'event_no'),
+            (HE_daughter_table, 'event_no'),
+            (MCWeightDict_table, 'event_no'),
+        ]:
+            if len(table) == len_truth:
+                for col in table.column_names:
+                    if col != exclude_prefix:
+                        merged_data[col] = table[col]
+
+        return pa.Table.from_pydict(merged_data, schema=self._MERGED_SCHEMA)
+
 
     def _filter_rows(self, table: pa.Table, receipt_pa: pa.Table, event_no_column: str) -> pa.Table:
         event_no_column_truth_list = table[event_no_column].to_pylist()
@@ -143,7 +151,6 @@ class PMTTruthMaker:
                     build_query_func: callable) -> pa.Table:
         """
         Generic function to retrieve a PyArrow table shard from the database.
-
         Parameters:
             - receipt_pa: PyArrow Table containing receipt data.
             - event_no_subset: List of event numbers to filter by.
@@ -156,17 +163,19 @@ class PMTTruthMaker:
         """
         query = build_query_func(event_no_subset)
         rows, columns = self._execute_query(query)
-        
+
         schema = getattr(self, f"_{schema_name}_SCHEMA")
         nan_replacement = getattr(self, f"_nan_replacement_{schema_name}")
 
-        # special case for TRUTH, else use generic builder
+        if not rows:
+            # Return an empty table with correct schema
+            return pa.Table.from_pydict({field.name: [] for field in schema}, schema=schema)
+
         table = (
             self._create_truth_pa_table(rows, columns)
             if schema_name == "TRUTH"
             else self._create_trailing_pa_table(rows, columns, schema, nan_replacement)
         )
-        
         return self._filter_rows(table, receipt_pa, event_no_column)
 
 
@@ -307,7 +316,14 @@ class PMTTruthMaker:
 
     def _execute_query(self, query: str) -> (List[tuple], List[str]):
         cursor = self.con_source.cursor()
-        cursor.execute(query)
-        rows = cursor.fetchall()
-        columns = [desc[0] for desc in cursor.description]
-        return rows, columns
+        try:
+            cursor.execute(query)
+            rows = cursor.fetchall()
+            columns = [desc[0] for desc in cursor.description]
+            return rows, columns
+        except sql.OperationalError as e:
+            if "no such column" in str(e):
+                print(f"[WARNING] Skipping shard due to missing column: {e}")
+                return [], []  # Return empty result
+            else:
+                raise

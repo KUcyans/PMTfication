@@ -14,7 +14,7 @@ class IntraTravelDistanceFilter(EventFilter):
                  output_subdir: str, 
                  subdir_no: int, 
                  part_no: int,
-                 min_travel_distance: float = 250.0):
+                 min_travel_distance: float = 0.0):
         self.min_travel_distance = min_travel_distance
         self.build_IceCube_faces_and_bases()
         super().__init__(source_subdir=source_subdir, 
@@ -51,12 +51,8 @@ class IntraTravelDistanceFilter(EventFilter):
         intersections = self.get_line_plane_intersections(lines)
         
         event_nos = truth_table.column("event_no").to_numpy()
-
-        # for i, (vtx, dir_vec, ints) in enumerate(zip(vertex, direction, intersections)):
-        #     intra_travel_distance = self.build_intra_travel_distance(vtx, ints, dir_vec)
-        #     if intra_travel_distance > self.min_travel_distance:
-        #         self.valid_event_nos.add(event_nos[i])
-        self.valid_event_nos = self._get_valid_event_nos_from_batch(vertex, direction, intersections, event_nos)
+        is_vertex_in_ICECUBE = truth_table.column("isWithinIceCube").to_numpy()
+        self.valid_event_nos = self._get_valid_event_nos_from_batch(vertex, direction, intersections, event_nos, is_vertex_in_ICECUBE)
         self.logger.info(f"Extracted {len(self.valid_event_nos)} valid events with intra-ICECUBE lepton travel distance > {self.min_travel_distance}.")
 
     def build_IceCube_faces_and_bases(self):
@@ -104,19 +100,25 @@ class IntraTravelDistanceFilter(EventFilter):
         return poly.contains_point((x, y))
     
     def _get_valid_event_nos_from_batch(self,
-                                        vertex: np.ndarray,
-                                        direction: np.ndarray,
-                                        intersections: list,
-                                        event_nos: np.ndarray) -> set:
+                                    vertex: np.ndarray,
+                                    direction: np.ndarray,
+                                    intersections: list,
+                                    event_nos: np.ndarray,
+                                    is_vertex_in_ICECUBE: np.ndarray) -> set:
         valid_event_nos = set()
-        with tqdm(total=len(event_nos), desc="Evaluating events", unit="event") as pbar:
-            for i in range(len(event_nos)):
-                intra_travel_distance = self.build_intra_travel_distance(vertex[i], intersections[i], direction[i])
-                if intra_travel_distance > self.min_travel_distance:
-                    valid_event_nos.add(event_nos[i])
-                if i % 1000 == 0 or i == len(event_nos) - 1:
-                    pbar.update(1000 if i + 1000 < len(event_nos) else len(event_nos) - i)
+        for i in tqdm(range(len(event_nos)),
+                    desc="Evaluating events",
+                    unit="event",
+                    miniters=1000):
+            if not is_vertex_in_ICECUBE[i]:
+                continue
+
+            intra_travel_distance = self.build_intra_travel_distance(vertex[i], intersections[i], direction[i])
+            if intra_travel_distance > self.min_travel_distance:
+                valid_event_nos.add(event_nos[i])
         return valid_event_nos
+
+
 
     def define_line(self, point: np.ndarray, direction: np.ndarray) -> callable:
         """
@@ -223,7 +225,7 @@ class IntraTravelDistanceFilter(EventFilter):
         return distinct_points
 
     
-    def binary_search_intersection(self, line_func, plane_func, t1, t2, tol=1e-6, max_iter=30):
+    def binary_search_intersection(self, line_func, plane_func, t1, t2, tol=1e-4, max_iter=20):
         for _ in range(max_iter):
             tm = (t1 + t2) / 2
             vm = plane_func(line_func(tm))
@@ -236,7 +238,6 @@ class IntraTravelDistanceFilter(EventFilter):
         return line_func((t1 + t2) / 2)
 
 
-    
     def build_intersection_info(self, 
                                vertex: np.ndarray, 
                                intersections: list, 
