@@ -33,6 +33,7 @@ def main():
     # Update source and destination directories
     source_root = os.path.join(source_root, args.Snowstorm_or_Corsika)
     summary_mode = SummaryMode.from_index(args.summary_mode)
+    logging.info(f"Summary mode: {summary_mode}")
     suffix = "" if summary_mode == SummaryMode.CLASSIC else f"_{summary_mode}"
     dest_root = os.path.join(dest_root_base + suffix, args.Snowstorm_or_Corsika)
 

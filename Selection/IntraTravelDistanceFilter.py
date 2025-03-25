@@ -14,7 +14,7 @@ class IntraTravelDistanceFilter(EventFilter):
                  output_subdir: str, 
                  subdir_no: int, 
                  part_no: int,
-                 min_travel_distance: float = 0.0):
+                 min_travel_distance: float = 250.0):
         self.min_travel_distance = min_travel_distance
         self.build_IceCube_faces_and_bases()
         super().__init__(source_subdir=source_subdir, 

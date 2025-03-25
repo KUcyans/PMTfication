@@ -752,7 +752,8 @@ if __name__ == "__main__":
         }
     }
 
-    er = EnergyRange.ER_10_TEV_1_PEV
+    # er = EnergyRange.ER_10_TEV_1_PEV
+    er = EnergyRange.ER_1_PEV_100_PEV
 
     select_flavour_cut_tuple = [(flavour, n_dom_cut) for flavour, n_dom_cut in energy_config[er].items() if flavour != "Q_cut"]
     Q_cut = energy_config[er]["Q_cut"]
