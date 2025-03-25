@@ -68,23 +68,38 @@ class PMTfier:
             yield batch
     
     def _get_truth_table_name_db(self) -> str:
-        # first file in the destination root is used to obtain the truth table name
         source_dir = os.path.join(self.source_root, self.source_subdirectory)
-        first_db_file = os.path.join(source_dir, next((f for f in os.listdir(source_dir) if f.endswith('.db')), None))
+        
+        db_files = [
+            f for f in os.listdir(source_dir)
+            if f.startswith('merged_part_') and f.endswith('.db')
+        ]
+        if not db_files:
+            raise FileNotFoundError(f"No database files found in: {source_dir}")
+
+        def extract_part_number(fname: str) -> int:
+            try:
+                return int(fname.split('_')[-1].split('.')[0])
+            except Exception:
+                return float('inf')  # Push unparseable names to the end
+
+        # Sort db files by part number
+        db_files.sort(key=extract_part_number)
+
+        first_db_file = os.path.join(source_dir, db_files[0])
         con_source = sql.connect(first_db_file)
         cur_source = con_source.cursor()
         cur_source.execute("SELECT name FROM sqlite_master WHERE type='table'")
         tables = [row[0] for row in cur_source.fetchall()]
-        
-        if 'truth' in tables:
-            truth_table = 'truth'
-        elif 'Truth' in tables:
-            truth_table = 'Truth'
-        else:
-            raise ValueError("Neither 'truth' nor 'Truth' table exists in the source database.")
-        
         con_source.close()
-        return truth_table
+
+        if 'truth' in tables:
+            return 'truth'
+        elif 'Truth' in tables:
+            return 'Truth'
+        else:
+            raise ValueError(f"Neither 'truth' nor 'Truth' table exists in: {first_db_file}")
+
     
     def _get_subdir_tag(self) -> int:
         if self.signal_or_noise_name not in ['Snowstorm', 'Corsika']:

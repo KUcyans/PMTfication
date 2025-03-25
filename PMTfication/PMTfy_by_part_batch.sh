@@ -9,15 +9,15 @@
 SUMMARY_MODE=1  # Change this: 0=normal, 1=second, 2=late
 
 conditions=(
-    # "Snowstorm 22010 1 2 200000"         # 1-12
-    "Snowstorm 22011 1 10 20000"           # 1-10
-    "Snowstorm 22012 1 27 2000"            # 1-27
-    # "Snowstorm 22013 1 2 200000"          # 1-2
-    "Snowstorm 22014 1 6 20000"            # 1-6
-    "Snowstorm 22015 1 12 2000"            # 1-12
-    # "Snowstorm 22016 1 2 200000"          # 1-2
-    "Snowstorm 22017 1 3 20000"            # 1-3
-    "Snowstorm 22018 1 21 2000"            # 1-21
+    "Snowstorm 22010 1 1 200000"         # 1-12
+    # "Snowstorm 22011 1 10 20000"           # 1-10
+    # "Snowstorm 22012 1 27 2000"            # 1-27
+    # "Snowstorm 22013 1 1 200000"          # 1-2
+    # "Snowstorm 22014 1 6 20000"            # 1-6
+    # "Snowstorm 22015 1 12 2000"            # 1-12
+    # "Snowstorm 22016 1 1 200000"          # 1-2
+    # "Snowstorm 22017 1 3 20000"            # 1-3
+    # "Snowstorm 22018 1 21 2000"            # 1-21
     # "Corsika 0002000-0002999 1 8 20000"   # 1-8
     # "Corsika 0003000-0003999 1 5 20000"   # 1-9
     # "Corsika 0004000-0004999 1 9 20000"   # 1-9
