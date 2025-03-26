@@ -17,7 +17,7 @@ FILTER_CLASSES = {
     # "MuonLike": Muon13Filter,
     "CC": CCFilter,
     # "Contained": ContainmentFilter
-    "IntraTravelDistance_250m": IntraTravelDistanceFilter
+    "IntraTravelDistance_0m": IntraTravelDistanceFilter
 }
 
 def run():
