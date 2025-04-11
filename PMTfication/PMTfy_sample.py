@@ -8,13 +8,29 @@ import logging
 from PMTfier import PMTfier
 from SummaryMode import SummaryMode
 
+import time
+import psutil
+import socket
+
+def get_file_size_MB(path):
+    return os.path.getsize(path) / (1024 * 1024)
+
+def log_system_info():
+    logging.info(f"Host: {socket.gethostname()}")
+    logging.info(f"CPU cores: {psutil.cpu_count(logical=True)}")
+    mem = psutil.virtual_memory()
+    logging.info(f"Memory: {mem.total / (1024 ** 3):.2f} GB total, {mem.available / (1024 ** 3):.2f} GB available")
+
 def main():
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S'
     )
-    logging.info("PMTfication starts...")
+    start_time = time.time()
+    logging.info(f"PMTfication started at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}")
+    
+    log_system_info()
     
     parser = argparse.ArgumentParser(description="PMTfication of SQLite databases into Parquet files.")
     parser.add_argument("N_events_per_shard", type=int, help="Number of events per shard.")
@@ -84,7 +100,11 @@ def main():
         max_workers=max_workers)
     logging.info("PMTfication for Corsika completed.")
     
-    logging.info("PMTfication completed.")
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    hours, remainder = divmod(elapsed_time, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    logging.info(f"Elapsed time: {int(hours)}h {int(minutes)}m {int(seconds)}s")
 
 if __name__ == "__main__":
     try:

@@ -17,8 +17,13 @@ FILTER_CLASSES = {
     # "MuonLike": Muon13Filter,
     "CC": CCFilter,
     # "Contained": ContainmentFilter
-    "IntraTravelDistance_0m": IntraTravelDistanceFilter
+    "IntraTravelDistance": IntraTravelDistanceFilter
 }
+
+FILTER_KWARGS = {
+    "IntraTravelDistance": {"min_travel_distance": 0}
+}
+
 
 def run():
     start_time = time.time()
@@ -60,7 +65,8 @@ def run():
         output_dir=specific_dest_dir,
         subdir_no=subdir_no,
         part_no=part_no,
-        filter_classes=FILTER_CLASSES
+        filter_classes=FILTER_CLASSES,
+        filter_kwargs=FILTER_KWARGS,
     )
     filter_manager()
     end_time = time.time()

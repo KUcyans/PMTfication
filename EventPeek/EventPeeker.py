@@ -136,7 +136,7 @@ class EventPeeker():
         ax.set_ylabel('Counts')
 
         ax.set_xscale('log')
-        ax.set_yscale('log')
+        # ax.set_yscale('log')
         ax.set_title(fr"{title}")
 
         # **Summary statistics**

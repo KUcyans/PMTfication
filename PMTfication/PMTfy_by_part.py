@@ -5,6 +5,18 @@ import argparse
 import logging
 from PMTfier import PMTfier
 from SummaryMode import SummaryMode
+import time
+import psutil
+import socket
+
+def get_file_size_MB(path):
+    return os.path.getsize(path) / (1024 * 1024)
+
+def log_system_info():
+    logging.info(f"Host: {socket.gethostname()}")
+    logging.info(f"CPU cores: {psutil.cpu_count(logical=True)}")
+    mem = psutil.virtual_memory()
+    logging.info(f"Memory: {mem.total / (1024 ** 3):.2f} GB total, {mem.available / (1024 ** 3):.2f} GB available")
 
 def main():
     logging.basicConfig(
@@ -12,7 +24,10 @@ def main():
         format='%(asctime)s - %(levelname)s - %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S'
     )
-    logging.info("PMTfication by part starts...")
+    start_time = time.time()
+    logging.info(f"PMTfication started at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}")
+    
+    log_system_info()
     
     #### change the final destination: source_root, dest_root
     source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/sqlite_pulses/"
@@ -61,7 +76,12 @@ def main():
     ) 
     
     pmtfier.pmtfy_part(source_part_file=source_file_path)
-    logging.info("PMTfication completed.")
+    logging.info(f"PMTfication completed at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}")
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    hours, remainder = divmod(elapsed_time, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    logging.info(f"Elapsed time: {int(hours)}h {int(minutes)}m {int(seconds)}s")
 
 if __name__ == "__main__":
     try:

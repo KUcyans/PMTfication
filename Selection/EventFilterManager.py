@@ -6,7 +6,7 @@ from EventFilter import EventFilter
 from CompositeEventFilter import CompositeEventFilter
 
 class EventFilterManager:
-    def __init__(self, source_dir: str, output_dir: str, subdir_no: int, part_no: int, filter_classes: dict):
+    def __init__(self, source_dir: str, output_dir: str, subdir_no: int, part_no: int, filter_classes: dict, filter_kwargs: dict = None):
         self.source_dir = source_dir
         self.output_dir = output_dir
         self.subdir_no = subdir_no
@@ -14,6 +14,7 @@ class EventFilterManager:
         self.logger = logging.getLogger(self.__class__.__name__)
         self.filters = filter_classes
         self.filter_keyword = self._build_filter_keyword()
+        self.filter_kwargs = filter_kwargs or {}
         self._make_subdir()
         self.filter_instances = self._instantiate_filters() # dict[str, EventFilter]
         self.filter_obj = self._build_Filter_object()
@@ -24,12 +25,17 @@ class EventFilterManager:
         self.logger.info("Filtering process completed.")
 
     def _build_filter_keyword(self) -> str:
-        if len(self.filters) == 1:
-            filter_keyword = next(iter(self.filters.keys()))
-        elif len(self.filters) > 1:
-            filter_keyword = "_".join(sorted(self.filters.keys()))
-        return filter_keyword
-    
+        names = []
+        for alias in sorted(self.filters.keys()):
+            suffix = ""
+            if alias in self.filter_kwargs:
+                values = list(self.filter_kwargs[alias].values())
+                if values:
+                    suffix = "_" + "_".join(str(v) for v in values)
+            names.append(f"{alias}{suffix}")
+        return "_".join(names)
+
+
     def _make_subdir(self):
         self.source_subdir = os.path.join(self.source_dir, str(self.subdir_no))
         self.output_subdir = os.path.join(self.output_dir, self.filter_keyword, str(self.subdir_no))
@@ -70,7 +76,8 @@ class EventFilterManager:
                 source_subdir=self.source_subdir,
                 output_subdir=self.output_subdir,
                 subdir_no=self.subdir_no,
-                part_no=self.part_no
+                part_no=self.part_no,
+                **kwargs
             )
         return filter_instances
 
