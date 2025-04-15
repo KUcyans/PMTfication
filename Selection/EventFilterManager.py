@@ -13,8 +13,8 @@ class EventFilterManager:
         self.part_no = part_no
         self.logger = logging.getLogger(self.__class__.__name__)
         self.filters = filter_classes
-        self.filter_keyword = self._build_filter_keyword()
         self.filter_kwargs = filter_kwargs or {}
+        self.filter_keyword = self._build_filter_keyword()
         self._make_subdir()
         self.filter_instances = self._instantiate_filters() # dict[str, EventFilter]
         self.filter_obj = self._build_Filter_object()
@@ -77,7 +77,8 @@ class EventFilterManager:
                 output_subdir=self.output_subdir,
                 subdir_no=self.subdir_no,
                 part_no=self.part_no,
-                **kwargs
+                **self.filter_kwargs.get(alias, {})
+
             )
         return filter_instances
 

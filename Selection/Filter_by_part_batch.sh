@@ -3,13 +3,13 @@
 # Iterates over specified dataset conditions and submits SLURM jobs
 
 conditions=(
-    "Snowstorm 22010 1 1"  # 1-12
+    # "Snowstorm 22010 1 1"  # 1-12
     # "Snowstorm 22011 1 10"   # 1-10
     # "Snowstorm 22012 1 26"  # 1-26
-    "Snowstorm 22013 1 1"  # 1-2
+    # "Snowstorm 22013 1 1"  # 1-2
     # "Snowstorm 22014 1 6"   # 1-6
     # "Snowstorm 22015 1 12"  # 1-12
-    "Snowstorm 22016 1 1" # 1-1
+    # "Snowstorm 22016 1 1" # 1-1
     # "Snowstorm 22017 1 3"  # 1-3
     # "Snowstorm 22018 1 8" # 1-21
     # "Corsika 0002000-0002999 1 8 20000"

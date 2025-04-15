@@ -21,7 +21,7 @@ FILTER_CLASSES = {
 }
 
 FILTER_KWARGS = {
-    "IntraTravelDistance": {"min_travel_distance": 0}
+    "IntraTravelDistance": {"min_travel_distance": 250}
 }
 
 

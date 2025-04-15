@@ -11,6 +11,9 @@ class EnergyRange(Enum):
     ER_1_PEV_100_PEV = (r"$1\,\text{PeV} - 100\,\text{PeV}$", 
                         "1PeV-100PeV",
                         {Flavour.E: "22015", Flavour.MU: "22012", Flavour.TAU: "22018"})
+    ER_100_TEV_100_PEV = (r"$100\,\text{TeV} - 100\,\text{PeV}$",
+                        "100TeV-100PeV",
+                        {Flavour.E: "22032", Flavour.MU: "22031", Flavour.TAU: "22033"})
 
     def __init__(self, latex: str, string: str, subdirs: dict):
         self._latex = latex

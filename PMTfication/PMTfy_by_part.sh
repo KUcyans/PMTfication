@@ -4,7 +4,7 @@
 ##SBATCH --nodelist=node[194-194] # node[187-191] or node[194-211]
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=40
-#SBATCH --mem=100G
+#SBATCH --mem=60G
 #SBATCH --time=48:00:00
 #SBATCH --signal=B:USR1@60
 #SBATCH --mail-type=END,FAIL

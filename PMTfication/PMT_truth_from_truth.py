@@ -108,9 +108,15 @@ class PMTTruthFromTruth:
                 if point is not None and self._check_intersection_containment(point, face):
                     intersections.append(point)
 
+            # Deduplicate nearby points
+            unique_points = []
+            for pt in intersections:
+                if not any(np.linalg.norm(pt - prev_pt) < 1e-6 for prev_pt in unique_points):
+                    unique_points.append(pt)
+
             # Project to line via t, sort
             v_norm_sq = np.dot(d, d)
-            t_values = [(np.dot(pt - p, d) / v_norm_sq, pt) for pt in intersections]
+            t_values = [(np.dot(pt - p, d) / v_norm_sq, pt) for pt in unique_points]
             t_values.sort(key=lambda x: x[0])
 
             if len(t_values) < 2:
