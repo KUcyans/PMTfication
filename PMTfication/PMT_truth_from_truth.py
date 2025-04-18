@@ -6,6 +6,7 @@ from typing import List
 from pyarrow.compute import SetLookupOptions
 from functools import lru_cache
 from typing import Union
+import logging
 
 class PMTTruthFromTruth:
     '''
@@ -104,9 +105,9 @@ class PMTTruthFromTruth:
         for p, d in zip(pos, dir_vec):
             intersections = []
             for face in PMTTruthFromTruth._PRISM_FACES:
-                point = self._compute_intersection_with_plane(p, d, face)
-                if point is not None and self._check_intersection_containment(point, face):
-                    intersections.append(point)
+                possible_intersection = self._compute_intersection_with_plane(p, d, face)
+                if possible_intersection is not None and self._check_intersection_inclusion(possible_intersection, face):
+                    intersections.append(possible_intersection)
 
             # Deduplicate nearby points
             unique_points = []
@@ -119,7 +120,7 @@ class PMTTruthFromTruth:
             t_values = [(np.dot(pt - p, d) / v_norm_sq, pt) for pt in unique_points]
             t_values.sort(key=lambda x: x[0])
 
-            if len(t_values) < 2:
+            if len(t_values) < 2: 
                 distances.append(0.0)
             else:
                 (t1, pt1), (t2, pt2) = t_values
@@ -138,36 +139,48 @@ class PMTTruthFromTruth:
     def _build_icecube_prism_faces(self):
         ICECUBE_FACES = {
             0: np.array([(269.70961549, 548.30058428, 524.56), (269.70961549, 548.30058428, -512.82),
-                            (576.36999512, 170.91999817, 524.56), (576.36999512, 170.91999817, -512.82)]),
+                        (576.36999512, 170.91999817, -512.82), (576.36999512, 170.91999817, 524.56)]), # Order corrected for Path
             1: np.array([(576.36999512, 170.91999817, 524.56), (576.36999512, 170.91999817, -512.82),
-                            (361.0, -422.82998657, 524.56), (361.0, -422.82998657, -512.82)]),
+                        (361.0, -422.82998657, -512.82), (361.0, -422.82998657, 524.56)]), # Order corrected
             2: np.array([(361.0, -422.82998657, 524.56), (361.0, -422.82998657, -512.82),
-                            (-256.14001465, -521.08001709, 524.56), (-256.14001465, -521.08001709, -512.82)]),
+                        (-256.14001465, -521.08001709, -512.82), (-256.14001465, -521.08001709, 524.56)]),# Order corrected
             3: np.array([(-256.14001465, -521.08001709, 524.56), (-256.14001465, -521.08001709, -512.82),
-                            (-570.90002441, -125.13999939, 524.56), (-570.90002441, -125.13999939, -512.82)]),
+                        (-570.90002441, -125.13999939, -512.82), (-570.90002441, -125.13999939, 524.56)]),# Order corrected
             4: np.array([(-570.90002441, -125.13999939, 524.56), (-570.90002441, -125.13999939, -512.82),
-                            (-347.88000488, 451.51998901, 524.56), (-347.88000488, 451.51998901, -512.82)]),
+                        (-347.88000488, 451.51998901, -512.82), (-347.88000488, 451.51998901, 524.56)]), # Order corrected
             5: np.array([(-347.88000488, 451.51998901, 524.56), (-347.88000488, 451.51998901, -512.82),
-                            (269.70961549, 548.30058428, 524.56), (269.70961549, 548.30058428, -512.82)]),
+                        (269.70961549, 548.30058428, -512.82), (269.70961549, 548.30058428, 524.56)]) # Order corrected
         }
         ICECUBE_BASE_CORNERS = {
-            0: np.array([(269.70961549, 548.30058428, -512.82), 
+            6: np.array([(269.70961549, 548.30058428, -512.82), 
                         (576.36999512, 170.91999817, -512.82),
                         (361.0, -422.82998657, -512.82), 
                         (-256.14001465, -521.08001709, -512.82),
                         (-570.90002441, -125.13999939, -512.82),
                         (-347.88000488, 451.51998901, -512.82)]),
-            1: np.array([(269.70961549, 548.30058428, 524.56),
+            7: np.array([(269.70961549, 548.30058428, 524.56),
                         (576.36999512, 170.91999817, 524.56),
                         (361.0, -422.82998657, 524.56), 
                         (-256.14001465, -521.08001709, 524.56),
                         (-570.90002441, -125.13999939, 524.56),
                         (-347.88000488, 451.51998901, 524.56)]),
             }
-        
-        return list(ICECUBE_FACES.values()) + list(ICECUBE_BASE_CORNERS.values())
+        all_faces = list(ICECUBE_FACES.values()) + list(ICECUBE_BASE_CORNERS.values())
 
-    def _compute_intersection_with_plane(self, pos: np.ndarray, direction: np.ndarray, corner_set: np.ndarray) -> Union[np.ndarray, None]:
+        logging.info(f"ICECUBE FACES coplanarity check")
+        for i, face in enumerate(all_faces):
+            if len(face) >= 3 and self._are_points_collinear(face[0], face[1], face[2]):
+                logging.error(f"Face {i} is collinear: {face[:3]}")
+                raise ValueError(f"Face {i} is collinear: {face[:3]}")
+            if not self._check_coplanar(face):
+                logging.error(f"Face {i} is not coplanar: {face}")
+                raise ValueError(f"Face {i} is not coplanar:\n{face}")
+        
+        return all_faces
+
+    def _compute_intersection_with_plane(self, pos: np.ndarray, 
+                                        direction: np.ndarray, 
+                                        corner_set: np.ndarray) -> Union[np.ndarray, None]:
         """
         Computes intersection point of a line with a plane defined by a polygon.
         
@@ -196,39 +209,53 @@ class PMTTruthFromTruth:
         intersection = pos + t * direction
         return intersection
 
-    
-    def _check_intersection_containment(self, intersection: np.ndarray, corner_set: np.ndarray) -> bool:
-        """
-        Check if a 3D point lies within a polygon (3D) defined by corner_set.
-        Projects to 2D and uses a soft tolerance for robust containment.
-        
-        Parameters:
-            intersection : np.ndarray
-                A 3D point (shape: (3,))
-            corner_set : np.ndarray
-                An array of polygon corners (shape: (N, 3)), assumed to lie in the same plane.
-        
-        Returns:
-            bool: True if intersection lies inside the polygon, False otherwise.
-        """
-        # Define the plane using first three points
-        p0, p1, p2 = corner_set[:3]
+    def _are_points_collinear(self, 
+                            p0: np.ndarray, 
+                            p1: np.ndarray, 
+                            p2: np.ndarray) -> bool:
         v1 = p1 - p0
         v2 = p2 - p0
-        normal = np.cross(v1, v2)
-        normal /= np.linalg.norm(normal)
+        cross_prod = np.cross(v1, v2)
+        return np.linalg.norm(cross_prod) < 1e-12
 
-        # Orthonormal basis vectors in the plane
-        u = v1 / np.linalg.norm(v1)
-        w = np.cross(normal, u)
+    def _check_coplanar(self, face: List[np.ndarray]) -> bool:
+        p0, p1, p2 = face[0], face[1], face[2]
+        normal = np.cross(p1 - p0, p2 - p0)
+        norm_n = np.linalg.norm(normal)
 
-        def project_to_plane(pt):
-            vec = pt - p0
-            return np.dot(vec, u), np.dot(vec, w)
+        is_coplanar = True  # Default assumption
 
-        # Project the corners and the intersection
-        polygon_2d = np.array([project_to_plane(c) for c in corner_set])
-        point_2d = project_to_plane(intersection)
+        if norm_n >= 1e-12:
+            normal /= norm_n
+            for i in range(3, len(face)):
+                deviation = abs(np.dot(face[i] - p0, normal))
+                if deviation > 1e-12:
+                    is_coplanar = False
+                    break
 
-        # Use 2D polygon containment check with numerical tolerance
-        return Path(polygon_2d, closed=True).contains_point(point_2d, radius=1e-8)
+        return is_coplanar
+
+    def _check_intersection_inclusion(self, 
+                                        possible_intersection: np.ndarray, 
+                                        face: List[np.ndarray]) -> bool:
+        possible_intersection = np.asarray(possible_intersection)
+        face = [np.asarray(v) for v in face]
+
+        p0, p1, p2 = face[0], face[1], face[2]
+
+        v1 = p1 - p0
+        v2 = p2 - p0
+        # Gram-Schmidt process:
+        # get orthonormal basis(v_norm) from the first two vectors
+        u = v1 / np.linalg.norm(v1) # normalised 
+        v2_ortho = v2 - np.dot(v2, u) * u
+        v_norm = np.linalg.norm(v2_ortho)
+        if v_norm < 1e-12:
+            logging.error(f"v2_ortho is zero vector: {v2_ortho}")
+            raise ValueError("Could not construct orthogonal basis.")
+        v = v2_ortho / v_norm
+
+        vertices_2d = [(np.dot(p - p0, u), np.dot(p - p0, v)) for p in face]
+        point_2d = (np.dot(possible_intersection - p0, u), np.dot(possible_intersection - p0, v))
+        is_included = Path(vertices_2d).contains_point(point_2d, radius=1e-12)
+        return is_included

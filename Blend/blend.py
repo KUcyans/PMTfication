@@ -13,7 +13,9 @@ def main():
     energy_range_low = EnergyRange.ER_10_TEV_1_PEV
     energy_range_high = EnergyRange.ER_1_PEV_100_PEV
     energy_range_combined = EnergyRange.ER_100_TEV_100_PEV
-    flavour = Flavour.E
+    # flavour = Flavour.E
+    # flavour = Flavour.MU
+    flavour = Flavour.TAU
     n_events_per_part = 30000
     n_events_per_shard = 3000
     energy_cutoff = 1e5
@@ -44,7 +46,7 @@ def main():
     # in hours, minutes, seconds
     hours, remainder = divmod(end_time - start_time, 3600)
     minutes, seconds = divmod(remainder, 60)
-    print(f"Total time taken: {int(hours)}:{int(minutes)}:{int(seconds)}")
+    print(f"Total time taken: {int(hours):02}:{int(minutes):02}:{int(seconds):02}")
 
 if __name__ == "__main__":
     main()
