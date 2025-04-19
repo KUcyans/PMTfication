@@ -112,7 +112,7 @@ class PMTTruthFromTruth:
             # Deduplicate nearby points
             unique_points = []
             for pt in intersections:
-                if not any(np.linalg.norm(pt - prev_pt) < 1e-6 for prev_pt in unique_points):
+                if all(np.linalg.norm(pt - other) >= 1e-6 for other in unique_points):
                     unique_points.append(pt)
 
             # Project to line via t, sort
@@ -123,7 +123,7 @@ class PMTTruthFromTruth:
             if len(t_values) < 2: 
                 distances.append(0.0)
             else:
-                (t1, pt1), (t2, pt2) = t_values
+                (t1, pt1), (t2, pt2) = t_values[:2]
                 if t1 >= 0:
                     distances.append(np.linalg.norm(pt2 - pt1))
                 elif t2 > 0:

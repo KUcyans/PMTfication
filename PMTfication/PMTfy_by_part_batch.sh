@@ -6,10 +6,10 @@
 # NEVENTS: Number of events per shard
 # SUMMARY_MODE: Summary mode index (0=normal, 1=second, 2=late)
 
-SUMMARY_MODE=0  # Change this: 0=normal, 1=second, 2=late
+SUMMARY_MODE=1  # Change this: 0=normal, 1=second, 2=late
 
 conditions=(
-    "Snowstorm 22010 4 4 200000"         # 1-12
+    # "Snowstorm 22010 4 4 200000"         # 1-12
     # "Snowstorm 22011 1 10 20000"           # 1-10
     # "Snowstorm 22012 1 27 2000"            # 1-27
     # "Snowstorm 22013 1 1 200000"          # 1-2
