@@ -14,14 +14,14 @@ from IntraTravelDistanceFilter import IntraTravelDistanceFilter
 # Available filter classes
 FILTER_CLASSES = {
     "CRclean": PureNeutrinoEventFilter,
-    # "MuonLike": Muon13Filter,
+    "MuonLike": Muon13Filter,
     "CC": CCFilter,
     # "Contained": ContainmentFilter
-    "IntraTravelDistance": IntraTravelDistanceFilter
+    # "IntraTravelDistance": IntraTravelDistanceFilter
 }
 
 FILTER_KWARGS = {
-    "IntraTravelDistance": {"min_travel_distance": 250}
+    # "IntraTravelDistance": {"min_travel_distance": 250}
 }
 
 
@@ -35,10 +35,10 @@ def run():
     logging.info("Event filtering process starts...")
 
     # Define root paths
-    # source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/"
-    # dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/"
-    source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_second/"
-    dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered_second_round/"
+    source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied/"
+    dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/"
+    # source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_second/"
+    # dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered_second_round/"
     # source_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_third/"
     # dest_root = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered_third_round/"
     

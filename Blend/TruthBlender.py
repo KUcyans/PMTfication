@@ -8,6 +8,7 @@ import pyarrow.compute as pc
 from typing import List, Tuple
 from Enum.EnergyRange import EnergyRange
 from Enum.Flavour import Flavour
+import json
 
 class TruthBlender:
     def __init__(self, 
@@ -52,6 +53,12 @@ class TruthBlender:
         
         for part_no, table_part in table_parts:
             self._write_combined_table(table_part, part_no)
+        
+        self._generate_receipt(
+            n_low=self._get_n_events_truth(full_table_low),
+            n_high=self._get_n_events_truth(full_table_high),
+            n_total=self.n_events_combined
+        )
     
     def _get_truth_file_list(self, subdir: str) -> List[str]:
         return [os.path.join(subdir, f) for f in os.listdir(subdir) if f.endswith(".parquet")]
@@ -119,3 +126,22 @@ class TruthBlender:
         output_file = os.path.join(output_dir, f"truth_{part_no}.parquet")
         pq.write_table(combined_table, output_file)
         print(f"[✔] Wrote part {part_no}: {output_file}")
+        
+    def _generate_receipt(self, 
+                          n_low: int, 
+                          n_high: int, 
+                          n_total: int) -> None:
+        receipt = {
+            "subdir_no": int(os.path.basename(self.subdir_combined)),
+            "events_from_low_energy": n_low,
+            "events_from_high_energy": n_high,
+            "total_events_combined": n_total
+        }
+
+        out_dir = os.path.join(self.source_dir, self.subdir_combined)
+        os.makedirs(out_dir, exist_ok=True)
+        out_file = os.path.join(out_dir, f"[Receipt]{receipt['subdir_no']}.json")
+
+        with open(out_file, "w") as f:
+            json.dump(receipt, f, indent=4)
+        print(f"[✔] Receipt written: {out_file}")
