@@ -279,7 +279,6 @@ class PMTSummariser:
 
         return np.array([Qinterval1, Qinterval2, Qtotal], dtype=np.float32)
 
-    
     def _get_first_pulse_time(self, pulses: np.ndarray) -> np.ndarray:
         _fillIncomplete = -1
         if pulses.shape[0] < self.n_pulse_collect:

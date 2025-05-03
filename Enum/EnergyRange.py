@@ -27,7 +27,7 @@ class EnergyRange(Enum):
     
     @property
     def string(self) -> str:
-        """Return the simple string version for the energy range."""
+        """Return the simple string version for the energy range.""" # usage: er.string
         return self._string
 
     def __getattr__(self, name: str):

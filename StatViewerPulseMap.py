@@ -70,13 +70,13 @@ class PulseMapStatViewer:
                 lambda: self._plotPosition(df_features, 'dom_y', file),
                 lambda: self._plotPosition(df_features, 'dom_z', file),
                 
-                lambda: self._plotLog10energy(df_truth, file),
-                lambda: self._plotZenith(df_truth, file),
-                lambda: self._plotCosZenith(df_truth, file),
-                lambda: self._plotAzimuth(df_truth, file),
-                lambda: self._plotPosition(df_truth, 'position_y', file),
-                lambda: self._plotPosition(df_truth, 'position_x', file),
-                lambda: self._plotPosition(df_truth, 'position_z', file),
+                # lambda: self._plotLog10energy(df_truth, file),
+                # lambda: self._plotZenith(df_truth, file),
+                # lambda: self._plotCosZenith(df_truth, file),
+                # lambda: self._plotAzimuth(df_truth, file),
+                # lambda: self._plotPosition(df_truth, 'position_y', file),
+                # lambda: self._plotPosition(df_truth, 'position_x', file),
+                # lambda: self._plotPosition(df_truth, 'position_z', file),
             ]
             
             # Iterate over the plotting functions, execute them, and save the generated figures to the PDF
