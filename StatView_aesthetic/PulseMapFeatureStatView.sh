@@ -13,10 +13,6 @@ ENERGY_ID=${ENERGY_ID:-0}   # 0 = 10TeV–1PeV, 1 = 1PeV–100PeV, 2 = 100TeV–
 FLAVOUR_ID=${FLAVOUR_ID:-0} # 0 = nu_e, 1 = nu_mu, 2 = nu_tau
 N_EVENTS=${N_EVENTS:-10000} # Number of events to process
 
-ENERGY_ID=1
-FLAVOUR_ID=2 
-N_EVENTS=10000
-
 LOG_DIR="log/"
 mkdir -p "${LOG_DIR}"
 

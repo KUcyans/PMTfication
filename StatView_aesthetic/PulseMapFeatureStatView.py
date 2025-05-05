@@ -20,7 +20,6 @@ from ExternalFunctions import nice_string_output, add_text_to_ax
 sys.path.append('/groups/icecube/cyan/factory/DOMification')
 from Enum.Flavour import Flavour
 from Enum.EnergyRange import EnergyRange
-from EventPeek.PseudoNormaliser import PseudoNormaliser
 
 class PulseMapFeatureStatViewer:
     def __init__(self, 
@@ -39,6 +38,7 @@ class PulseMapFeatureStatViewer:
         self.energy_range = energy_range
         self.flavour = flavour
         flavour_to_colour = {Flavour.MU: 0, Flavour.TAU: 1, Flavour.E: 2}
+        self.hatch = '\\' if self.energy_range == EnergyRange.ER_10_TEV_1_PEV else None
         self.colour_i = flavour_to_colour.get(flavour)
         
         self.event_indices = event_indices
@@ -48,12 +48,12 @@ class PulseMapFeatureStatViewer:
         
     def __call__(self):
         with PdfPages(self.output_pdf) as pdf:
-            # Plot and save: N active DOMs
-            fig = self.plot_N_active_DOMs_per_event()
+            # Plot and save: N active PMTs
+            fig = self.plot_N_active_PMTs_per_event()
             pdf.savefig(fig)
             plt.close(fig)
 
-            # Plot and save: Pulse distribution per DOM for multiple events
+            # Plot and save: Pulse distribution per PMT for multiple events
             fig = self.plot_pulse_count_distribution_multi_event()
             if fig:
                 pdf.savefig(fig)
@@ -67,8 +67,8 @@ class PulseMapFeatureStatViewer:
                     pdf.savefig(fig)
                     plt.close(fig)
 
-                # Charge vs Time per DOM (can return multiple figures)
-                fig_list = self.plot_charge_time_single_event_by_DOM(event_id, N_pulses_cut=self.N_pulses_cut)
+                # Charge vs Time per PMT (can return multiple figures)
+                fig_list = self.plot_charge_time_single_event_by_PMT(event_id, N_pulses_cut=self.N_pulses_cut)
                 for f in fig_list:
                     pdf.savefig(f)
                     plt.close(f)
@@ -84,20 +84,6 @@ class PulseMapFeatureStatViewer:
             feature_dict.setdefault(event_no, {})[(string, dom)] = values
         return feature_dict
 
-    # def _convertDBtoDF(self, file: str, table: str, N_events: int = None) -> pd.DataFrame:
-    #     con = sql.connect(file)
-    #     print(f"Reading {N_events} events from {table} of {file}")
-    #     event_no_query = f"SELECT DISTINCT event_no FROM {table} LIMIT {N_events}"
-    #     event_nos = pd.read_sql_query(event_no_query, con)["event_no"].tolist()
-
-    #     event_no_list = ', '.join(map(str, event_nos))
-    #     query = f"SELECT * FROM {table} WHERE event_no IN ({event_no_list})"
-
-    #     df = pd.read_sql_query(query, con)
-    #     con.close()
-
-    #     return df
-    
     def _convertDBtoDF_iterative(self, file: str, table: str, N_events: int) -> pd.DataFrame:
         con = sql.connect(file)
         event_no_query = f"SELECT DISTINCT event_no FROM {table} LIMIT {N_events}"
@@ -125,108 +111,61 @@ class PulseMapFeatureStatViewer:
         return df
     
     ## plotter functions
-    def plot_N_active_DOMs_per_event(self) -> matplotlib.figure.Figure:
+    def plot_N_active_PMTs_per_event(self) -> matplotlib.figure.Figure:
         """
-        Plot the distribution of the number of unique DOMs per event.
+        Plot the distribution of the number of unique PMTs per event.
         """
         charge_dict = self._get_feature_by_events(self.this_df, 'charge')
         # {event_no: {(string, dom_number): [values]}}
 
-        # Count unique DOMs per event
-        N_doms = []
+        # Count unique PMTs per event
+        N_pmts = []
         for i, (event_no, dom_map) in enumerate(charge_dict.items()):
             if i >= self.N_events:
                 break
-            N_doms.append(len(dom_map))
+            N_pmts.append(len(dom_map))
 
-        N_doms = np.array(N_doms)
+        N_pmts = np.array(N_pmts)
         binwidth = 10
         
         # Histogram setup
-        Nbins, binwidth, bins, counts, bin_centers = getHistoParam(N_doms, binwidth=binwidth)
+        Nbins, binwidth, bins, counts, bin_centers = getHistoParam(N_pmts, binwidth=binwidth)
         fig, ax = plt.subplots(figsize=(17, 11))
-        ax.hist(N_doms, bins=bins, color=getColour(self.colour_i), histtype='step', linewidth=2)
+        
+        ax.hist(N_pmts, bins=bins, color=getColour(self.colour_i), histtype='step', linewidth=2, hatch=self.hatch)
         # vertical line for median, 128, 256
-        ax.axvline(x=np.median(N_doms), color='black', linestyle='--', linewidth=2, label='median')
-        ax.axvline(x=128, color=getColour(3), linestyle='-.', linewidth=2, label='128 DOMs')
-        ax.axvline(x=256, color=getColour(5), linestyle=':', linewidth=2, label='256 DOMs')
+        ax.axvline(x=np.median(N_pmts), color='black', linestyle='--', linewidth=2, label='median')
+        ax.axvline(x=128, color=getColour(3), linestyle='-.', linewidth=3, label='128 PMTs')
+        ax.axvline(x=256, color=getColour(5), linestyle=':', linewidth=3, label='256 PMTs')
 
         # Plot formatting
-        ax.set_title(fr"Distribution of active DOMs per event "
+        ax.set_title(fr"Distribution of active PMTs per event "
             fr"for ${self.flavour.latex}$ in {self.energy_range.latex} ({self.N_events} events)", fontsize=22)
 
-        ax.set_xlabel("Number of active DOMs per event", fontsize=20)
+        ax.set_xlabel("Number of active PMTs per event", fontsize=20)
         ax.set_ylabel("Number of events", fontsize=20)
 
         d = {
             'N events': self.N_events,
-            'max N DOMs per event': np.max(N_doms),
-            'min N DOMs per event': np.min(N_doms),
-            'median N DOMs per event': np.median(N_doms),
-            'mean N DOMs per event': np.mean(N_doms),
-            'std N DOMs per event': np.std(N_doms),
-            'fraction (N DOMs<128)': np.sum(N_doms < 128) / len(N_doms),
-            'fraction (N DOMs<256)': np.sum(N_doms < 256) / len(N_doms),
+            'max N PMTs per event': np.max(N_pmts),
+            'min N PMTs per event': np.min(N_pmts),
+            'median N PMTs per event': np.median(N_pmts),
+            'mean N PMTs per event': np.mean(N_pmts),
+            'std N PMTs per event': np.std(N_pmts),
+            'fraction (N PMTs<128)': np.sum(N_pmts < 128) / len(N_pmts),
+            'fraction (N PMTs<256)': np.sum(N_pmts < 256) / len(N_pmts),
             'binwidth': binwidth,
             'Nbins': Nbins,
         }
-        add_text_to_ax(0.60, 0.85, nice_string_output(d), ax, fontsize=18)
-        ax.legend(fontsize=14)
+        add_text_to_ax(0.55, 0.75, nice_string_output(d), ax, fontsize=22)
+        ax.legend(fontsize=20)
         plt.tight_layout()
         return fig
     
-    def plot_pulse_count_distribution_single_event(self, event_index: int) -> matplotlib.figure.Figure:
-        """
-        Plot the distribution of pulse counts across all DOMs in a single event.
-        All DOMs with at least one pulse are included.
-        """
-
-        charge_dict = self._get_feature_by_events(self.this_df, 'charge')
-
-        try:
-            event_no = list(charge_dict.keys())[event_index]
-            dom_charge_map = charge_dict[event_no]
-        except IndexError:
-            print(f"Invalid event_index: {event_index}")
-            return
-
-        # Count pulses for all DOMs (at least one pulse per DOM is guaranteed)
-        counts = np.array([len(charges) for charges in dom_charge_map.values()])
-
-        binwidth = 5
-        Nbins, binwidth, bins, _, _ = getHistoParam(counts, binwidth=binwidth)
-
-        # Plot
-        fig, ax = plt.subplots(figsize=(17, 11))
-        ax.hist(counts, bins=bins, color=getColour(self.colour_i), histtype='step', linewidth=2)
-
-        ax.set_title(fr"Distribution of pulses across DOMs in event {event_no} "
-                    fr"(${self.flavour.latex}$, {self.energy_range.latex})", fontsize=22)
-        ax.set_xlabel("Number of pulses per DOM", fontsize=20)
-        ax.set_ylabel("Number of DOMs", fontsize=20)
-
-        # Annotate
-        d = {
-            'Event no': event_no,
-            'Active DOMs': len(dom_charge_map),
-            'max N pulses in DOM': np.max(counts),
-            'min N pulses in DOM': np.min(counts),
-            'median N pulses per DOM': f"{np.median(counts):.0f}",
-            'mean N pulses per DOM': np.mean(counts),
-            'std N pulses per DOM': np.std(counts),
-            'binwidth': binwidth,
-            'Nbins': Nbins,
-        }
-
-        add_text_to_ax(0.60, 0.85, nice_string_output(d), ax, fontsize=18)
-
-        plt.tight_layout()
-        return fig
-
     def plot_pulse_count_distribution_multi_event(self) -> matplotlib.figure.Figure:
         """
-        Plot distribution of number of pulses per DOM across multiple events.
-        All DOMs with at least one pulse are included.
+        Plot distribution of number of pulses per PMT across multiple events.
+        All PMTs with at least one pulse are included.
         """
         charge_dict = self._get_feature_by_events(self.this_df, 'charge')
         
@@ -239,7 +178,7 @@ class PulseMapFeatureStatViewer:
                 pulse_counts.append(len(charges))
 
         if not pulse_counts:
-            print(f"No active DOMs found in first {self.N_events} events.")
+            print(f"No active PMTs found in first {self.N_events} events.")
             return
 
         counts = np.array(pulse_counts)
@@ -248,36 +187,85 @@ class PulseMapFeatureStatViewer:
 
         # Plot
         fig, ax = plt.subplots(figsize=(17, 11))
-        ax.hist(counts, bins=bins, color=getColour(self.colour_i), histtype='step', linewidth=2)
+        ax.hist(counts, bins=bins, color=getColour(self.colour_i), histtype='step', linewidth=2, hatch=self.hatch)
 
-        ax.set_title(fr"Distribution of pulses across DOMs in {self.N_events} events "
-                    fr"(${self.flavour.latex}$, {self.energy_range.latex})", fontsize=22)
-        ax.set_xlabel("Number of pulses per DOM", fontsize=20)
-        ax.set_ylabel("Number of DOMs", fontsize=20)
+        ax.set_title(fr"Distribution of pulses across PMTs "
+                    fr"for ${self.flavour.latex}$ in {self.energy_range.latex} ({self.N_events} events)", fontsize=22)
+        
+        ax.set_xlabel("Number of pulses per PMT", fontsize=20)
+        ax.set_ylabel("Number of PMTs", fontsize=20)
 
         # Annotate
         d = {
             'Total events': self.N_events,
-            'Total active DOMs': len(counts),
-            'Active DOMs per event': f"{len(counts) / self.N_events:.2f}",
-            'max N pulses in DOM': np.max(counts),
-            'min N pulses in DOM': np.min(counts),
-            'median N pulses per DOM': f"{np.median(counts):.0f}",
-            'mean N pulses per DOM': np.mean(counts),
-            'std N pulses per DOM': np.std(counts),
+            'Total active PMTs': len(counts),
+            'Active PMTs per event': f"{len(counts) / self.N_events:.2f}",
+            'max N pulses in PMT': np.max(counts),
+            'min N pulses in PMT': np.min(counts),
+            'median N pulses per PMT': f"{np.median(counts):.0f}",
+            'mean N pulses per PMT': np.mean(counts),
+            'std N pulses per PMT': np.std(counts),
             'binwidth': binwidth,
             'Nbins': Nbins,
         }
 
-        add_text_to_ax(0.60, 0.85, nice_string_output(d), ax, fontsize=18)
+        add_text_to_ax(0.55, 0.85, nice_string_output(d), ax, fontsize=22)
 
         plt.tight_layout()
         return fig
     
-    def plot_charge_time_single_event_by_DOM(self, event_index: int, N_pulses_cut: int) -> list[matplotlib.figure.Figure]:
+    def plot_pulse_count_distribution_single_event(self, event_index: int) -> matplotlib.figure.Figure:
         """
-        Return list of figures showing charge vs time scatter plots for DOMs in a selected event.
-        Each figure shows one DOM's hits if the number of pulses exceeds the threshold.
+        Plot the distribution of pulse counts across all PMTs in a single event.
+        All PMTs with at least one pulse are included.
+        """
+
+        charge_dict = self._get_feature_by_events(self.this_df, 'charge')
+
+        try:
+            event_no = list(charge_dict.keys())[event_index]
+            dom_charge_map = charge_dict[event_no]
+        except IndexError:
+            print(f"Invalid event_index: {event_index}")
+            return
+
+        # Count pulses for all PMTs (at least one pulse per PMT is guaranteed)
+        counts = np.array([len(charges) for charges in dom_charge_map.values()])
+
+        binwidth = 5
+        Nbins, binwidth, bins, _, _ = getHistoParam(counts, binwidth=binwidth)
+
+        # Plot
+        fig, ax = plt.subplots(figsize=(17, 11))
+        ax.hist(counts, bins=bins, color=getColour(self.colour_i), histtype='step', linewidth=2, hatch=self.hatch)
+        ax.set_title(fr"Distribution of pulses across PMTs in event {event_no} "
+                    fr"(${self.flavour.latex}$, {self.energy_range.latex})", fontsize=22)
+        
+        ax.set_xlabel("Number of pulses per PMT", fontsize=20)
+        ax.set_ylabel("Number of PMTs", fontsize=20)
+
+        # Annotate
+        d = {
+            'Event no': event_no,
+            'Active PMTs': len(dom_charge_map),
+            'max N pulses in PMT': np.max(counts),
+            'min N pulses in PMT': np.min(counts),
+            'median N pulses per PMT': f"{np.median(counts):.0f}",
+            'mean N pulses per PMT': np.mean(counts),
+            'std N pulses per PMT': np.std(counts),
+            'binwidth': binwidth,
+            'Nbins': Nbins,
+        }
+
+        add_text_to_ax(0.55, 0.85, nice_string_output(d), ax, fontsize=22)
+
+        plt.tight_layout()
+        return fig
+
+    def plot_charge_time_single_event_by_PMT(self, event_index: int, N_pulses_cut: int) -> list[matplotlib.figure.Figure]:
+        """
+        Return list of figures showing charge vs time scatter plots for PMTs in a selected event.
+        Each figure shows one PMT's hits if the number of pulses exceeds the threshold.
         """
         charge_dict = self._get_feature_by_events(self.this_df, 'charge')
         time_dict = self._get_feature_by_events(self.this_df, 'dom_time')
@@ -290,7 +278,7 @@ class PulseMapFeatureStatViewer:
             print(f"Invalid event_index: {event_index}")
             return []
         
-        N_DOMs = len(charge_map)
+        N_PMTs = len(charge_map)
         
         fig_list = []
         for (string, dom) in charge_map:
@@ -304,14 +292,14 @@ class PulseMapFeatureStatViewer:
             ax.vlines(time_list, 0, charge_list, color=colour, linewidth=2, zorder=1)
             ax.scatter(time_list, charge_list, s=30, color=colour, edgecolor='black', linewidth=1, zorder=2)
 
-            ax.set_title(fr"Charge vs Arrival Time for (string {string:.0f}, DOM {dom:.0f}) "
-             fr"in event {event_no}({N_DOMs} active DOMs) of "
-             fr"${self.flavour.latex}$ in {self.energy_range.latex}", fontsize=22)
+            ax.set_title(fr"Charge vs Arrival Time for (string {string:.0f}, PMT {dom:.0f}) "
+                fr"in event {event_no}({N_PMTs} active PMTs) of "
+                fr"${self.flavour.latex}$ in {self.energy_range.latex}", fontsize=22)
             ax.set_xlabel("Arrival time (ns)", fontsize=20)
             ax.set_ylabel("Charge", fontsize=20)
 
             d = {
-                # f'1 of {N_DOMs} active DOMs': "",
+                # f'1 of {N_PMTs} active PMTs': "",
                 'N pulses': len(charge_list),
                 'max charge': max(charge_list),
                 'min charge': min(charge_list),
@@ -334,14 +322,14 @@ class PulseMapFeatureStatViewer:
             d_quantiles = {
                 r"$Q_{0-25ns}$":f"{Q25:.3f}",
                 r"$Q_{0-75ns}$":f"{Q75:.3f}",
-                r"$Q_{\infty}$" :f"{Qtotal:.3f}",
+                r"$Q_{0-\infty}$" :f"{Qtotal:.3f}",
                 r'$T_{10\%}$':f"{T10:.0f}",
                 r'$T_{50\%}$':f"{T50:.0f}",
                 r'$\sigma_T $  ':f"{np.std(time_list):.3f}",
                 }
-            add_text_to_ax(0.35, 0.95, nice_string_output(d), ax, fontsize=18)
-            add_text_to_ax(0.70, 0.95, nice_string_output(d_first), ax, fontsize=18)
-            add_text_to_ax(0.70, 0.77, nice_string_output(d_quantiles), ax, fontsize=18)
+            add_text_to_ax(0.30, 0.95, nice_string_output(d), ax, fontsize=22)
+            add_text_to_ax(0.67, 0.95, nice_string_output(d_first), ax, fontsize=22)
+            add_text_to_ax(0.72, 0.75, nice_string_output(d_quantiles), ax, fontsize=22)
             plt.tight_layout()
             fig_list.append(fig)
 
@@ -412,7 +400,7 @@ if __name__ == "__main__":
 
     ALL_SETUPS = {
         EnergyRange.ER_10_TEV_1_PEV: {
-            "pulse_cut": 150,
+            "pulse_cut": 125,
             "events": {
                 Flavour.E: [7],
                 Flavour.MU: [23],
@@ -420,7 +408,7 @@ if __name__ == "__main__":
             }
         },
         EnergyRange.ER_1_PEV_100_PEV: {
-            "pulse_cut": 250,
+            "pulse_cut": 225,
             "events": {
                 Flavour.E: [16],
                 Flavour.MU: [31],
@@ -449,4 +437,5 @@ if __name__ == "__main__":
                                         )()
     end_time = time.time()
     elapsed_time = end_time - start_time
-    print(f"Time taken to complete: {elapsed_time:.2f} seconds")
+    # print(f"Time taken to complete: {elapsed_time:.2f} seconds")
+    print(f"Time taken to complete: {int(elapsed_time//3600):02}:{int((elapsed_time%3600)//60):02}:{int(elapsed_time%60):02}")
