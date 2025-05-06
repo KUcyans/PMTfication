@@ -400,19 +400,19 @@ if __name__ == "__main__":
 
     ALL_SETUPS = {
         EnergyRange.ER_10_TEV_1_PEV: {
-            "pulse_cut": 125,
+            "pulse_cut": 120,
             "events": {
-                Flavour.E: [7],
-                Flavour.MU: [23],
-                Flavour.TAU: [16],
+                Flavour.E: [7, 29, 87],
+                Flavour.MU: [23, 27, 45],
+                Flavour.TAU: [16, 17, 56],
             }
         },
         EnergyRange.ER_1_PEV_100_PEV: {
             "pulse_cut": 225,
             "events": {
-                Flavour.E: [16],
-                Flavour.MU: [31],
-                Flavour.TAU: [0],
+                Flavour.E: [54, 84],
+                Flavour.MU: [26, 78],
+                Flavour.TAU: [0, 49, 90],
             }
         },
     }
