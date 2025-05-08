@@ -3,7 +3,7 @@
 #SBATCH --partition=icecube
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=10
-#SBATCH --mem=120G
+#SBATCH --mem=100G
 #SBATCH --time=24:00:00
 #SBATCH --signal=B:USR1@60
 #SBATCH --exclusive

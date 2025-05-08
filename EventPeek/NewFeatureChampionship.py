@@ -282,7 +282,7 @@ def rookies_assemble(pmt_event_df: pd.DataFrame, ref_position_df: pd.DataFrame, 
 
     # 🛠 **Reintroducing Missing Calculations**
     max_extent_stretch = max(extent_max, stretch_max)
-    product = extent_max * stretch_max
+    product = np.sqrt(extent_max * stretch_max)
     hypotenuse = np.sqrt(extent_max**2 + stretch_max**2)
 
     result = (
@@ -297,7 +297,7 @@ def rookies_assemble(pmt_event_df: pd.DataFrame, ref_position_df: pd.DataFrame, 
 
 
 def plot_distribution(data_dict, title, xlabel, ylabel, binwidth, isLog=False, isDicLeft=False):
-    fig, ax = plt.subplots(figsize=(13, 9))
+    fig, ax = plt.subplots(figsize=(17, 11))
 
     # 🚀 **Fix: Ensure sample_data is a NumPy array**
     sample_data = np.array(next(iter(data_dict.values()), []))  # Convert to array
@@ -326,18 +326,18 @@ def plot_distribution(data_dict, title, xlabel, ylabel, binwidth, isLog=False, i
         hatch_index = {Flavour.E: '/', Flavour.MU: '\\', Flavour.TAU: '-'}
 
         ax.hist(clean_data, bins=bins, color=getColour(colour_index), 
-                histtype='step', label=fr"${{{flavour.latex}}}$", linewidth=3, hatch=hatch_index.get(flavour, None))
+                histtype='step', label=fr"${{{flavour.latex}}}$", linewidth=2, hatch=hatch_index.get(flavour, None))
 
-    ax.legend()
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
-    ax.set_title(title)
+    ax.legend(fontsize=20)
+    ax.set_xlabel(xlabel, fontsize=20)
+    ax.set_ylabel(ylabel, fontsize=20)
+    ax.set_title(title, fontsize=22)
 
     # Summary statistics
     stats_summary = {f"N events": sum(len(d) for d in data_dict.values()),
                      "binwidth": f"{binwidth:.1f}",
                      "Nbins": Nbins}
-    text_x_pos = 0.02 if isDicLeft else 0.80
+    text_x_pos = 0.02 if isDicLeft else 0.75
     for flavour, data in data_dict.items():
         clean_data = np.array(data, dtype=float)  # Ensure valid NumPy array
         nan_count = np.isnan(clean_data).sum()  # Count NaN values
@@ -359,9 +359,9 @@ def plot_distribution(data_dict, title, xlabel, ylabel, binwidth, isLog=False, i
         text_position = colour_offset.get(flavour, 0.85)
 
         add_text_to_ax(text_x_pos, text_position, nice_string_output(flavour_stats), 
-                       ax, fontsize=10, color='black')
+                       ax, fontsize=22, color='black')
 
-    add_text_to_ax(0.70, 0.97, nice_string_output(stats_summary), ax, fontsize=10, color='black')
+    add_text_to_ax(0.70, 0.97, nice_string_output(stats_summary), ax, fontsize=22, color='black')
     
     return fig, ax
 
@@ -371,6 +371,19 @@ def process_event(event_df_ref_Qcut):
     event_df, ref_position_df, Q_cut = event_df_ref_Qcut
     return rookies_assemble(event_df, ref_position_df, Q_cut)
 
+def collect_event_refs(root_before_subdir, er, part, num_shards_dict):
+    event_refs = {Flavour.E: [], Flavour.MU: [], Flavour.TAU: []}
+    for flavour in event_refs:
+        subdir = os.path.join(root_before_subdir, EnergyRange.get_subdir(er, flavour))
+        num_shards = num_shards_dict.get(flavour, 10)
+        for shard in range(1, num_shards + 1):
+            pmt_file = os.path.join(subdir, str(part), f"PMTfied_{shard}.parquet")
+            if not os.path.exists(pmt_file):
+                continue
+            table = pq.read_table(pmt_file, columns=["event_no"])
+            event_nos = table.column("event_no").to_numpy()
+            event_refs[flavour].extend([(shard, en) for en in event_nos])
+    return event_refs
 
 def collect_idols_part_from_different_flavours(root_before_subdir: str, 
                                                         er: EnergyRange, 
@@ -380,6 +393,11 @@ def collect_idols_part_from_different_flavours(root_before_subdir: str,
     """
     Collects and processes extent, stretch, and other geometric features for different neutrino flavours.
     """
+    event_refs = collect_event_refs(root_before_subdir, er, part, num_shards_dict)
+    min_events = min(len(v) for v in event_refs.values())
+
+    # Truncate each list to `min_events`
+    balanced_event_refs = {fl: refs[:min_events] for fl, refs in event_refs.items()}
 
     # Define feature dictionary for all flavours
     feature_data = {
@@ -419,9 +437,17 @@ def collect_idols_part_from_different_flavours(root_before_subdir: str,
             print(f"📂 Processing {pmt_file} for {flavour.alias}...")
             columns_needed = ["event_no", "dom_x", "dom_y", "dom_z", "Qtotal", "t1"]
             pmt_df = pq.read_table(pmt_file, columns=columns_needed).to_pandas()
-            # pmt_df = pmt_df[:100]
+            
+            # Get allowed event_nos for this shard
+            allowed_event_nos = {
+                en for (sh, en) in balanced_event_refs[flavour] if sh == shard
+            }
+            if not allowed_event_nos:
+                continue  # Skip shard if no selected events
 
-            pmt_df_grouped = list(pmt_df.groupby("event_no"))
+            # Filter groupby object
+            pmt_df_grouped = [group for eid, group in pmt_df.groupby("event_no") if eid in allowed_event_nos]
+            # pmt_df_grouped = list(pmt_df.groupby("event_no"))
 
             with Pool(num_workers) as pool:
                 results = list(tqdm(pool.imap(process_event, 
@@ -445,23 +471,23 @@ def collect_idols_part_from_different_flavours(root_before_subdir: str,
     # Generate plots
     figs = []
     plot_params = [
-        ("extent_max", "Max Extent(XY) [m]", "Counts", 50),
-        ("stretch_max", "Max Stretch(Z) [m]", "Counts", 25),
+        ("extent_max", "Max Extent(XY) [m]", "Counts", 20),
+        ("stretch_max", "Max Stretch(Z) [m]", "Counts", 10),
         ("stretch_mean", "Mean Stretch(Z) [m]", "Counts", 10),
-        ("stretch_hiqr", "Half Interquartile Range(Z) [m]", "Counts", 10),
-        ("max_extent_stretch", "Max Extent & Stretch(XY or Z) [m]", "Counts", 50),
-        ("product", "(Max Extent) x (Max Stretch)(XYZ) [m²]", "Counts", 25000),
-        ("hypotenuse", "Hypotenuse(XYZ) [m]", "Counts", 50),
-        ("major_PCA", "Major PCA(XY) [m]", "Counts", 25),
-        ("minor_PCA", "Minor PCA(XY) [m]", "Counts", 25),
+        ("stretch_hiqr", "Half Interquartile Range(Z) [m]", "Counts", 3),
+        ("max_extent_stretch", "max(Extent,Stretch)(XY or Z) [m]", "Counts", 20),
+        ("product", "sqrt((Max Extent) x (Max Stretch))(XYZ) [m]", "Counts", 20),
+        ("hypotenuse", "Hypotenuse(XYZ) [m]", "Counts", 20),
+        ("major_PCA", "Major PCA(XY) [m]", "Counts", 20),
+        ("minor_PCA", "Minor PCA(XY) [m]", "Counts", 20),
         ("eccentricity_PCA", "Eccentricity PCA(XY)", "Counts", 0.05, False, True),
         ("aspect_contrast_PCA", "Aspect Contrast PCA(XY)", "Counts", 0.05),
-        ("cos_sq_extent_PCA_major", "Cos²(Extent↔PCA Major Axis)(XY)", "Counts", 0.05, False, True),
-        ("gmm_score", "GMM Separation Score(XY)", "Counts", 0.2),
-        ("kmeans_score", "KMeans Separation Score(XY)", "Counts", 0.2),
+        ("cos_sq_extent_PCA_major", "Cos²(Extent↔PCA Major Axis)(XY)", "Counts", 0.01, False, True),
+        ("gmm_score", "GMM Separation Score(XY)", "Counts", 0.1, False, True),
+        ("kmeans_score", "KMeans Separation Score(XY)", "Counts", 0.1, False, True),
         ("area_ratio", "Area Ratio(XY)", "Counts", 0.05),
         ("outer_mass_fraction", "Outer Mass Fraction(XY)", "Counts", 0.05, False, True),
-        ("normalised_weighted_distance", "Normalised Weighted Distance(XY)", "Counts", 10)
+        ("normalised_weighted_distance", "Normalised Weighted Distance(XY)", "Counts", 3)
     ]
     for params in plot_params:
         key, xlabel, ylabel, binwidth, *extra = params  # Unpack optional values safely
@@ -493,8 +519,9 @@ def run():
     output_pdf_dir = "/lustre/hpc/icecube/cyan/factory/DOMification/EventPeek/"
 
     er = EnergyRange.ER_10_TEV_1_PEV
+    er = EnergyRange.ER_1_PEV_100_PEV
     # Q_cuts = [-10, -1, 0]
-    Q_cuts = [-1]
+    Q_cuts = [0]
     part = 1
 
     # Define different shard counts per flavour

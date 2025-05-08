@@ -184,8 +184,8 @@ def get_rookies(pmt_event_df: pd.DataFrame, ref_position_df: pd.DataFrame, Q_cut
     return metrics
 
 
-def plot_distribution(data_dict, title, xlabel, ylabel, binwidth, isLog=False, isDicLeft=False):
-    fig, ax = plt.subplots(figsize=(13, 9))
+def plot_distribution(data_dict, title, xlabel, ylabel, binwidth, isLog=False, annot_x_loc=0.5, xlim=None):
+    fig, ax = plt.subplots(figsize=(17, 11))
     sample_data = np.array(next(iter(data_dict.values()), []))  # Convert to array
     if sample_data.size == 0 or np.all(np.isnan(sample_data.astype(float))):
         return None, None
@@ -201,15 +201,15 @@ def plot_distribution(data_dict, title, xlabel, ylabel, binwidth, isLog=False, i
         colour_index = {Flavour.E: 2, Flavour.MU: 0, Flavour.TAU: 1}.get(flavour, 3)
         hatch_index = {Flavour.E: '/', Flavour.MU: '\\', Flavour.TAU: '-'}
         ax.hist(clean_data, bins=bins, color=getColour(colour_index), 
-                histtype='step', label=fr"${{{flavour.latex}}}$", linewidth=3, hatch=hatch_index.get(flavour, None))
-    ax.legend()
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
-    ax.set_title(title)
+                histtype='step', label=fr"${{{flavour.latex}}}$", linewidth=2, hatch=hatch_index.get(flavour, None))
+    ax.legend(fontsize=20)
+    ax.set_xlabel(xlabel, fontsize=20)
+    ax.set_ylabel(ylabel, fontsize=20)
+    ax.set_title(title, fontsize=22)
+    ax.xlim(xlim)
     stats_summary = {f"N events": sum(len(d) for d in data_dict.values()),
                      "binwidth": f"{binwidth:.1f}",
                      "Nbins": Nbins}
-    text_x_pos = 0.02 if isDicLeft else 0.80
     for flavour, data in data_dict.items():
         clean_data = np.array(data, dtype=float)  # Ensure valid NumPy array
         nan_count = np.isnan(clean_data).sum()  # Count NaN values
@@ -227,16 +227,36 @@ def plot_distribution(data_dict, title, xlabel, ylabel, binwidth, isLog=False, i
         }
         colour_offset = {Flavour.E: 0.85, Flavour.MU: 0.65, Flavour.TAU: 0.45}
         text_position = colour_offset.get(flavour, 0.85)
-        add_text_to_ax(text_x_pos, text_position, nice_string_output(flavour_stats), 
-                       ax, fontsize=10, color='black')
-    add_text_to_ax(0.70, 0.97, nice_string_output(stats_summary), ax, fontsize=10, color='black')
+        add_text_to_ax(annot_x_loc, text_position, nice_string_output(flavour_stats), 
+                       ax, fontsize=22, color='black')
+    add_text_to_ax(0.70, 0.97, nice_string_output(stats_summary), ax, fontsize=22, color='black')
     return fig
-    
+
+def collect_event_refs(root_before_subdir, er, part, num_shards_dict):
+    event_refs = {Flavour.E: [], Flavour.MU: [], Flavour.TAU: []}
+    for flavour in event_refs:
+        subdir = os.path.join(root_before_subdir, EnergyRange.get_subdir(er, flavour))
+        num_shards = num_shards_dict.get(flavour, 1)
+        for shard in range(1, num_shards + 1):
+            pmt_file = os.path.join(subdir, str(part), f"PMTfied_{shard}.parquet")
+            if not os.path.exists(pmt_file):
+                continue
+            table = pq.read_table(pmt_file, columns=["event_no"])
+            event_nos = table.column("event_no").to_numpy()
+            event_refs[flavour].extend([(shard, en) for en in event_nos])
+    return event_refs
+
+def balance_event_refs(event_refs: dict) -> dict:
+    min_count = min(len(lst) for lst in event_refs.values())
+    return {flavour: refs[:min_count] for flavour, refs in event_refs.items()}
+
 def collect_event_metrics(root_before_subdir: str, er: EnergyRange, part: int, Q_cut: int, num_shards_dict: dict):
     metrics = {key: {Flavour.E: [], Flavour.MU: [], Flavour.TAU: []} for key in [
         "hypotenuse", "major_PCA", "minor_PCA", "eccentricity_PCA", "aspect_contrast_PCA",
         "cos_power_extent_PCA_major", "abs_diff", "gaussian_sum", "quadratic_diff_sum"
     ]}
+    event_refs = collect_event_refs(root_before_subdir, er, part, num_shards_dict)
+    balanced_refs = balance_event_refs(event_refs)
 
     ref_position_file = "/groups/icecube/cyan/factory/DOMification/dom_ref_pos/unique_string_dom_completed.csv"
     ref_position_df = pd.read_csv(ref_position_file)
@@ -249,8 +269,16 @@ def collect_event_metrics(root_before_subdir: str, er: EnergyRange, part: int, Q
             pmt_file = os.path.join(subdir, str(part), f"PMTfied_{shard_no}.parquet")
             pmt_df = pq.read_table(pmt_file, memory_map=True).to_pandas()
             
+            allowed_event_nos = {
+                en for (sh, en) in balanced_refs[flavour] if sh == shard_no
+            }
+            if not allowed_event_nos:
+                continue
+
+            pmt_df_grouped = [(eid, df) for eid, df in pmt_df.groupby("event_no") if eid in allowed_event_nos]
+
             # pmt_df = pmt_df[:1000]
-            pmt_df_grouped = list(pmt_df.groupby("event_no"))
+            # pmt_df_grouped = list(pmt_df.groupby("event_no"))
             
             for event_no, pmt_event_df in pmt_df_grouped:
                 event_metrics = get_rookies(pmt_event_df, ref_position_df, Q_cut)
@@ -265,15 +293,15 @@ def collect_event_metrics(root_before_subdir: str, er: EnergyRange, part: int, Q
 def plot_all_metrics(metrics):
     figs = []
     plot_params = [
-        {"key": "hypotenuse", "title": "Hypotenuse Distribution (XYZ)", "xlabel": "Hypotenuse (XYZ) [m]", "ylabel": "Counts", "binwidth": 50},
-        {"key": "major_PCA", "title": "Major PCA Distribution (XY)", "xlabel": "Major PCA (XY) [m]", "ylabel": "Counts", "binwidth": 25},
-        {"key": "minor_PCA", "title": "Minor PCA Distribution (XY)", "xlabel": "Minor PCA (XY) [m]", "ylabel": "Counts", "binwidth": 25},
-        {"key": "eccentricity_PCA", "title": "Eccentricity PCA (XY)", "xlabel": "Eccentricity", "ylabel": "Counts", "binwidth": 0.05, "isLog": False, "isDicLeft": True},
-        {"key": "aspect_contrast_PCA", "title": "Aspect Contrast PCA (XY)", "xlabel": "Aspect Contrast", "ylabel": "Counts", "binwidth": 0.05},
-        {"key": "cos_power_extent_PCA_major", "title": "Cos^n(θ) PCA (XY)", "xlabel": "Cos^n(θ)", "ylabel": "Counts", "binwidth": 0.05, "isLog": False, "isDicLeft": True},
-        {"key": "abs_diff", "title": "Absolute Difference PCA (XY)", "xlabel": "Abs Difference", "ylabel": "Counts", "binwidth": 0.05, "isLog": False, "isDicLeft": True},
-        {"key": "gaussian_sum", "title": "Gaussian Sum PCA (XY)", "xlabel": "Gaussian Sum", "ylabel": "Counts", "binwidth": 0.025},
-        {"key": "quadratic_diff_sum", "title": "Quadratic Difference Sum PCA (XY)", "xlabel": "Quadratic Difference Sum", "ylabel": "Counts", "binwidth": 0.025, "isLog": False, "isDicLeft": True} 
+        {"key": "hypotenuse", "title": "Hypotenuse Distribution (XYZ)", "xlabel": "Hypotenuse (XYZ) [m]", "ylabel": "Counts", "binwidth": 20, "annot_x_loc": 0.70},
+        {"key": "major_PCA", "title": "Major PCA Distribution (XY)", "xlabel": "Major PCA (XY) [m]", "ylabel": "Counts", "binwidth": 10, "annot_x_loc": 0.70},
+        {"key": "minor_PCA", "title": "Minor PCA Distribution (XY)", "xlabel": "Minor PCA (XY) [m]", "ylabel": "Counts", "binwidth": 10, "annot_x_loc": 0.70},
+        {"key": "eccentricity_PCA", "title": "Eccentricity PCA (XY)", "xlabel": "Eccentricity", "ylabel": "Counts", "binwidth": 0.05, "isLog": False, "annot_x_loc": 0.50},
+        {"key": "aspect_contrast_PCA", "title": "Aspect Contrast PCA (XY)", "xlabel": "Aspect Contrast", "ylabel": "Counts", "binwidth": 0.05, "annot_x_loc": 0.70},
+        {"key": "cos_power_extent_PCA_major", "title": "Cos^n(θ) PCA (XY)", "xlabel": "Cos^n(θ)", "ylabel": "Counts", "binwidth": 0.05, "isLog": False, "annot_x_loc": 0.70},
+        {"key": "abs_diff", "title": "Absolute Difference PCA (XY)", "xlabel": "Abs Difference", "ylabel": "Counts", "binwidth": 0.05, "isLog": False, "annot_x_loc": 0.02},
+        {"key": "gaussian_sum", "title": "Gaussian Sum PCA (XY)", "xlabel": "Gaussian Sum", "ylabel": "Counts", "binwidth": 0.025, "annot_x_loc": 0.70, "xlim": (1.35, 1.80)},
+        {"key": "quadratic_diff_sum", "title": "Quadratic Difference Sum PCA (XY)", "xlabel": "Quadratic Difference Sum", "ylabel": "Counts", "binwidth": 0.025, "isLog": False, "annot_x_loc": 0.70, "xlim": (0.24, 0.50)},
     ]
 
     for param in plot_params:
@@ -292,7 +320,8 @@ def plot_all_metrics(metrics):
             ylabel=param["ylabel"],
             binwidth=param["binwidth"],
             isLog=param.get("isLog", False),  # Default to False if not specified
-            isDicLeft=param.get("isDicLeft", False)  # Default to False if not specified
+            annot_x_loc=param["annot_x_loc"],
+            xlim=param.get("xlim", None)  # Default to None if not specified
         )
         if fig:
             figs.append(fig)
@@ -334,10 +363,15 @@ def run_for_your_life():
             print(f"⚠️ Warning: No figures generated for {er.string} with Q >{Q_cut}. Skipping PDF saving.")
             continue  # Skip saving to avoid empty PDFs
 
-        output_pdf_file = f"SecondRound_{er.string}_Q>{Q_cut}_part{part}.pdf"
+        output_pdf_file = f"ViSes_SecondRound_{er.string}_Q>{Q_cut}_part{part}.pdf"
         save_figs_to_pdf(figs, output_pdf_dir, output_pdf_file)
-
-        print(f"Finished processing {er.string} with Q>{Q_cut} in {time.time() - start_time:.2f} seconds")
+# 
+        print(f"Finished processing {er.string} with Q>{Q_cut}")
+        # print time in hours, minutes, seconds
+        elapsed_time = time.time() - start_time
+        hours, remainder = divmod(elapsed_time, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        print(f"Elapsed time: {int(hours)}:{int(minutes):02}:{int(seconds):02}")
 
 
 if __name__ == "__main__":
