@@ -206,7 +206,8 @@ def plot_distribution(data_dict, title, xlabel, ylabel, binwidth, isLog=False, a
     ax.set_xlabel(xlabel, fontsize=20)
     ax.set_ylabel(ylabel, fontsize=20)
     ax.set_title(title, fontsize=22)
-    ax.xlim(xlim)
+    if xlim is not None:
+        ax.set_xlim(xlim)
     stats_summary = {f"N events": sum(len(d) for d in data_dict.values()),
                      "binwidth": f"{binwidth:.1f}",
                      "Nbins": Nbins}
@@ -229,7 +230,7 @@ def plot_distribution(data_dict, title, xlabel, ylabel, binwidth, isLog=False, a
         text_position = colour_offset.get(flavour, 0.85)
         add_text_to_ax(annot_x_loc, text_position, nice_string_output(flavour_stats), 
                        ax, fontsize=22, color='black')
-    add_text_to_ax(0.70, 0.97, nice_string_output(stats_summary), ax, fontsize=22, color='black')
+    add_text_to_ax(0.70, 0.97, nice_string_output(stats_summary), ax, fontsize=18, color='black')
     return fig
 
 def collect_event_refs(root_before_subdir, er, part, num_shards_dict):
@@ -296,12 +297,12 @@ def plot_all_metrics(metrics):
         {"key": "hypotenuse", "title": "Hypotenuse Distribution (XYZ)", "xlabel": "Hypotenuse (XYZ) [m]", "ylabel": "Counts", "binwidth": 20, "annot_x_loc": 0.70},
         {"key": "major_PCA", "title": "Major PCA Distribution (XY)", "xlabel": "Major PCA (XY) [m]", "ylabel": "Counts", "binwidth": 10, "annot_x_loc": 0.70},
         {"key": "minor_PCA", "title": "Minor PCA Distribution (XY)", "xlabel": "Minor PCA (XY) [m]", "ylabel": "Counts", "binwidth": 10, "annot_x_loc": 0.70},
-        {"key": "eccentricity_PCA", "title": "Eccentricity PCA (XY)", "xlabel": "Eccentricity", "ylabel": "Counts", "binwidth": 0.05, "isLog": False, "annot_x_loc": 0.50},
+        {"key": "eccentricity_PCA", "title": "Eccentricity PCA (XY)", "xlabel": "Eccentricity", "ylabel": "Counts", "binwidth": 0.05, "isLog": False, "annot_x_loc": 0.40},
         {"key": "aspect_contrast_PCA", "title": "Aspect Contrast PCA (XY)", "xlabel": "Aspect Contrast", "ylabel": "Counts", "binwidth": 0.05, "annot_x_loc": 0.70},
-        {"key": "cos_power_extent_PCA_major", "title": "Cos^n(θ) PCA (XY)", "xlabel": "Cos^n(θ)", "ylabel": "Counts", "binwidth": 0.05, "isLog": False, "annot_x_loc": 0.70},
+        {"key": "cos_power_extent_PCA_major", "title": "Cos^n(θ) PCA (XY)", "xlabel": "Cos^n(θ)", "ylabel": "Counts", "binwidth": 0.05, "isLog": False, "annot_x_loc": 0.30},
         {"key": "abs_diff", "title": "Absolute Difference PCA (XY)", "xlabel": "Abs Difference", "ylabel": "Counts", "binwidth": 0.05, "isLog": False, "annot_x_loc": 0.02},
         {"key": "gaussian_sum", "title": "Gaussian Sum PCA (XY)", "xlabel": "Gaussian Sum", "ylabel": "Counts", "binwidth": 0.025, "annot_x_loc": 0.70, "xlim": (1.35, 1.80)},
-        {"key": "quadratic_diff_sum", "title": "Quadratic Difference Sum PCA (XY)", "xlabel": "Quadratic Difference Sum", "ylabel": "Counts", "binwidth": 0.025, "isLog": False, "annot_x_loc": 0.70, "xlim": (0.24, 0.50)},
+        {"key": "quadratic_diff_sum", "title": "Quadratic Difference Sum PCA (XY)", "xlabel": "Quadratic Difference Sum", "ylabel": "Counts", "binwidth": 0.025, "isLog": False, "annot_x_loc": 0.30, "xlim": (0.24, 0.50)},
     ]
 
     for param in plot_params:
@@ -342,8 +343,9 @@ def run_for_your_life():
     root_dir_noCR_CC_IN = "/lustre/hpc/project/icecube/HE_Nu_Aske_Oct2024/PMTfied_filtered/Snowstorm/CC_CRclean_Contained/"
     output_pdf_dir = "/lustre/hpc/icecube/cyan/factory/DOMification/EventPeek/"
 
-    er = EnergyRange.ER_10_TEV_1_PEV
+    # er = EnergyRange.ER_10_TEV_1_PEV
     # er = EnergyRange.ER_1_PEV_100_PEV
+    er = EnergyRange.ER_100_TEV_100_PEV
     # Q_cuts = [-10, -1, 0]
     Q_cuts = [0]
     part = 1
