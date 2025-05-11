@@ -1,3 +1,9 @@
+"""
+Main manager script for the PMTfication pipeline.
+Reads event data, summarises feature data, generate corresponding truth data.
+Delegates processing to PMTTruthMaker and PMTSummariser 
+"""
+
 import sqlite3 as sql
 import os
 from os import getenv

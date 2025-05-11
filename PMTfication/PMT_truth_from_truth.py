@@ -30,7 +30,7 @@ class PMTTruthFromTruth:
         """
         processing_funcs = [
             self._is_within_IceCube,
-            self._compute_intra_IceCube_lepton_travel_distance,
+            self._compute_post_vertex_intra_IceCube_segment,
             # add future processing functions here
         ]
 
@@ -75,12 +75,11 @@ class PMTTruthFromTruth:
             names=['event_no', 'isWithinIceCube'],)
         return containment_table
     
-    
     # ----- Intra IceCube lepton travel distance calculation -----
-    def _compute_intra_IceCube_lepton_travel_distance(self) -> pa.Table:
+    def _compute_post_vertex_intra_IceCube_segment(self) -> pa.Table:
         """
-        Computes the travel distance of each event's HE daughter line inside a fixed prism.
-        Returns a PyArrow table with event_no and travel_distance_inside_volume.
+        Computes the travel distance of each event's HE daughter line segment inside a fixed prism.
+        Returns a PyArrow table with event_no and post_vertex_intraIceCube_segment.
         """
         # Define your prism faces (list of corner sets; each face is a polygon in 3D)
         # For this example, I’ll assume you have a constant like this defined elsewhere
@@ -133,7 +132,7 @@ class PMTTruthFromTruth:
 
         return pa.Table.from_pydict({
             'event_no': pa.array(event_no, type=pa.int32()),
-            'lepton_intra_distance': pa.array(distances, type=pa.float32())
+            'post_vertex_intraIceCube_segment': pa.array(distances, type=pa.float32())
         })
 
     def _build_icecube_prism_faces(self):

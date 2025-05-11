@@ -77,17 +77,6 @@ class EventFilter(abc.ABC):
                 self.logger.info(f"Filtered PMTfied file saved to: {output_pmtfied_file}")
             else:
                 self.logger.warning(f"Skipping {file}: No valid events found in PMTfied file.")
-    
-    # def _recalculate_offset(self, truth_table: pa.Table) -> pa.Table:
-    #     if "N_doms" not in truth_table.column_names:
-    #         self.logger.error("Column 'N_doms' is missing from truth table. Cannot recalculate 'offset'.")
-    #         return truth_table
-        
-    #     truth_data = {col: truth_table.column(col).to_pylist() for col in truth_table.column_names}
-    #     truth_data['offset'] = pc.cumulative_sum(pa.array(truth_data['N_doms']))
-        
-    #     self.logger.info("Recalculated 'offset' column based on filtered 'N_doms' values.")
-    #     return pa.Table.from_pydict(truth_data)
 
     def _recalculate_offset(self, truth_table: pa.Table) -> pa.Table:
         if "N_doms" not in truth_table.column_names or "shard_no" not in truth_table.column_names:
